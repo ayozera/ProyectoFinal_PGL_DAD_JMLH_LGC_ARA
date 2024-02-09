@@ -30,8 +30,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.ayozera.proyectofinal_pgl_dad_jmlh_lgc_ara.R
 
@@ -40,13 +43,14 @@ fun LogIn(navController: NavHostController) {
 
     var textUser by remember { mutableStateOf("") }
     var textPassword by remember { mutableStateOf("") }
-   // val keys = DataUp.credentialLoader(LocalContext.current)
+    // val keys = DataUp.credentialLoader(LocalContext.current)
     var openDialog by remember { mutableStateOf(false) }
 
     Column(
         verticalArrangement = Arrangement.SpaceBetween,
         horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = Modifier.fillMaxWidth()
+        modifier = Modifier
+            .fillMaxWidth()
             .background(color = MaterialTheme.colorScheme.background),
     ) {
         Row(
@@ -54,21 +58,28 @@ fun LogIn(navController: NavHostController) {
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier
                 .fillMaxHeight(0.10f)
-                .background(color = MaterialTheme.colorScheme.onSurface)
+                .background(color = MaterialTheme.colorScheme.primary)
                 .fillMaxWidth()
         ) {
             ArrowBackWelcome(navController)
             Text(
-                text = "Turn & Points",
-                modifier = Modifier.padding(start = 50.dp)
+                text = "Turn & points",
+                fontSize = 32.sp,
+                fontFamily = FontFamily.Cursive,
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier
+                    .padding(start = 25.dp)
             )
+
             Image(
                 painter = painterResource(id = R.drawable.dados),
-                contentDescription = "Logo con unos dados"
+                contentDescription = "Logo de dados",
+                modifier = Modifier.padding(start = 25.dp)
             )
         }
-        Column (
-            modifier = Modifier.fillMaxHeight(0.9f)
+        Column(
+            modifier = Modifier
+                .fillMaxHeight(0.9f)
                 .background(color = MaterialTheme.colorScheme.background),
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
@@ -77,14 +88,14 @@ fun LogIn(navController: NavHostController) {
             TextField(
                 value = textUser,
                 onValueChange = { textUser = it },
-                shape = RoundedCornerShape(30.dp)
+                shape = RoundedCornerShape(10.dp)
             )
             Spacer(modifier = Modifier.padding(20.dp))
             Text(text = "Introduzca su contraseña")
             TextField(
                 value = textPassword,
                 onValueChange = { textPassword = it },
-                shape = RoundedCornerShape(30.dp),
+                shape = RoundedCornerShape(10.dp),
                 visualTransformation = PasswordVisualTransformation()
             )
             Spacer(modifier = Modifier.padding(50.dp))
@@ -107,12 +118,13 @@ fun ArrowBackWelcome(navController: NavHostController) {
     Box() {
         IconButton(
             onClick = { navController.popBackStack() },
-            modifier = Modifier.align(Alignment.CenterStart)
+            modifier = Modifier
+                .align(Alignment.CenterStart)
                 .padding(20.dp)
         ) {
             Box(
                 modifier = Modifier
-                    .background(color = MaterialTheme.colorScheme.onSecondary)
+                    .background(color = MaterialTheme.colorScheme.onTertiaryContainer)
                     .size(48.dp)
             ) {
                 Icon(
