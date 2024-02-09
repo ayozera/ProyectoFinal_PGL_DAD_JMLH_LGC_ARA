@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "304200806002",
+    "project_id": "proyecto-pgl-dad-jmhl-lgc-ara",
+    "storage_bucket": "proyecto-pgl-dad-jmhl-lgc-ara.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:304200806002:android:86f8e4cbc4057835bddceb",
+        "android_client_info": {
+          "package_name": "com.ayozera.proyectofinal_pgl_dad_jmlh_lgc_ara"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCjHlTwrzUc-j85qYLBL8WCUajH6Pgw0Co"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
