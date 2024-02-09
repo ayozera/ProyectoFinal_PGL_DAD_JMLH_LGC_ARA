@@ -10,7 +10,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.ayozera.proyectofinal_pgl_dad_jmlh_lgc_ara.scaffold.MyScaffold
 import com.ayozera.proyectofinal_pgl_dad_jmlh_lgc_ara.activities.Credits
-import com.ayozera.proyectofinal_pgl_dad_jmlh_lgc_ara.activities.Game
+import com.ayozera.proyectofinal_pgl_dad_jmlh_lgc_ara.activities.GameDescription
 import com.ayozera.proyectofinal_pgl_dad_jmlh_lgc_ara.activities.Invitations
 import com.ayozera.proyectofinal_pgl_dad_jmlh_lgc_ara.activities.JukeBox
 import com.ayozera.proyectofinal_pgl_dad_jmlh_lgc_ara.activities.LogIn
@@ -38,6 +38,8 @@ fun NavigationGraph() {
             MyScaffold(navController = navController) {
                 Profile(navController = navController)
             }
+            composable(Routs.Game.rout) {
+                GameDescription(navController = navController)
         }
         composable(Routs.Game.rout) {
             MyScaffold(navController = navController) {
@@ -79,6 +81,16 @@ fun NavigationGraph() {
             MyScaffold(navController = navController) {
                 Credits(navController = navController)
             }
+
+        }
+    }
+
+    NavHost(navController = navController, startDestination = Routs.LogIn.rout) {
+        composable(Routs.LogIn.rout) {
+            LogIn(navController = navController)
+        }
+        composable(Routs.SignUp.rout) {
+            SignUp(navController = navController)
         }
     }
 }
