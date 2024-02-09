@@ -54,14 +54,13 @@ fun LogIn(navController: NavHostController) {
             .background(color = MaterialTheme.colorScheme.background),
     ) {
         Row(
-            horizontalArrangement = Arrangement.Start,
+            horizontalArrangement = Arrangement.Center,
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier
                 .fillMaxHeight(0.10f)
                 .background(color = MaterialTheme.colorScheme.primary)
                 .fillMaxWidth()
         ) {
-            ArrowBackWelcome(navController)
             Text(
                 text = "Turn & points",
                 fontSize = 32.sp,
@@ -84,6 +83,7 @@ fun LogIn(navController: NavHostController) {
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
+            Text(text = "Inicia sesión", fontSize = 24.sp)
             Text(text = "Introduzca nombre de usuario")
             TextField(
                 value = textUser,
@@ -112,31 +112,7 @@ fun LogIn(navController: NavHostController) {
     }
 }
 
-@Composable
-fun ArrowBackWelcome(navController: NavHostController) {
 
-    Box() {
-        IconButton(
-            onClick = { navController.popBackStack() },
-            modifier = Modifier
-                .align(Alignment.CenterStart)
-                .padding(20.dp)
-        ) {
-            Box(
-                modifier = Modifier
-                    .background(color = MaterialTheme.colorScheme.onTertiaryContainer)
-                    .size(48.dp)
-            ) {
-                Icon(
-                    imageVector = Icons.Filled.ArrowBack,
-                    contentDescription = "Atrás",
-                    modifier = Modifier.align(Alignment.Center),
-                    tint = Color.White
-                )
-            }
-        }
-    }
-}
 
 @Composable
 fun AccessDialogError(onDismissClick: () -> Unit) {

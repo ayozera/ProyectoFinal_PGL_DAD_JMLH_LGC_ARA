@@ -2,6 +2,7 @@ package com.ayozera.proyectofinal_pgl_dad_jmlh_lgc_ara.navigation
 
 import android.os.Build
 import androidx.annotation.RequiresApi
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -25,36 +26,57 @@ import com.ayozera.proyectofinal_pgl_dad_jmlh_lgc_ara.activities.SignUp
 fun NavigationGraph() {
     val navController: NavHostController = rememberNavController()
 
-    MyScaffold(navController = navController) {
+    NavHost(navController = navController, startDestination = Routs.LogIn.rout) {
 
-
-        NavHost(navController = navController, startDestination = Routs.LogIn.rout) {
-
-            composable(Routs.Profile.rout) {
+        composable(Routs.LogIn.rout) {
+            LogIn(navController = navController)
+        }
+        composable(Routs.SignUp.rout) {
+            SignUp(navController = navController)
+        }
+        composable(Routs.Profile.rout) {
+            MyScaffold(navController = navController) {
                 Profile(navController = navController)
             }
-            composable(Routs.Game.rout) {
+        }
+        composable(Routs.Game.rout) {
+            MyScaffold(navController = navController) {
                 GameDescription(navController = navController)
             }
-            composable(Routs.SearchBar.rout) {
+        }
+        composable(Routs.SearchBar.rout) {
+            MyScaffold(navController = navController) {
                 SearchBar(navController = navController)
             }
-            composable(Routs.Match.rout) {
+        }
+        composable(Routs.Match.rout) {
+            MyScaffold(navController = navController) {
                 Match(navController = navController)
             }
-            composable(Routs.SelectMatch.rout) {
+        }
+        composable(Routs.SelectMatch.rout) {
+            MyScaffold(navController = navController) {
                 SelectMatch(navController = navController)
             }
-            composable(Routs.Score.rout) {
+        }
+        composable(Routs.Score.rout) {
+            MyScaffold(navController = navController) {
                 Score(navController = navController)
             }
-            composable(Routs.Invitations.rout) {
+
+        }
+        composable(Routs.Invitations.rout) {
+            MyScaffold(navController = navController) {
                 Invitations(navController = navController)
             }
-            composable(Routs.JukeBox.rout) {
+        }
+        composable(Routs.JukeBox.rout) {
+            MyScaffold(navController = navController) {
                 JukeBox(navController = navController)
             }
-            composable(Routs.Credits.rout) {
+        }
+        composable(Routs.Credits.rout) {
+            MyScaffold(navController = navController) {
                 Credits(navController = navController)
             }
 
@@ -70,3 +92,8 @@ fun NavigationGraph() {
         }
     }
 }
+
+
+
+
+
