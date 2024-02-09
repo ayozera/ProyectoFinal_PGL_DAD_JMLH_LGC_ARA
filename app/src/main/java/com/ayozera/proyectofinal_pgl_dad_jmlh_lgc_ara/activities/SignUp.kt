@@ -5,4 +5,4 @@ import androidx.navigation.NavHostController
 
 
 @Composable
-fun signUp(navController: NavHostController) {}
+fun SignUp(navController: NavHostController) {}

@@ -4,4 +4,4 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 
 @Composable
-fun score(navController: NavHostController) {}
+fun Score(navController: NavHostController) {}
