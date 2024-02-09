@@ -4,4 +4,4 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 
 @Composable
-fun profile(navController: NavHostController) {}
+fun Profile(navController: NavHostController) {}

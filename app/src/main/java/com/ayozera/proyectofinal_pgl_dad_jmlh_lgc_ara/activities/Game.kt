@@ -5,4 +5,4 @@ import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 
 @Composable
-fun game (navController: NavHostController){}
+fun Game (navController: NavHostController){}

@@ -4,4 +4,4 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 
 @Composable
-fun invitations(navController: NavHostController) {}
+fun Invitations(navController: NavHostController) {}

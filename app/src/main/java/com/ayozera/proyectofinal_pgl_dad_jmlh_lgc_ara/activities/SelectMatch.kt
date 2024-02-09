@@ -4,4 +4,4 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 
 @Composable
-fun selectMatch(navController: NavHostController) {}
+fun SelectMatch(navController: NavHostController) {}

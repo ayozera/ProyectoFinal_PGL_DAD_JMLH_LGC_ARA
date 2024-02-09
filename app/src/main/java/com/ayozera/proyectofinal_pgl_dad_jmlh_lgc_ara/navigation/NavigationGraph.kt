@@ -8,57 +8,57 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.ayozera.proyectofinal_pgl_dad_jmlh_lgc_ara.activities.credits
-import com.ayozera.proyectofinal_pgl_dad_jmlh_lgc_ara.activities.game
-import com.ayozera.proyectofinal_pgl_dad_jmlh_lgc_ara.activities.invitations
-import com.ayozera.proyectofinal_pgl_dad_jmlh_lgc_ara.activities.jukeBox
-import com.ayozera.proyectofinal_pgl_dad_jmlh_lgc_ara.activities.logIn
-import com.ayozera.proyectofinal_pgl_dad_jmlh_lgc_ara.activities.match
-import com.ayozera.proyectofinal_pgl_dad_jmlh_lgc_ara.activities.profile
-import com.ayozera.proyectofinal_pgl_dad_jmlh_lgc_ara.activities.score
-import com.ayozera.proyectofinal_pgl_dad_jmlh_lgc_ara.activities.searchBar
-import com.ayozera.proyectofinal_pgl_dad_jmlh_lgc_ara.activities.selectMatch
-import com.ayozera.proyectofinal_pgl_dad_jmlh_lgc_ara.activities.signUp
+import com.ayozera.proyectofinal_pgl_dad_jmlh_lgc_ara.activities.Credits
+import com.ayozera.proyectofinal_pgl_dad_jmlh_lgc_ara.activities.Game
+import com.ayozera.proyectofinal_pgl_dad_jmlh_lgc_ara.activities.Invitations
+import com.ayozera.proyectofinal_pgl_dad_jmlh_lgc_ara.activities.JukeBox
+import com.ayozera.proyectofinal_pgl_dad_jmlh_lgc_ara.activities.LogIn
+import com.ayozera.proyectofinal_pgl_dad_jmlh_lgc_ara.activities.Match
+import com.ayozera.proyectofinal_pgl_dad_jmlh_lgc_ara.activities.Profile
+import com.ayozera.proyectofinal_pgl_dad_jmlh_lgc_ara.activities.Score
+import com.ayozera.proyectofinal_pgl_dad_jmlh_lgc_ara.activities.SearchBar
+import com.ayozera.proyectofinal_pgl_dad_jmlh_lgc_ara.activities.SelectMatch
+import com.ayozera.proyectofinal_pgl_dad_jmlh_lgc_ara.activities.SignUp
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun navigationGraph() {
+fun NavigationGraph() {
     val navController: NavHostController = rememberNavController()
 
     NavHost(navController = navController, startDestination = Routs.LogIn.rout) {
 
         composable(Routs.LogIn.rout) {
-            logIn(navController = navController)
+            LogIn(navController = navController)
         }
         composable(Routs.SignUp.rout) {
-            signUp(navController = navController)
+            SignUp(navController = navController)
         }
         composable(Routs.Profile.rout) {
-            profile(navController = navController)
+            Profile(navController = navController)
         }
         composable(Routs.Game.rout) {
-            game(navController = navController)
+            Game(navController = navController)
         }
         composable(Routs.SearchBar.rout) {
-            searchBar(navController = navController)
+            SearchBar(navController = navController)
         }
         composable(Routs.Match.rout) {
-            match(navController = navController)
+            Match(navController = navController)
         }
         composable(Routs.SelectMatch.rout) {
-            selectMatch(navController = navController)
+            SelectMatch(navController = navController)
         }
         composable(Routs.Score.rout) {
-            score(navController = navController)
+            Score(navController = navController)
         }
         composable(Routs.Invitations.rout) {
-            invitations(navController = navController)
+            Invitations(navController = navController)
         }
         composable(Routs.JukeBox.rout) {
-            jukeBox(navController = navController)
+            JukeBox(navController = navController)
         }
         composable(Routs.Credits.rout) {
-            credits(navController = navController)
+            Credits(navController = navController)
         }
     }
 }
