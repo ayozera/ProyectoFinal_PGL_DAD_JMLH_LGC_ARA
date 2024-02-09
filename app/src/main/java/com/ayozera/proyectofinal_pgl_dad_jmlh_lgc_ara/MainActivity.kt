@@ -10,13 +10,13 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import com.ayozera.proyectofinal_pgl_dad_jmlh_lgc_ara.ui.theme.ProyectoFinal_PGL_DAD_JMLH_LGC_ARATheme
+import com.ayozera.proyectofinal_pgl_dad_jmlh_lgc_ara.ui.theme.AppTheme
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            ProyectoFinal_PGL_DAD_JMLH_LGC_ARATheme {
+            AppTheme {
                 // A surface container using the 'background' color from the theme
                 Surface(
                     modifier = Modifier.fillMaxSize(),
@@ -40,7 +40,7 @@ fun Greeting(name: String, modifier: Modifier = Modifier) {
 @Preview(showBackground = true)
 @Composable
 fun GreetingPreview() {
-    ProyectoFinal_PGL_DAD_JMLH_LGC_ARATheme {
+    AppTheme {
         Greeting("Android")
     }
 }
