@@ -4,4 +4,4 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 
 @Composable
-fun jukeBox(navController: NavHostController) {}
+fun JukeBox(navController: NavHostController) {}
