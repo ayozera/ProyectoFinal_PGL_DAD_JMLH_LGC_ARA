@@ -68,6 +68,13 @@ dependencies {
     debugImplementation("androidx.compose.ui:ui-test-manifest")
     implementation(platform("com.google.firebase:firebase-bom:32.7.1"))
     implementation("com.google.firebase:firebase-analytics")
-
     implementation("androidx.navigation:navigation-compose:2.7.5")
+    implementation("androidx.media3:media3-exoplayer:1.2.0")
+    implementation("androidx.lifecycle:lifecycle-runtime-compose:2.7.0-rc02")
+    implementation("androidx.compose.material3:material3:1.2.0-beta01")
+    implementation("androidx.compose.ui:ui-text-google-fonts:1.5.4")
+    implementation("androidx.navigation:navigation-runtime-ktx:2.7.6")
+    implementation("com.google.firebase:firebase-inappmessaging-ktx:20.4.0")
+    implementation("androidx.navigation:navigation-compose:2.7.6")
+    implementation ("androidx.constraintlayout:constraintlayout-compose:1.1.0-alpha13")
 }
