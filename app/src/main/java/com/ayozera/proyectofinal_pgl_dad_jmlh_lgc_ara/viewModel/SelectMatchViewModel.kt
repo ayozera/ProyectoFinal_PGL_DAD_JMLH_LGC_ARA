@@ -12,10 +12,19 @@ class SelectMatchViewModel : ViewModel() {
     private lateinit var context: Context
     private var _players = MutableStateFlow(ArrayList<Player>())
     val players = _players.asStateFlow()
-    var game = ""
-    var day = 0
-    var month = 0
-    var year = 0
+
+    private var _game = MutableStateFlow("")
+    val game = _game.asStateFlow()
+
+    private var _day = MutableStateFlow(0)
+    val day = _day.asStateFlow()
+
+    private var _month = MutableStateFlow(0)
+    val month = _month.asStateFlow()
+
+    private var _year = MutableStateFlow(0)
+    val year = _year.asStateFlow()
+
 
     fun setContext(context: Context) {
         this.context = context
@@ -30,7 +39,7 @@ class SelectMatchViewModel : ViewModel() {
     }
 
     fun setGame(game: String) {
-        this.game = game
+        _game.value = game
     }
 
     fun setPlayers(players: ArrayList<Player>) {
@@ -38,9 +47,9 @@ class SelectMatchViewModel : ViewModel() {
     }
 
     fun setDate(day: Int, month: Int, year: Int) {
-        this.day = day
-        this.month = month
-        this.year = year
+        _day.value = day
+        _month.value = month
+        _year.value = year
     }
 
 }

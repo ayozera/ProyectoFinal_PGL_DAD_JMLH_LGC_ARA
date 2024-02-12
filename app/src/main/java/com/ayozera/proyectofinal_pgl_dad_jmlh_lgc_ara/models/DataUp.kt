@@ -2,7 +2,6 @@ package com.ayozera.proyectofinal_pgl_dad_jmlh_lgc_ara.models
 
 import android.content.Context
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import java.io.BufferedReader
 import java.io.File
 import java.io.FileInputStream
