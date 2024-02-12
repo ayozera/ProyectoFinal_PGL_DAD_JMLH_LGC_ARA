@@ -5,15 +5,14 @@ import android.content.Context
 class DataUp {
     companion object {
         fun getSongs(): ArrayList<Song> {
-            val lista = arrayListOf(
+            return arrayListOf(
                 Song("Chop Suey", "chop-suey"),
                 Song("Rise up", "rise_up"),
                 Song("Respira el momento", "respira_el_momento"),
-                Song("Adentro", "Multiviral"),
+                Song("Adentro", "adentro"),
                 Song("Jeremias17.5", "jeremias17_5"),
                 Song("Maquiavelico", "maquiavelico")
             )
-            return lista
         }
         fun getComments(current: Context): ArrayList<Comment> {
             val lista = arrayListOf(
