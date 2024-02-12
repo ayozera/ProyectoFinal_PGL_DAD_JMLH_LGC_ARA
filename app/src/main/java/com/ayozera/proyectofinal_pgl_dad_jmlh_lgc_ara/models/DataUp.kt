@@ -10,8 +10,6 @@ import java.io.FileOutputStream
 import java.io.IOException
 import java.io.InputStreamReader
 
-import android.content.Context
-
 class DataUp {
     companion object {
         fun getSongs(): ArrayList<Song> {
