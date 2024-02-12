@@ -1,19 +1,22 @@
 package com.ayozera.proyectofinal_pgl_dad_jmlh_lgc_ara.activities
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material3.Button
-import androidx.compose.material3.Card
+import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -26,9 +29,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
@@ -38,14 +41,24 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.ayozera.proyectofinal_pgl_dad_jmlh_lgc_ara.R
 import com.ayozera.proyectofinal_pgl_dad_jmlh_lgc_ara.models.Comment
+import com.ayozera.proyectofinal_pgl_dad_jmlh_lgc_ara.models.DataUp
+
 
 @Composable
-fun GameDescription(navController: NavHostController) {
-    Column {
+fun GameDescription(navController: NavHostController) {}
+@Preview
+@Composable
+fun GameDescriptionPrueba(){
+    var comments = DataUp.getComments(LocalContext.current)
+    Column (
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(MaterialTheme.colorScheme.background)
+    ){
         header()
         description()
         writeReview()
-        reviewList(comments = ArrayList())
+        reviewList(comments)
     }
 }
 
@@ -60,7 +73,8 @@ fun header() {
         Text(
             text = "GameName",
             fontSize = 36.sp,
-            color = MaterialTheme.colorScheme.onBackground
+            color = MaterialTheme.colorScheme.primaryContainer,
+            fontWeight = FontWeight.ExtraBold
         )
         Image(
             painter = painterResource(
@@ -72,19 +86,20 @@ fun header() {
     }
 }
 
-@Preview(showSystemUi = true, showBackground = true)
+
 @Composable
 fun description() {
     var showdescription by remember { mutableStateOf(false) }
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(16.dp)
+            .padding(16.dp, 10.dp)
+            .background(MaterialTheme.colorScheme.primaryContainer)
     ) {
         Row(
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth().padding(10.dp,0.dp)
         ) {
             Text(
                 text = "Description",
@@ -97,6 +112,7 @@ fun description() {
                     contentDescription = "Expand Description",
                     modifier = Modifier.size(48.dp),
                     tint = MaterialTheme.colorScheme.primary
+
                 )
             }
         }
@@ -113,12 +129,11 @@ fun description() {
 @Composable
 fun writeReview() {
     var userReview by remember { mutableStateOf("") }
-    Row(
+    Column(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(16.dp),
-        horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = Alignment.CenterVertically
+            .padding(16.dp, 0.dp),
+        horizontalAlignment = Alignment.End
     ) {
         TextField(
             value = userReview,
@@ -128,39 +143,57 @@ fun writeReview() {
             ),
             modifier = Modifier.fillMaxWidth()
         )
-        TextButton(onClick = { /*TODO*/ }) {
+        TextButton(
+            onClick = { /*TODO*/ },
+            modifier = Modifier
+                .padding(8.dp)
+                .border(2.dp, MaterialTheme.colorScheme.primary, MaterialTheme.shapes.extraLarge)
+                .clip(MaterialTheme.shapes.extraLarge)
+                .background(MaterialTheme.colorScheme.primaryContainer),
+
+        ) {
             Text(
-                text = "Public",
+                text = "Publish",
                 fontSize = 22.sp,
-                color = MaterialTheme.colorScheme.onBackground
+                color = MaterialTheme.colorScheme.onPrimaryContainer
             )
         }
     }
 }
 
 @Composable
-fun reviewBox() {
-    Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(16.dp)
-    ) {
-        Text(
-            text = "Autor",
-            fontSize = 22.sp,
-            color = MaterialTheme.colorScheme.onBackground,
-            fontWeight = FontWeight.Bold
-        )
-        Text(
-            text = "Review",
-            fontSize = 14.sp,
-            color = MaterialTheme.colorScheme.onBackground
-        )
-        Text(
-            text = "Date",
-            fontSize = 14.sp,
-            color = MaterialTheme.colorScheme.onBackground
-        )
+fun reviewBox(comments: ArrayList<Comment>) {
+    comments.forEach {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .border(
+                    2.dp,
+                    MaterialTheme.colorScheme.onPrimaryContainer,
+                    MaterialTheme.shapes.large
+                )
+                .clip(MaterialTheme.shapes.large)
+                .background(MaterialTheme.colorScheme.primaryContainer)
+                .padding(16.dp, 10.dp)
+        ) {
+            Text(
+                text = it.user,
+                fontSize = 22.sp,
+                color = MaterialTheme.colorScheme.onBackground,
+                fontWeight = FontWeight.Bold
+            )
+            Text(
+                text = it.comment,
+                fontSize = 14.sp,
+                color = MaterialTheme.colorScheme.onBackground
+            )
+            Text(
+                text = it.date,
+                fontSize = 14.sp,
+                color = MaterialTheme.colorScheme.onBackground
+            )
+        }
+        Spacer(modifier = Modifier.size(10.dp))
     }
 }
 
@@ -168,10 +201,12 @@ fun reviewBox() {
 @Composable
 fun reviewList(comments: ArrayList<Comment>) {
     LazyColumn(
-        modifier = Modifier.fillMaxWidth()
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(16.dp)
     ) {
         items(comments) { comment ->
-            reviewBox()
+            reviewBox(comments)
         }
     }
 }
