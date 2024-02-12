@@ -82,7 +82,7 @@ fun SelectMatch(navController: NavHostController) {
 
 @Composable
 fun PlayerSelection(players: ArrayList<Player>, onPlayerSelection: (ArrayList<Player>) -> Unit) {
-    var numberOfPlayers by remember { mutableStateOf("") }
+    var numberOfPlayers by remember { mutableStateOf("0") }
     val selectedPlayers = arrayListOf<Player>()
 
     Column {
