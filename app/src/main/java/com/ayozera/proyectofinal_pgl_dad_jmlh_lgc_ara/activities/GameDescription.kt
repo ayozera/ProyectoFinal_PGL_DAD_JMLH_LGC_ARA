@@ -56,7 +56,7 @@ fun GameDescriptionPrueba(){
             .fillMaxWidth()
             .background(MaterialTheme.colorScheme.background)
     ){
-        header()
+        GameHeader()
         description()
         writeReview(commentsViewModel)
         reviewList(comments)
@@ -64,7 +64,7 @@ fun GameDescriptionPrueba(){
 }
 
 @Composable
-fun header() {
+fun GameHeader() {
     Column(
         modifier = Modifier
             .fillMaxWidth()
