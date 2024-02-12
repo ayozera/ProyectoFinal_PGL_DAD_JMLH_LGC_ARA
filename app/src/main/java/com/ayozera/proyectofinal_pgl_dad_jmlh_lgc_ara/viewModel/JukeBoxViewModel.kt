@@ -15,7 +15,7 @@ import java.util.concurrent.TimeUnit
 
 class JukeBoxViewModel : ViewModel() {
     private var _mediaPlayer: MutableStateFlow<ExoPlayer?> = MutableStateFlow(null)
-    val reproductor = _mediaPlayer.asStateFlow()
+    val mediaPlayer = _mediaPlayer.asStateFlow()
 
     private var _canciones = MutableStateFlow(DataUp.getSongs())
     val canciones = _canciones.asStateFlow()

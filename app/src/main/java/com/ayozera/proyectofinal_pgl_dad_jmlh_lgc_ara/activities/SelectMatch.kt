@@ -1,7 +1,283 @@
 package com.ayozera.proyectofinal_pgl_dad_jmlh_lgc_ara.activities
 
+import android.os.Build
+import androidx.annotation.RequiresApi
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowDropDown
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
+import com.ayozera.proyectofinal_pgl_dad_jmlh_lgc_ara.models.Player
+import com.ayozera.proyectofinal_pgl_dad_jmlh_lgc_ara.viewModel.SelectMatchViewModel
+
+
+@RequiresApi(Build.VERSION_CODES.O)
+@Composable
+fun SelectMatch(navController: NavHostController) {
+
+    val selectMatchViewModel : SelectMatchViewModel = viewModel()
+    val context = LocalContext.current
+    selectMatchViewModel.setContext(context)
+    val games = selectMatchViewModel.getGames()
+    val players = selectMatchViewModel.getPlayers()
+    var openDialog by remember { mutableStateOf(false) }
+    var openDialogError by remember { mutableStateOf(false) }
+
+    Column(
+        modifier = Modifier
+            .background(color = MaterialTheme.colorScheme.background)
+            .verticalScroll(rememberScrollState()),
+        horizontalAlignment = Alignment.CenterHorizontally,
+
+        ) {
+
+        Spacer(modifier = Modifier.size(30.dp))
+        GameSelection(games) { onGameSelected ->
+            selectMatchViewModel.setGame(onGameSelected)
+        }
+        Spacer(modifier = Modifier.size(30.dp))
+        PlayerSelection(players) { onPlayerSelected ->
+            selectMatchViewModel.setPlayers(onPlayerSelected)
+        }
+        Spacer(modifier = Modifier.size(60.dp))
+
+/*        if (openDialog) {
+            AlertDialog() {
+                openDialog = false
+            }
+        }
+
+        if (openDialogError) {
+            AlertDialogError() {
+                openDialogError = false
+            }
+        }*/
+    }
+}
+
 
 @Composable
-fun SelectMatch(navController: NavHostController) {}
+fun PlayerSelection(players: ArrayList<Player>, onPlayerSelection: (ArrayList<Player>) -> Unit) {
+    var numberOfPlayers by remember { mutableStateOf("") }
+    val selectedPlayers = arrayListOf<Player>()
+
+    Column {
+        Text(
+            text = "Introduce el número de jugadores",
+            fontSize = 16.sp,
+            fontFamily = FontFamily.Serif,
+            color = MaterialTheme.colorScheme.onPrimary,
+            fontWeight = FontWeight.Bold,
+        )
+        NumberSelection() { onNumberSelected ->
+            numberOfPlayers = onNumberSelected
+        }
+        Spacer(modifier = Modifier.size(30.dp))
+        Text(
+            text = "Introduce el nombre de los jugadores",
+            fontSize = 16.sp,
+            fontFamily = FontFamily.Serif,
+            color = MaterialTheme.colorScheme.onPrimary,
+            fontWeight = FontWeight.Bold,
+        )
+        for (i in 0 until numberOfPlayers.toInt()) {
+            OnePlayerSelection(players) { onPlayerSelected ->
+                selectedPlayers.add(onPlayerSelected)
+            }
+            Spacer(modifier = Modifier.size(30.dp))
+        }
+        onPlayerSelection(selectedPlayers)
+    }
+}
+
+@Composable
+fun NumberSelection (onNumberSelection: (String) -> Unit) {
+    var numbers = arrayListOf<String>("1", "2", "3", "4", "5", "6", "7", "8")
+    var expandedNumber by remember { mutableStateOf(false) }
+    var selectedNumber by remember { mutableStateOf("") }
+    Column {
+        Text(
+            text = "Introduce el número de jugadores",
+            fontSize = 16.sp,
+            fontFamily = FontFamily.Serif,
+            color = MaterialTheme.colorScheme.onPrimary,
+            fontWeight = FontWeight.Bold,
+        )
+        TextField(value = selectedNumber,
+            onValueChange = {},
+            label = { Text("Seleccione un jugador") },
+            readOnly = true,
+            trailingIcon = {
+                IconButton(onClick = { expandedNumber = true }) {
+                    Icon(
+                        Icons.Default.ArrowDropDown, contentDescription = "abrir lista de jugadores"
+                    )
+                }
+                DropdownMenu(expanded = expandedNumber,
+                    onDismissRequest = { expandedNumber = false }) {
+                    numbers.forEach { number ->
+                        DropdownMenuItem(text = { Text(text = number) }, onClick = {
+                            selectedNumber = number
+                            expandedNumber = false
+                            onNumberSelection(number)
+                        })
+                    }
+                }
+            }
+        )
+    }
+}
+
+@Composable
+fun OnePlayerSelection (players: ArrayList<Player>, onPlayerSelection: (Player) -> Unit) {
+    var expandedPlayer by remember { mutableStateOf(false) }
+    var selectedPlayer by remember { mutableStateOf("") }
+    Column {
+        TextField(value = selectedPlayer,
+            onValueChange = {},
+            label = { Text("Seleccione un jugador") },
+            readOnly = true,
+            trailingIcon = {
+                IconButton(onClick = { expandedPlayer = true }) {
+                    Icon(
+                        Icons.Default.ArrowDropDown, contentDescription = "abrir lista de jugadores"
+                    )
+                }
+                DropdownMenu(expanded = expandedPlayer,
+                    onDismissRequest = { expandedPlayer = false }) {
+                    players.forEach { player ->
+                        DropdownMenuItem(text = { Text(text = player.name) }, onClick = {
+                            selectedPlayer = player.name
+                            expandedPlayer = false
+                            onPlayerSelection(player)
+                        })
+                    }
+                }
+            }
+        )
+    }
+}
+
+@Composable
+fun GameSelection(games: List<String>, onGameSelection: (String) -> Unit) {
+    var expandedGame by remember { mutableStateOf(false) }
+    var selectedGame by remember { mutableStateOf("") }
+    Column {
+
+        Text(
+            text = "El nombre del juego",
+            fontSize = 16.sp,
+            fontFamily = FontFamily.Serif,
+            color = MaterialTheme.colorScheme.onPrimary,
+            fontWeight = FontWeight.Bold,
+        )
+        TextField(value = selectedGame,
+            onValueChange = {},
+            label = { Text("¿Cuál es el juego?") },
+            readOnly = true,
+            trailingIcon = {
+                IconButton(onClick = { expandedGame = true }) {
+                    Icon(
+                        Icons.Default.ArrowDropDown, contentDescription = "abrir lista de jugadores"
+                    )
+                }
+                DropdownMenu(expanded = expandedGame, onDismissRequest = { expandedGame = false }) {
+                    games.forEach { game ->
+                        DropdownMenuItem(text = { Text(text = game) }, onClick = {
+                            selectedGame = game
+                            expandedGame = false
+                            onGameSelection(game)
+                        })
+                    }
+                }
+            }
+        )
+    }
+}
+
+
+/*
+
+@Composable
+fun AlertDialog(onDismissClick: () -> Unit) {
+    MaterialTheme {
+        Column {
+            AlertDialog(
+                onDismissRequest = {
+                    onDismissClick()
+                },
+                title = {
+                    Text(text = "Partida guardada")
+                },
+                text = {
+                    Text("Partida añadida correctamente")
+                },
+                confirmButton = {
+                    Button(
+                        onClick = {
+                            onDismissClick()
+                        }) {
+                        Text("Entendido")
+                    }
+                }
+            )
+        }
+    }
+}
+
+@Composable
+fun AlertDialogError(onDismissClick: () -> Unit) {
+    MaterialTheme {
+        Column {
+            AlertDialog(
+                onDismissRequest = {
+                    onDismissClick()
+                },
+                title = {
+                    Text(text = "Error")
+                },
+                text = {
+                    Text(
+                        "Se deben llenar todos los campos",
+                        fontSize = 16.sp,
+                        fontFamily = FontFamily.Serif,
+                        color = LetraOscura,
+                        fontWeight = FontWeight.Bold,
+                    )
+                },
+                confirmButton = {
+                    Button(
+                        onClick = {
+                            onDismissClick()
+                        }) {
+                        Text("Entendido")
+                    }
+                }
+            )
+        }
+    }
+}*/
