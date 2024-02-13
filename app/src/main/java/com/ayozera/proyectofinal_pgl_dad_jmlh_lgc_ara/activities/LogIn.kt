@@ -95,7 +95,7 @@ fun LogInBody(viewModel: logInViewModel, navController: NavHostController) {
     var textPass by remember { mutableStateOf("") }
     var userIsCorrect by remember { mutableStateOf(true) }
     var passIsCorrect by remember { mutableStateOf(true) }
-    val credentials = DataUp.loadCredentials(LocalContext.current).toList()
+    val credentials = DataUp.loadCredentials(LocalContext.current)
 
     Column(
         modifier = Modifier
@@ -158,11 +158,11 @@ fun LogInBody(viewModel: logInViewModel, navController: NavHostController) {
             onClick = {
                 passIsCorrect = textPass.isNotBlank()
                 userIsCorrect = textUser.isNotBlank()
-                for (i in credentials.indices) {
+/*                for (i in credentials.indices) {
                     if (credentials[i] == textUser && credentials[i] == textPass) {
                         navController.navigate(Routs.Profile.rout)
                     }
-                }
+                }*/
             },
             modifier = Modifier
                 .border(
