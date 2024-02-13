@@ -5,6 +5,8 @@ import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
@@ -62,7 +64,8 @@ fun SelectMatch(navController : NavHostController) {
         modifier = Modifier
             .background(color = MaterialTheme.colorScheme.background)
             .verticalScroll(rememberScrollState())
-            .fillMaxWidth(),
+            .fillMaxWidth()
+            .fillMaxHeight(),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
 
@@ -109,7 +112,7 @@ fun ButtonBegin(onSave: () -> Unit) {
     Button(onClick = { onSave() },
         colors = ButtonDefaults.buttonColors(
             containerColor = MaterialTheme.colorScheme.primaryContainer)) {
-        Text(text = "Empezar Partida", color = MaterialTheme.colorScheme.onBackground)
+        Text(text = "Empezar Partida", color = MaterialTheme.colorScheme.primary)
     }
 }
 
@@ -123,13 +126,6 @@ fun PlayerSelection(players: ArrayList<Player>, onPlayerSelection: (ArrayList<Pl
         modifier = Modifier.fillMaxWidth(),
         horizontalAlignment = Alignment.CenterHorizontally
     ){
-        Text(
-            text = "Introduce el número de jugadores",
-            fontSize = 16.sp,
-            fontFamily = FontFamily.Serif,
-            color = MaterialTheme.colorScheme.onPrimary,
-            fontWeight = FontWeight.Bold,
-        )
         NumberSelection() { onNumberSelected ->
             numberOfPlayers = onNumberSelected
         }
@@ -161,7 +157,7 @@ fun NumberSelection (onNumberSelection: (String) -> Unit) {
             text = "Introduce el número de jugadores",
             fontSize = 16.sp,
             fontFamily = FontFamily.Serif,
-            color = MaterialTheme.colorScheme.onPrimary,
+            color = MaterialTheme.colorScheme.primary,
             fontWeight = FontWeight.Bold,
         )
         TextField(value = selectedNumber,
