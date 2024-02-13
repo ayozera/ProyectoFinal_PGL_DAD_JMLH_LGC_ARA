@@ -154,6 +154,7 @@ class DataUp {
             val reader = BufferedReader(InputStreamReader(fileInput))
             val user = reader.readLine()
             val password = reader.readLine()
+
             return Pair(user, password)
         }
     }
