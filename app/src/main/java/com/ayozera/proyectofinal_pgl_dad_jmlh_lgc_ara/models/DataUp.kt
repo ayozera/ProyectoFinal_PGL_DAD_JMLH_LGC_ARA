@@ -157,5 +157,73 @@ class DataUp {
 
             return Pair(user, password)
         }
+
+        @OptIn(ExperimentalStdlibApi::class)
+        fun saveMatch(match: Match, context: Context) {
+            val writer: FileOutputStream =
+                context.openFileOutput("matches.txt", Context.MODE_APPEND)
+            writer.write("${match.game}\n".toByteArray())
+            writer.write("${match.gameArt}\n".toByteArray())
+            writer.write("${match.day}\n".toByteArray())
+            writer.write("${match.month}\n".toByteArray())
+            writer.write("${match.year}\n".toByteArray())
+            writer.write("${match.players.size}\n".toByteArray())
+            match.players.forEach {
+                writer.write("${it.name}\n".toByteArray())
+                writer.write("#${it.color.value.toHexString().substring(0,8)}\n".toByteArray())
+                writer.write("${it.avatar}\n".toByteArray())
+            }
+            writer.write("${match.score.size}\n".toByteArray())
+            match.score.forEach {
+                writer.write("$it\n".toByteArray())
+            }
+            writer.close()
+        }
+
+        fun loadMatches(context : Context) {
+            val file = File(context.filesDir, "matches.txt")
+            val fileInput = FileInputStream(file)
+            val reader = BufferedReader(InputStreamReader(fileInput))
+            var counter = -1
+            var game = ""
+            var gameArt = ""
+            var day = 0
+            var month = 0
+            var year = 0
+            val matchesList = ArrayList<Match>()
+            var players = ArrayList<Player>()
+            var score = ArrayList<Int>()
+            reader.forEachLine { line ->
+                if (line.isNotBlank()) {
+                    counter++
+                    when (counter) {
+                        0 -> game = line
+                        1 -> gameArt = line
+                        2 -> day = line.toInt()
+                        3 -> month = line.toInt()
+                        4 -> year = line.toInt()
+                        5 -> {
+                            val numPlayers = line.toInt()
+                            for (i in 0 until numPlayers) {
+                                val name = reader.readLine()
+                                val color = Color(android.graphics.Color.parseColor(reader.readLine()))
+                                val avatar = reader.readLine()
+                                players.add(Player(name, color, avatar))
+                            }
+                        }
+                        6 -> {
+                            val numScores = line.toInt()
+                            for (i in 0 until numScores) {
+                                score.add(reader.readLine().toInt())
+                            }
+                            counter = -1
+                            matchesList.add(Match(game, gameArt.toInt(), players, day, month, year, score))
+                            players = ArrayList()
+                            score = ArrayList()
+                        }
+                    }
+                }
+            }
+        }
     }
 }

@@ -4,6 +4,7 @@ import android.content.Context
 import android.os.Build
 import androidx.lifecycle.ViewModel
 import com.ayozera.proyectofinal_pgl_dad_jmlh_lgc_ara.models.DataUp
+import com.ayozera.proyectofinal_pgl_dad_jmlh_lgc_ara.models.Match
 import com.ayozera.proyectofinal_pgl_dad_jmlh_lgc_ara.models.Player
 import com.ayozera.proyectofinal_pgl_dad_jmlh_lgc_ara.models.SelectionMatch
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -87,6 +88,19 @@ class MatchViewModel : ViewModel() {
             newScoreList[index] -= 1
             _score.value = ArrayList(newScoreList)
         }
+    }
+
+    fun saveMatch() {
+        DataUp.saveMatch(
+            Match(_gameName!!.value,
+                _gameArt!!.value,
+                _players!!.value,
+                _day!!.value,
+                _month!!.value,
+                _year!!.value,
+                _score.value
+            ), _context!!
+        )
     }
 
 }

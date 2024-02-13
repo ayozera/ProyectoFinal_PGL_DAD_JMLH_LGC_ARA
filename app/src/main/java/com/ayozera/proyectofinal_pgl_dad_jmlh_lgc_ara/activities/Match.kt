@@ -13,6 +13,8 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -30,6 +32,8 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -37,15 +41,21 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.ayozera.proyectofinal_pgl_dad_jmlh_lgc_ara.R
 import com.ayozera.proyectofinal_pgl_dad_jmlh_lgc_ara.models.Player
+import com.ayozera.proyectofinal_pgl_dad_jmlh_lgc_ara.navigation.Routs
+import com.ayozera.proyectofinal_pgl_dad_jmlh_lgc_ara.viewModel.AppMainViewModel
 import com.ayozera.proyectofinal_pgl_dad_jmlh_lgc_ara.viewModel.MatchViewModel
 
 @Composable
 fun Match(navController: NavHostController) {
+    val appMainViewModel: AppMainViewModel = viewModel()
     val matchViewModel : MatchViewModel = viewModel()
     val context = LocalContext.current
     matchViewModel.setContext(context)
     val gameName = matchViewModel.getGameName()
     val gameArt = matchViewModel.getGameArt()
+    var openDialog by remember { mutableStateOf(false) }
+    var openDialog2 by remember { mutableStateOf(false) }
+    var isEnabled by remember { mutableStateOf(true) }
 
     Column(
         modifier = Modifier
@@ -56,6 +66,33 @@ fun Match(navController: NavHostController) {
     ) {
         GameHeader(gameName, gameArt)
         PlayersMarks(matchViewModel)
+        ButtonSaveMatch(isEnabled) {
+            matchViewModel.saveMatch()
+            appMainViewModel.discardMatch()
+            isEnabled = false
+            openDialog = true
+        }
+        Spacer(modifier = Modifier.size(20.dp))
+        ButtonDiscardMatch(isEnabled) {
+            openDialog2 = true
+        }
+        Spacer(modifier = Modifier.size(60.dp))
+
+        if (openDialog) {
+            AlertDialogSaveMatch() {
+                openDialog = false
+            }
+        }
+
+        if (openDialog2) {
+            AlertDialogDiscardMatch(onConfirmClick = {
+                openDialog2 = false
+                appMainViewModel.discardMatch()
+                navController.navigate(Routs.Profile.rout)
+            }, onCancelClick = {
+                openDialog2 = false
+            })
+        }
     }
 }
 
@@ -107,9 +144,11 @@ fun PlayerMark(matchViewModel: MatchViewModel, player: Player, index : MutableSt
                 painter = painterResource(id = R.drawable.remove_box),
                 contentDescription = "restar",
                 tint = MaterialTheme.colorScheme.primary,
-                modifier = Modifier.clickable {
-                    matchViewModel.substractScore(index.value)
-                }.size(30.dp)
+                modifier = Modifier
+                    .clickable {
+                        matchViewModel.substractScore(index.value)
+                    }
+                    .size(30.dp)
             )
             Spacer(modifier = Modifier.size(10.dp))
             Text(
@@ -122,9 +161,97 @@ fun PlayerMark(matchViewModel: MatchViewModel, player: Player, index : MutableSt
                 painter = painterResource(id = R.drawable.round_add_box_24),
                 contentDescription = "sumar",
                 tint = MaterialTheme.colorScheme.primary,
-                modifier = Modifier.clickable {
-                    matchViewModel.addScore(index.value)
-                }.size(30.dp)
+                modifier = Modifier
+                    .clickable {
+                        matchViewModel.addScore(index.value)
+                    }
+                    .size(30.dp)
+            )
+        }
+    }
+}
+
+@Composable
+fun ButtonDiscardMatch(isEnabled : Boolean, onSave: () -> Unit) {
+    Button(
+        onClick = { onSave() },
+        colors = ButtonDefaults.buttonColors(
+            containerColor = MaterialTheme.colorScheme.primaryContainer
+        ), enabled = isEnabled
+    ) {
+        Text(text = "Empezar Partida", color = MaterialTheme.colorScheme.primary)
+    }
+}
+
+@Composable
+fun ButtonSaveMatch(isEnabled : Boolean, onSave: () -> Unit) {
+    Button(
+        onClick = { onSave() },
+        colors = ButtonDefaults.buttonColors(
+            containerColor = MaterialTheme.colorScheme.primaryContainer
+        ), enabled = isEnabled
+    ) {
+        Text(text = "Empezar Partida", color = MaterialTheme.colorScheme.primary)
+    }
+}
+
+@Composable
+fun AlertDialogSaveMatch(onDismissClick: () -> Unit) {
+    MaterialTheme {
+        Column {
+            androidx.compose.material3.AlertDialog(
+                onDismissRequest = {
+                    onDismissClick()
+                },
+                title = {
+                    Text(text = "Partida guardada")
+                },
+                text = {
+                    Text("Partida añadida correctamente")
+                },
+                confirmButton = {
+                    Button(
+                        onClick = {
+                            onDismissClick()
+                        }) {
+                        Text("Entendido")
+                    }
+                }
+            )
+        }
+    }
+}
+
+@Composable
+fun AlertDialogDiscardMatch(onConfirmClick: () -> Unit, onCancelClick: () -> Unit) {
+    MaterialTheme {
+        Column {
+            androidx.compose.material3.AlertDialog(
+                onDismissRequest = {
+                    onCancelClick()
+                },
+                title = {
+                    Text(text = "Partida guardada")
+                },
+                text = {
+                    Text("Partida añadida correctamente")
+                },
+                confirmButton = {
+                    Row {
+                        Button(
+                            onClick = {
+                                onConfirmClick()
+                            }) {
+                            Text("Continuar")
+                        }
+                        Button(
+                            onClick = {
+                                onCancelClick()
+                            }) {
+                            Text("Cancelar")
+                        }
+                    }
+                }
             )
         }
     }
