@@ -106,7 +106,7 @@ class JukeBoxViewModel : ViewModel() {
         updateDuration()
     }
 
-    fun clicAleatorio() {
+    fun clicRandom() {
         random = !random
     }
 

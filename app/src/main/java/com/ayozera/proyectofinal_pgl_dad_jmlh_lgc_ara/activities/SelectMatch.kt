@@ -5,11 +5,15 @@ import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDropDown
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
@@ -21,6 +25,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -32,28 +37,34 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.ayozera.proyectofinal_pgl_dad_jmlh_lgc_ara.models.Player
+import com.ayozera.proyectofinal_pgl_dad_jmlh_lgc_ara.navigation.Routs
 import com.ayozera.proyectofinal_pgl_dad_jmlh_lgc_ara.viewModel.SelectMatchViewModel
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun SelectMatch(navController: NavHostController) {
+fun SelectMatch(navController : NavHostController) {
 
     val selectMatchViewModel : SelectMatchViewModel = viewModel()
     val context = LocalContext.current
     selectMatchViewModel.setContext(context)
     val games = selectMatchViewModel.getGames()
     val players = selectMatchViewModel.getPlayers()
+    val selectedGame = selectMatchViewModel.game
+    val selectedPlayers = selectMatchViewModel.players
     var openDialog by remember { mutableStateOf(false) }
     var openDialogError by remember { mutableStateOf(false) }
+    val delay = rememberCoroutineScope()
 
     Column(
         modifier = Modifier
             .background(color = MaterialTheme.colorScheme.background)
-            .verticalScroll(rememberScrollState()),
-        horizontalAlignment = Alignment.CenterHorizontally,
-
-        ) {
+            .verticalScroll(rememberScrollState())
+            .fillMaxWidth(),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
 
         Spacer(modifier = Modifier.size(30.dp))
         GameSelection(games) { onGameSelected ->
@@ -63,19 +74,42 @@ fun SelectMatch(navController: NavHostController) {
         PlayerSelection(players) { onPlayerSelected ->
             selectMatchViewModel.setPlayers(onPlayerSelected)
         }
-        Spacer(modifier = Modifier.size(60.dp))
-
-/*        if (openDialog) {
-            AlertDialog() {
-                openDialog = false
+        Spacer(modifier = Modifier.size(30.dp))
+        ButtonBegin {
+            if (selectedGame.value.isNotEmpty() && selectedPlayers.value.isNotEmpty()) {
+                delay.launch(Dispatchers.Main) {
+                    navController.navigate(Routs.Match.rout)
+                    //openDialog = true
+                    //delay(3000)
+                    //navController.popBackStack()
+                }
+            } else {
+                openDialogError = true
             }
         }
+        Spacer(modifier = Modifier.size(80.dp))
+
+
+        /*        if (openDialog) {
+                    AlertDialog() {
+                        openDialog = false
+                    }
+                }*/
 
         if (openDialogError) {
             AlertDialogError() {
                 openDialogError = false
             }
-        }*/
+        }
+    }
+}
+
+@Composable
+fun ButtonBegin(onSave: () -> Unit) {
+    Button(onClick = { onSave() },
+        colors = ButtonDefaults.buttonColors(
+            containerColor = MaterialTheme.colorScheme.primaryContainer)) {
+        Text(text = "Empezar Partida", color = MaterialTheme.colorScheme.onBackground)
     }
 }
 
@@ -85,7 +119,10 @@ fun PlayerSelection(players: ArrayList<Player>, onPlayerSelection: (ArrayList<Pl
     var numberOfPlayers by remember { mutableStateOf("0") }
     val selectedPlayers = arrayListOf<Player>()
 
-    Column {
+    Column (
+        modifier = Modifier.fillMaxWidth(),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ){
         Text(
             text = "Introduce el número de jugadores",
             fontSize = 16.sp,
@@ -108,7 +145,7 @@ fun PlayerSelection(players: ArrayList<Player>, onPlayerSelection: (ArrayList<Pl
             OnePlayerSelection(players) { onPlayerSelected ->
                 selectedPlayers.add(onPlayerSelected)
             }
-            Spacer(modifier = Modifier.size(30.dp))
+            Spacer(modifier = Modifier.size(15.dp))
         }
         onPlayerSelection(selectedPlayers)
     }
@@ -129,7 +166,7 @@ fun NumberSelection (onNumberSelection: (String) -> Unit) {
         )
         TextField(value = selectedNumber,
             onValueChange = {},
-            label = { Text("Seleccione un jugador") },
+            label = { Text("Número de jugadores") },
             readOnly = true,
             trailingIcon = {
                 IconButton(onClick = { expandedNumber = true }) {
@@ -220,8 +257,8 @@ fun GameSelection(games: List<String>, onGameSelection: (String) -> Unit) {
 }
 
 
-/*
 
+/*
 @Composable
 fun AlertDialog(onDismissClick: () -> Unit) {
     MaterialTheme {
@@ -247,7 +284,7 @@ fun AlertDialog(onDismissClick: () -> Unit) {
             )
         }
     }
-}
+}*/
 
 @Composable
 fun AlertDialogError(onDismissClick: () -> Unit) {
@@ -265,7 +302,7 @@ fun AlertDialogError(onDismissClick: () -> Unit) {
                         "Se deben llenar todos los campos",
                         fontSize = 16.sp,
                         fontFamily = FontFamily.Serif,
-                        color = LetraOscura,
+                        color = MaterialTheme.colorScheme.onBackground,
                         fontWeight = FontWeight.Bold,
                     )
                 },
@@ -280,4 +317,4 @@ fun AlertDialogError(onDismissClick: () -> Unit) {
             )
         }
     }
-}*/
+}

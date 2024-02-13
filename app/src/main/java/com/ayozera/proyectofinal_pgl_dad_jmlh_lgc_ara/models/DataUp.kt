@@ -13,7 +13,7 @@ class DataUp {
     companion object {
         fun getSongs(): ArrayList<Song> {
             return arrayListOf(
-                Song("Chop Suey", "chop-suey"),
+                Song("Chop Suey", "chop_suey"),
                 Song("Rise up", "rise_up"),
                 Song("Respira el momento", "respira_el_momento"),
                 Song("Adentro", "adentro"),

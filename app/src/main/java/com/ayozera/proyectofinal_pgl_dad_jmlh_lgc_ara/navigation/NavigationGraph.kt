@@ -26,7 +26,7 @@ import com.ayozera.proyectofinal_pgl_dad_jmlh_lgc_ara.activities.SignUp
 fun NavigationGraph() {
     val navController: NavHostController = rememberNavController()
 
-    NavHost(navController = navController, startDestination = Routs.SelectMatch.rout) {
+    NavHost(navController = navController, startDestination = Routs.LogIn.rout) {
 
         composable(Routs.LogIn.rout) {
             LogIn(navController = navController)
