@@ -61,7 +61,7 @@ class DataUp {
             val inputStream = assetManager.open("players.txt")
             val reader = BufferedReader(InputStreamReader(inputStream))
             val writer: FileOutputStream =
-                context.openFileOutput("players.txt", Context.MODE_APPEND)
+                context.openFileOutput("players.txt", Context.MODE_PRIVATE)
             reader.forEachLine { line ->
                 writer.write("$line\n".toByteArray())
             }
@@ -113,9 +113,10 @@ class DataUp {
             return lista
         }
 
+        @OptIn(ExperimentalStdlibApi::class)
         fun saveSelection(selection : SelectionMatch, context: Context) {
             val writer: FileOutputStream =
-                context.openFileOutput("selections.txt", Context.MODE_APPEND)
+                context.openFileOutput("selections.txt", Context.MODE_PRIVATE)
             writer.write("${selection.game}\n".toByteArray())
             writer.write("${selection.day}\n".toByteArray())
             writer.write("${selection.month}\n".toByteArray())
@@ -123,7 +124,7 @@ class DataUp {
             writer.write("${selection.players.size}\n".toByteArray())
             selection.players.forEach {
                 writer.write("${it.name}\n".toByteArray())
-                writer.write("${it.color}\n".toByteArray())
+                writer.write("#${it.color.value.toHexString().substring(0,8)}\n".toByteArray())
                 writer.write("${it.avatar}\n".toByteArray())
             }
             writer.close()
