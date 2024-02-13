@@ -3,7 +3,6 @@ package com.ayozera.proyectofinal_pgl_dad_jmlh_lgc_ara.activities
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -18,7 +17,13 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -26,6 +31,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
@@ -40,8 +46,6 @@ fun Match(navController: NavHostController) {
     matchViewModel.setContext(context)
     val gameName = matchViewModel.getGameName()
     val gameArt = matchViewModel.getGameArt()
-
-
 
     Column(
         modifier = Modifier
@@ -58,22 +62,24 @@ fun Match(navController: NavHostController) {
 @Composable
 fun PlayersMarks(matchViewModel: MatchViewModel) {
     val players by matchViewModel.players.collectAsStateWithLifecycle()
-    players.forEach { player ->
-        PlayerMark(matchViewModel, player)
+    var index by remember { mutableIntStateOf(0) }
+    for (i in 0 until players.size) {
+        PlayerMark(matchViewModel, players[i], remember { mutableIntStateOf(index) })
         Spacer(modifier = Modifier.size(10.dp))
+        index++
     }
 }
 
 @Composable
-fun PlayerMark(matchViewModel: MatchViewModel, player: Player) {
+fun PlayerMark(matchViewModel: MatchViewModel, player: Player, index : MutableState<Int>) {
 
-    val score by matchViewModel.score.collectAsStateWithLifecycle()
+    val score by matchViewModel.score.collectAsState()
 
     Row (
         modifier = Modifier
             .fillMaxWidth()
             .border(3.dp, player.color, CircleShape)
-            .padding(vertical = 8.dp),
+            .padding(top = 8.dp, bottom = 8.dp, end = 16.dp),
         horizontalArrangement = Arrangement.SpaceEvenly,
         verticalAlignment = Alignment.CenterVertically
     ){
@@ -91,24 +97,36 @@ fun PlayerMark(matchViewModel: MatchViewModel, player: Player) {
                 .clip(CircleShape),
             contentScale = ContentScale.Crop
         )
-        Text(text = player.name)
-        Icon(
-            painter = painterResource(id = R.drawable.remove),
-            contentDescription = "restar",
-            tint = MaterialTheme.colorScheme.primary,
-            modifier = Modifier.clickable {
-                matchViewModel.substractScore()
-            }
+        Text(
+            text = player.name,
+            fontSize = 20.sp,
+            color = MaterialTheme.colorScheme.primary
         )
-        Text(text = score.toString())
-        Icon(
-            painter = painterResource(id = R.drawable.round_add_box_24),
-            contentDescription = "sumar",
-            tint = MaterialTheme.colorScheme.primary,
-            modifier = Modifier.clickable {
-                matchViewModel.addScore()
-            }
-        )
+        Row {
+            Icon(
+                painter = painterResource(id = R.drawable.remove_box),
+                contentDescription = "restar",
+                tint = MaterialTheme.colorScheme.primary,
+                modifier = Modifier.clickable {
+                    matchViewModel.substractScore(index.value)
+                }.size(30.dp)
+            )
+            Spacer(modifier = Modifier.size(10.dp))
+            Text(
+                text = score[index.value].toString(),
+                fontSize = 20.sp,
+                color = MaterialTheme.colorScheme.primary
+            )
+            Spacer(modifier = Modifier.size(10.dp))
+            Icon(
+                painter = painterResource(id = R.drawable.round_add_box_24),
+                contentDescription = "sumar",
+                tint = MaterialTheme.colorScheme.primary,
+                modifier = Modifier.clickable {
+                    matchViewModel.addScore(index.value)
+                }.size(30.dp)
+            )
+        }
     }
 }
 

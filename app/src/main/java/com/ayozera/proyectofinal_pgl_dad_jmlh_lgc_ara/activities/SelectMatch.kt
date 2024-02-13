@@ -152,12 +152,12 @@ fun PlayerSelection(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         NumberSelection() { onNumberSelected ->
-            numberOfPlayers = onNumberSelected
             selectMatchViewModel.clearPlayers()
             playersName.clear()
-            for (i in 0 until numberOfPlayers.toInt()) {
+            for (i in 0 until onNumberSelected.toInt()) {
                 playersName.add("")
             }
+            numberOfPlayers = onNumberSelected
         }
         Spacer(modifier = Modifier.size(30.dp))
         if (numberOfPlayers.toInt() > 0) {
