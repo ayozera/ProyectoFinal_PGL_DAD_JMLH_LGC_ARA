@@ -3,10 +3,8 @@ package com.ayozera.proyectofinal_pgl_dad_jmlh_lgc_ara.activities
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.size
@@ -28,7 +26,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -42,24 +39,21 @@ import androidx.navigation.NavHostController
 import com.ayozera.proyectofinal_pgl_dad_jmlh_lgc_ara.models.Player
 import com.ayozera.proyectofinal_pgl_dad_jmlh_lgc_ara.navigation.Routs
 import com.ayozera.proyectofinal_pgl_dad_jmlh_lgc_ara.viewModel.SelectMatchViewModel
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.forEach
-import kotlinx.coroutines.launch
 import java.time.LocalDate
 
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun SelectMatch(navController : NavHostController) {
+fun SelectMatch(navController: NavHostController) {
 
-    val selectMatchViewModel : SelectMatchViewModel = viewModel()
+    val selectMatchViewModel: SelectMatchViewModel = viewModel()
     val context = LocalContext.current
     selectMatchViewModel.setContext(context)
     val games = selectMatchViewModel.getGames()
     val players = selectMatchViewModel.getPlayers()
     val selectedGame = selectMatchViewModel.game
-    val selectedPlayers = selectMatchViewModel.players
     var openDialogError by remember { mutableStateOf(false) }
+    val playersName = arrayListOf<String>()
 
     Column(
         modifier = Modifier
@@ -74,16 +68,23 @@ fun SelectMatch(navController : NavHostController) {
             selectMatchViewModel.setGame(onGameSelected)
         }
         Spacer(modifier = Modifier.size(30.dp))
-        PlayerSelection(players) { onPlayerSelected ->
-            selectMatchViewModel.addPlayers(onPlayerSelected)
-        }
+        PlayerSelection(players, playersName, selectMatchViewModel)
         Spacer(modifier = Modifier.size(30.dp))
         ButtonBegin {
-            println("selectedGame: ${selectedGame.value}")
-            selectedPlayers.value.forEach { player ->
-                println("selectedPlayers: ${player.name}")
+            var check = true
+            playersName.forEach { player ->
+                if (player.isEmpty()) {
+                    check = false
+                }
             }
-            if (selectedGame.value.isNotEmpty() && selectedPlayers.value.isNotEmpty()) {
+            if (selectedGame.value.isNotEmpty() && check) {
+                playersName.forEach { player ->
+                    players.forEach { playerInList ->
+                        if (player == playerInList.name) {
+                            selectMatchViewModel.addPlayers(playerInList)
+                        }
+                    }
+                }
                 selectMatchViewModel.setDate(LocalDate.now())
                 selectMatchViewModel.saveSelections()
                 navController.navigate(Routs.Match.rout)
@@ -139,15 +140,24 @@ fun GameSelection(games: List<String>, onGameSelection: (String) -> Unit) {
 }
 
 @Composable
-fun PlayerSelection(players: ArrayList<Player>, onPlayerSelection: (Player) -> Unit) {
+fun PlayerSelection(
+    players: ArrayList<Player>,
+    playersName: ArrayList<String>,
+    selectMatchViewModel: SelectMatchViewModel
+) {
     var numberOfPlayers by remember { mutableStateOf("0") }
 
-    Column (
+    Column(
         modifier = Modifier.fillMaxWidth(),
         horizontalAlignment = Alignment.CenterHorizontally
-    ){
+    ) {
         NumberSelection() { onNumberSelected ->
             numberOfPlayers = onNumberSelected
+            selectMatchViewModel.clearPlayers()
+            playersName.clear()
+            for (i in 0 until numberOfPlayers.toInt()) {
+                playersName.add("")
+            }
         }
         Spacer(modifier = Modifier.size(30.dp))
         if (numberOfPlayers.toInt() > 0) {
@@ -161,7 +171,7 @@ fun PlayerSelection(players: ArrayList<Player>, onPlayerSelection: (Player) -> U
         }
         for (i in 0 until numberOfPlayers.toInt()) {
             OnePlayerSelection(players) { onPlayerSelected ->
-                onPlayerSelection(onPlayerSelected)
+                playersName[i] = onPlayerSelected
             }
             Spacer(modifier = Modifier.size(15.dp))
         }
@@ -169,7 +179,7 @@ fun PlayerSelection(players: ArrayList<Player>, onPlayerSelection: (Player) -> U
 }
 
 @Composable
-fun NumberSelection (onNumberSelection: (String) -> Unit) {
+fun NumberSelection(onNumberSelection: (String) -> Unit) {
     var numbers = arrayListOf<String>("1", "2", "3", "4", "5", "6", "7", "8")
     var expandedNumber by remember { mutableStateOf(false) }
     var selectedNumber by remember { mutableStateOf("") }
@@ -207,7 +217,7 @@ fun NumberSelection (onNumberSelection: (String) -> Unit) {
 }
 
 @Composable
-fun OnePlayerSelection (players: ArrayList<Player>, onPlayerSelection: (Player) -> Unit) {
+fun OnePlayerSelection(players: ArrayList<Player>, onPlayerSelection: (String) -> Unit) {
     var expandedPlayer by remember { mutableStateOf(false) }
     var selectedPlayer by remember { mutableStateOf("") }
     Column {
@@ -227,7 +237,7 @@ fun OnePlayerSelection (players: ArrayList<Player>, onPlayerSelection: (Player) 
                         DropdownMenuItem(text = { Text(text = player.name) }, onClick = {
                             selectedPlayer = player.name
                             expandedPlayer = false
-                            onPlayerSelection(player)
+                            onPlayerSelection(player.name)
                         })
                     }
                 }
@@ -271,9 +281,12 @@ fun AlertDialogError(onDismissClick: () -> Unit) {
 
 @Composable
 fun ButtonBegin(onSave: () -> Unit) {
-    Button(onClick = { onSave() },
+    Button(
+        onClick = { onSave() },
         colors = ButtonDefaults.buttonColors(
-            containerColor = MaterialTheme.colorScheme.primaryContainer)) {
+            containerColor = MaterialTheme.colorScheme.primaryContainer
+        )
+    ) {
         Text(text = "Empezar Partida", color = MaterialTheme.colorScheme.primary)
     }
 }

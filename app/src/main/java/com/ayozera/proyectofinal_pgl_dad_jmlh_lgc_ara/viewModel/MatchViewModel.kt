@@ -43,6 +43,9 @@ class MatchViewModel : ViewModel()  {
     val year : StateFlow<Int>
         get() = _year?.asStateFlow() ?: throw IllegalStateException("Context not initialized")
 
+    val _score: MutableStateFlow<Int> = MutableStateFlow(0)
+    val score = _score.asStateFlow()
+
 
     fun setContext(context: Context) {
         this._context = context
@@ -61,6 +64,16 @@ class MatchViewModel : ViewModel()  {
 
     fun getGameArt(): Int {
         return _gameArt?.value ?: throw IllegalStateException("Context not initialized")
+    }
+
+    fun addScore() {
+        _score.value += 1
+    }
+
+    fun substractScore() {
+        if (_score.value > 0) {
+            _score.value -= 1
+        }
     }
 
 }

@@ -1,9 +1,19 @@
 package com.ayozera.proyectofinal_pgl_dad_jmlh_lgc_ara.activities
 
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.scrollable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -11,9 +21,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
@@ -28,44 +40,73 @@ fun Match(navController: NavHostController) {
     matchViewModel.setContext(context)
     val gameName = matchViewModel.getGameName()
     val gameArt = matchViewModel.getGameArt()
-    val players by matchViewModel.players.collectAsStateWithLifecycle()
-    val score = 0
+
+
 
     Column(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp)
+            .verticalScroll(rememberScrollState()),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         GameHeader(gameName, gameArt)
-        PlayersMarks(players, score)
+        PlayersMarks(matchViewModel)
     }
 }
 
 @Composable
-fun PlayersMarks(players: ArrayList<Player>, score: Int) {
+fun PlayersMarks(matchViewModel: MatchViewModel) {
+    val players by matchViewModel.players.collectAsStateWithLifecycle()
     players.forEach { player ->
-        PlayerMark(player, score)
+        PlayerMark(matchViewModel, player)
+        Spacer(modifier = Modifier.size(10.dp))
     }
 }
 
 @Composable
-fun PlayerMark(player: Player, score: Int) {
-    Row {
+fun PlayerMark(matchViewModel: MatchViewModel, player: Player) {
+
+    val score by matchViewModel.score.collectAsStateWithLifecycle()
+
+    Row (
+        modifier = Modifier
+            .fillMaxWidth()
+            .border(3.dp, player.color, CircleShape)
+            .padding(vertical = 8.dp),
+        horizontalArrangement = Arrangement.SpaceEvenly,
+        verticalAlignment = Alignment.CenterVertically
+    ){
+        val imageResourceId = LocalContext.current.resources.getIdentifier(
+            player.avatar,
+            "drawable",
+            LocalContext.current.packageName
+        )
+
+        Image(
+            painter = painterResource(id = imageResourceId),
+            contentDescription = "avatar",
+            modifier = Modifier
+                .size(80.dp)
+                .clip(CircleShape),
+            contentScale = ContentScale.Crop
+        )
         Text(text = player.name)
         Icon(
-            painter = painterResource(id = R.drawable.shuffle_fill0_wght400_grad0_opsz24),
+            painter = painterResource(id = R.drawable.remove),
             contentDescription = "restar",
             tint = MaterialTheme.colorScheme.primary,
             modifier = Modifier.clickable {
-                //TODO: Implement minus score
+                matchViewModel.substractScore()
             }
         )
         Text(text = score.toString())
         Icon(
-            painter = painterResource(id = R.drawable.shuffle_fill0_wght400_grad0_opsz24),
+            painter = painterResource(id = R.drawable.round_add_box_24),
             contentDescription = "sumar",
             tint = MaterialTheme.colorScheme.primary,
             modifier = Modifier.clickable {
-                //TODO: Implement sum score
+                matchViewModel.addScore()
             }
         )
     }

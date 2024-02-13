@@ -63,4 +63,8 @@ class SelectMatchViewModel : ViewModel() {
         DataUp.saveSelection(SelectionMatch( game.value, players.value, day.value, month.value, year.value), context)
     }
 
+    fun clearPlayers() {
+        _players.value.clear()
+    }
+
 }
