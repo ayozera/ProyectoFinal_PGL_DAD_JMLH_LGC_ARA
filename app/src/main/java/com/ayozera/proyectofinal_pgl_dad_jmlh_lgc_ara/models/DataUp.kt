@@ -148,5 +148,13 @@ class DataUp {
             }
             return SelectionMatch(game, players, day, month, year)
         }
+        fun loadCredentials(context: Context): Pair<String, String> {
+            val file = File(context.filesDir, "credentials.txt")
+            val fileInput = FileInputStream(file)
+            val reader = BufferedReader(InputStreamReader(fileInput))
+            val user = reader.readLine()
+            val password = reader.readLine()
+            return Pair(user, password)
+        }
     }
 }
