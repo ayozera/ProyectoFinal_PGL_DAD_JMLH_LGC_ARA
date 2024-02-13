@@ -163,7 +163,7 @@ fun WriteReview(viewModel: CommentsViewModel) {
 }
 
 @Composable
-fun reviewBox(comments: Comment) {
+fun ReviewBox(comments: Comment) {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
@@ -205,7 +205,7 @@ fun ReviewList(comments: List<Comment>) {
             .padding(16.dp)
     ) {
         items(comments) { comment ->
-            reviewBox(comment)
+            ReviewBox(comment)
         }
     }
 }
