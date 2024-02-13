@@ -79,7 +79,11 @@ fun GameHeader(gameName: String, gameArt: Int) {
                 id = gameArt
             ),
             contentDescription = "Game Art",
-            contentScale = ContentScale.Fit
+            contentScale = ContentScale.Fit,
+            modifier = Modifier
+                .size(300.dp)
+ /*               .clip(MaterialTheme.shapes.large)
+                .border(2.dp, MaterialTheme.colorScheme.primary, MaterialTheme.shapes.large)*/
         )
     }
 }
