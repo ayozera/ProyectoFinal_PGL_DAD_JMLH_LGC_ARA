@@ -112,5 +112,41 @@ class DataUp {
             )
             return lista
         }
+
+        fun saveSelection(selection : SelectionMatch, context: Context) {
+            val file = File(context.filesDir, "selections.txt")
+            val writer: FileOutputStream =
+                context.openFileOutput("selections.txt", Context.MODE_APPEND)
+            writer.write("${selection.game}\n".toByteArray())
+            writer.write("${selection.day}\n".toByteArray())
+            writer.write("${selection.month}\n".toByteArray())
+            writer.write("${selection.year}\n".toByteArray())
+            writer.write("${selection.players.size}\n".toByteArray())
+            selection.players.forEach {
+                writer.write("${it.name}\n".toByteArray())
+                writer.write("${it.color}\n".toByteArray())
+                writer.write("${it.avatar}\n".toByteArray())
+            }
+            writer.close()
+        }
+
+        fun loadSelection(context : Context) : SelectionMatch {
+            val file = File(context.filesDir, "selections.txt")
+            val fileInput = FileInputStream(file)
+            val reader = BufferedReader(InputStreamReader(fileInput))
+            val game = reader.readLine()
+            val day = reader.readLine().toInt()
+            val month = reader.readLine().toInt()
+            val year = reader.readLine().toInt()
+            val players = ArrayList<Player>()
+            val numPlayers = reader.readLine().toInt()
+            for (i in 0 until numPlayers) {
+                val name = reader.readLine()
+                val color = Color(android.graphics.Color.parseColor(reader.readLine()))
+                val avatar = reader.readLine()
+                players.add(Player(name, color, avatar))
+            }
+            return SelectionMatch(game, players, day, month, year)
+        }
     }
 }

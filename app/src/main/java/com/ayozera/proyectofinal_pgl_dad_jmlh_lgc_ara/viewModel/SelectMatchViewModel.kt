@@ -1,12 +1,18 @@
 package com.ayozera.proyectofinal_pgl_dad_jmlh_lgc_ara.viewModel
 
 import android.content.Context
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.lifecycle.ViewModel
+import com.ayozera.proyectofinal_pgl_dad_jmlh_lgc_ara.models.DataUp
 import com.ayozera.proyectofinal_pgl_dad_jmlh_lgc_ara.models.DataUp.Companion.gameLoader
 import com.ayozera.proyectofinal_pgl_dad_jmlh_lgc_ara.models.DataUp.Companion.playerLoader
 import com.ayozera.proyectofinal_pgl_dad_jmlh_lgc_ara.models.Player
+import com.ayozera.proyectofinal_pgl_dad_jmlh_lgc_ara.models.SelectionMatch
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import java.time.LocalDate
+import java.util.Date
 
 class SelectMatchViewModel : ViewModel() {
     private lateinit var context: Context
@@ -46,10 +52,15 @@ class SelectMatchViewModel : ViewModel() {
         _players.value = players
     }
 
-    fun setDate(day: Int, month: Int, year: Int) {
-        _day.value = day
-        _month.value = month
-        _year.value = year
+    @RequiresApi(Build.VERSION_CODES.O)
+    fun setDate(date: LocalDate) {
+        _day.value = date.dayOfMonth
+        _month.value = date.monthValue
+        _year.value = date.year
+    }
+
+    fun saveSelections() {
+        DataUp.saveSelection(SelectionMatch( game.value, players.value, day.value, month.value, year.value), context)
     }
 
 }
