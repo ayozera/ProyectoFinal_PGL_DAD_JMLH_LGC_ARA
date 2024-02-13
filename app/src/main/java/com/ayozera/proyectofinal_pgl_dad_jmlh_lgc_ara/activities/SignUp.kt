@@ -122,7 +122,8 @@ fun SingUpBody(viewModel: SignUpViewModel, navController: NavHostController) {
             value = textUser,
             placeholder = { Text("UserName") },
             onValueChange = { textUser = it
-                            userIsCorrect = !textUser.isBlank()},
+                            userIsCorrect = textUser.isNotBlank()
+            },
             shape = RoundedCornerShape(10.dp),
             modifier = Modifier
                 .clip(RoundedCornerShape(10.dp))
@@ -162,7 +163,8 @@ fun SingUpBody(viewModel: SignUpViewModel, navController: NavHostController) {
             value = textPass,
             placeholder = { Text("Password") },
             onValueChange = { textPass = it
-                            passIsCorrect = !textPass.isBlank()},
+                            passIsCorrect = textPass.isNotBlank()
+            },
             shape = RoundedCornerShape(10.dp),
             visualTransformation = PasswordVisualTransformation(),
             modifier = Modifier
@@ -205,7 +207,7 @@ fun SingUpBody(viewModel: SignUpViewModel, navController: NavHostController) {
                     passRIsCorrect = true
                 }
                 emailIsCorrect = emailRegex.matches(textEmail)
-                userIsCorrect = !textUser.isBlank()
+                userIsCorrect = textUser.isNotBlank()
 
                 if (passIsCorrect && passRIsCorrect && emailIsCorrect && userIsCorrect) {
                     viewModel.addSingUp(textUser, textPass, textEmail)
