@@ -1,22 +1,20 @@
 package com.ayozera.proyectofinal_pgl_dad_jmlh_lgc_ara.activities
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
-import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -42,6 +40,8 @@ import androidx.navigation.NavHostController
 import com.ayozera.proyectofinal_pgl_dad_jmlh_lgc_ara.R
 import com.ayozera.proyectofinal_pgl_dad_jmlh_lgc_ara.models.Comment
 import com.ayozera.proyectofinal_pgl_dad_jmlh_lgc_ara.models.DataUp
+import com.ayozera.proyectofinal_pgl_dad_jmlh_lgc_ara.viewModel.CommentsViewModel
+import java.time.LocalDateTime
 
 
 @Composable
@@ -50,20 +50,21 @@ fun GameDescription(navController: NavHostController) {}
 @Composable
 fun GameDescriptionPrueba(){
     var comments = DataUp.getComments(LocalContext.current)
+    val commentsViewModel = remember { CommentsViewModel() }
     Column (
         modifier = Modifier
             .fillMaxWidth()
             .background(MaterialTheme.colorScheme.background)
     ){
-        header()
+        GameHeader()
         description()
-        writeReview()
+        writeReview(commentsViewModel)
         reviewList(comments)
     }
 }
 
 @Composable
-fun header() {
+fun GameHeader() {
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -99,7 +100,9 @@ fun description() {
         Row(
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier.fillMaxWidth().padding(10.dp,0.dp)
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(10.dp, 0.dp)
         ) {
             Text(
                 text = "Description",
@@ -125,9 +128,8 @@ fun description() {
         }
     }
 }
-
 @Composable
-fun writeReview() {
+fun writeReview(viewModel: CommentsViewModel) {
     var userReview by remember { mutableStateOf("") }
     Column(
         modifier = Modifier
@@ -144,7 +146,9 @@ fun writeReview() {
             modifier = Modifier.fillMaxWidth()
         )
         TextButton(
-            onClick = { /*TODO*/ },
+            onClick = { viewModel.addComment("user",userReview)
+                      userReview = ""
+            },
             modifier = Modifier
                 .padding(8.dp)
                 .border(2.dp, MaterialTheme.colorScheme.primary, MaterialTheme.shapes.extraLarge)
@@ -162,8 +166,7 @@ fun writeReview() {
 }
 
 @Composable
-fun reviewBox(comments: ArrayList<Comment>) {
-    comments.forEach {
+fun reviewBox(comments: Comment) {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
@@ -177,36 +180,35 @@ fun reviewBox(comments: ArrayList<Comment>) {
                 .padding(16.dp, 10.dp)
         ) {
             Text(
-                text = it.user,
+                text = comments.user,
                 fontSize = 22.sp,
                 color = MaterialTheme.colorScheme.onBackground,
                 fontWeight = FontWeight.Bold
             )
             Text(
-                text = it.comment,
+                text = comments.comment,
                 fontSize = 14.sp,
                 color = MaterialTheme.colorScheme.onBackground
             )
             Text(
-                text = it.date,
+                text = comments.date,
                 fontSize = 14.sp,
                 color = MaterialTheme.colorScheme.onBackground
             )
         }
         Spacer(modifier = Modifier.size(10.dp))
     }
-}
 
 
 @Composable
-fun reviewList(comments: ArrayList<Comment>) {
+fun reviewList(comments: List<Comment>) {
     LazyColumn(
         modifier = Modifier
             .fillMaxWidth()
             .padding(16.dp)
     ) {
         items(comments) { comment ->
-            reviewBox(comments)
+            reviewBox(comment)
         }
     }
 }
