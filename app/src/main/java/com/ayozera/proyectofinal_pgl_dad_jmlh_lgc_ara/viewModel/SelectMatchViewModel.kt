@@ -48,8 +48,8 @@ class SelectMatchViewModel : ViewModel() {
         _game.value = game
     }
 
-    fun setPlayers(players: ArrayList<Player>) {
-        _players.value = players
+    fun addPlayers(player : Player) {
+        _players.value.add(player)
     }
 
     @RequiresApi(Build.VERSION_CODES.O)

@@ -43,6 +43,7 @@ import com.ayozera.proyectofinal_pgl_dad_jmlh_lgc_ara.models.Player
 import com.ayozera.proyectofinal_pgl_dad_jmlh_lgc_ara.navigation.Routs
 import com.ayozera.proyectofinal_pgl_dad_jmlh_lgc_ara.viewModel.SelectMatchViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.forEach
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 
@@ -59,7 +60,6 @@ fun SelectMatch(navController : NavHostController) {
     val selectedGame = selectMatchViewModel.game
     val selectedPlayers = selectMatchViewModel.players
     var openDialogError by remember { mutableStateOf(false) }
-    val delay = rememberCoroutineScope()
 
     Column(
         modifier = Modifier
@@ -75,16 +75,18 @@ fun SelectMatch(navController : NavHostController) {
         }
         Spacer(modifier = Modifier.size(30.dp))
         PlayerSelection(players) { onPlayerSelected ->
-            selectMatchViewModel.setPlayers(onPlayerSelected)
+            selectMatchViewModel.addPlayers(onPlayerSelected)
         }
         Spacer(modifier = Modifier.size(30.dp))
         ButtonBegin {
+            println("selectedGame: ${selectedGame.value}")
+            selectedPlayers.value.forEach { player ->
+                println("selectedPlayers: ${player.name}")
+            }
             if (selectedGame.value.isNotEmpty() && selectedPlayers.value.isNotEmpty()) {
-                delay.launch(Dispatchers.Main) {
-                    selectMatchViewModel.setDate(LocalDate.now())
-                    selectMatchViewModel.saveSelections()
-                    navController.navigate(Routs.Match.rout)
-                }
+                selectMatchViewModel.setDate(LocalDate.now())
+                selectMatchViewModel.saveSelections()
+                navController.navigate(Routs.Match.rout)
             } else {
                 openDialogError = true
             }
@@ -137,9 +139,8 @@ fun GameSelection(games: List<String>, onGameSelection: (String) -> Unit) {
 }
 
 @Composable
-fun PlayerSelection(players: ArrayList<Player>, onPlayerSelection: (ArrayList<Player>) -> Unit) {
+fun PlayerSelection(players: ArrayList<Player>, onPlayerSelection: (Player) -> Unit) {
     var numberOfPlayers by remember { mutableStateOf("0") }
-    val selectedPlayers = arrayListOf<Player>()
 
     Column (
         modifier = Modifier.fillMaxWidth(),
@@ -160,11 +161,10 @@ fun PlayerSelection(players: ArrayList<Player>, onPlayerSelection: (ArrayList<Pl
         }
         for (i in 0 until numberOfPlayers.toInt()) {
             OnePlayerSelection(players) { onPlayerSelected ->
-                selectedPlayers.add(onPlayerSelected)
+                onPlayerSelection(onPlayerSelected)
             }
             Spacer(modifier = Modifier.size(15.dp))
         }
-        onPlayerSelection(selectedPlayers)
     }
 }
 

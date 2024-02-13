@@ -114,7 +114,6 @@ class DataUp {
         }
 
         fun saveSelection(selection : SelectionMatch, context: Context) {
-            val file = File(context.filesDir, "selections.txt")
             val writer: FileOutputStream =
                 context.openFileOutput("selections.txt", Context.MODE_APPEND)
             writer.write("${selection.game}\n".toByteArray())
