@@ -1,7 +1,5 @@
 package com.ayozera.proyectofinal_pgl_dad_jmlh_lgc_ara.activities
 
-import android.os.Build
-import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -41,7 +39,6 @@ import com.ayozera.proyectofinal_pgl_dad_jmlh_lgc_ara.R
 import com.ayozera.proyectofinal_pgl_dad_jmlh_lgc_ara.models.Comment
 import com.ayozera.proyectofinal_pgl_dad_jmlh_lgc_ara.models.DataUp
 import com.ayozera.proyectofinal_pgl_dad_jmlh_lgc_ara.viewModel.CommentsViewModel
-import java.time.LocalDateTime
 
 
 @Composable
@@ -51,20 +48,23 @@ fun GameDescription(navController: NavHostController) {}
 fun GameDescriptionPrueba(){
     var comments = DataUp.getComments(LocalContext.current)
     val commentsViewModel = remember { CommentsViewModel() }
+    val gameName = "Cluedo"
+    val gameArt = R.drawable.cluedo
+    val description = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam in dolor in enim vulputate accumsan. Fusce euismod arcu vitae odio hendrerit, vel dapibus justo vulputate. Integer cursus accumsan felis, a cursus elit. Sed sit amet hendrerit elit. Sed tincidunt vestibulum risus, vel vulputate purus efficitur ac. Praesent et vulputate odio. Nunc euismod risus a augue lacinia, in pulvinar turpis hendrerit. Nam sed quam quis sem fermentum suscipit. Nullam varius purus eu nisl malesuada, in dictum leo tristique. In hac habitasse platea dictumst. Nullam nec nunc justo."
     Column (
         modifier = Modifier
             .fillMaxWidth()
             .background(MaterialTheme.colorScheme.background)
     ){
-        GameHeader()
-        description()
-        writeReview(commentsViewModel)
-        reviewList(comments)
+        GameHeader(gameName, gameArt)
+        Description(description)
+        WriteReview(commentsViewModel)
+        ReviewList(comments)
     }
 }
 
 @Composable
-fun GameHeader() {
+fun GameHeader(gameName: String, gameArt: Int) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -72,14 +72,14 @@ fun GameHeader() {
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text(
-            text = "GameName",
+            text = gameName,
             fontSize = 36.sp,
             color = MaterialTheme.colorScheme.primaryContainer,
             fontWeight = FontWeight.ExtraBold
         )
         Image(
             painter = painterResource(
-                id = R.drawable.cluedo
+                id = gameArt
             ),
             contentDescription = "Game Art",
             contentScale = ContentScale.Fit
@@ -89,7 +89,7 @@ fun GameHeader() {
 
 
 @Composable
-fun description() {
+fun Description(description: String) {
     var showdescription by remember { mutableStateOf(false) }
     Column(
         modifier = Modifier
@@ -121,7 +121,7 @@ fun description() {
         }
         if (showdescription) {
             Text(
-                text = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam in dolor in enim vulputate accumsan. Fusce euismod arcu vitae odio hendrerit, vel dapibus justo vulputate. Integer cursus accumsan felis, a cursus elit. Sed sit amet hendrerit elit. Sed tincidunt vestibulum risus, vel vulputate purus efficitur ac. Praesent et vulputate odio. Nunc euismod risus a augue lacinia, in pulvinar turpis hendrerit. Nam sed quam quis sem fermentum suscipit. Nullam varius purus eu nisl malesuada, in dictum leo tristique. In hac habitasse platea dictumst. Nullam nec nunc justo.",
+                text = description,
                 fontSize = 14.sp,
                 color = MaterialTheme.colorScheme.onBackground
             )
@@ -129,7 +129,7 @@ fun description() {
     }
 }
 @Composable
-fun writeReview(viewModel: CommentsViewModel) {
+fun WriteReview(viewModel: CommentsViewModel) {
     var userReview by remember { mutableStateOf("") }
     Column(
         modifier = Modifier
@@ -201,7 +201,7 @@ fun reviewBox(comments: Comment) {
 
 
 @Composable
-fun reviewList(comments: List<Comment>) {
+fun ReviewList(comments: List<Comment>) {
     LazyColumn(
         modifier = Modifier
             .fillMaxWidth()
