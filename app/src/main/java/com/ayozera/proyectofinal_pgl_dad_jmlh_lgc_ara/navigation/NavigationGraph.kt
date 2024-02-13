@@ -36,7 +36,7 @@ fun NavigationGraph() {
         }
         composable(Routs.Profile.rout) {
             MyScaffold(navController = navController) {
-                Profile(navController = navController)
+                //Profile(navController = navController)
             }
         }
         composable(Routs.Game.rout) {
