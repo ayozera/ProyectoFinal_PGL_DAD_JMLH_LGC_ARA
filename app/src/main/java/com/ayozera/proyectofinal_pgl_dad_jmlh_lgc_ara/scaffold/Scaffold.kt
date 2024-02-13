@@ -1,5 +1,6 @@
 package com.ayozera.proyectofinal_pgl_dad_jmlh_lgc_ara.scaffold
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -20,6 +21,7 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -48,22 +50,33 @@ fun MyScaffold(
                         modifier = Modifier
                             .fillMaxWidth()
                     ) {
-                        TextButton(onClick = { /*TODO*/}) {
+                        TextButton(onClick = { /*TODO*/},
+                            modifier = Modifier
+                                .align(Alignment.CenterVertically)
+                                .padding(5.dp, 0.dp, 20.dp, 0.dp)
+                            ) {
                             Icon(
-                                painter = painterResource(id = R.drawable.arrow_back),
+                                painter = painterResource(id = R.drawable.menu),
                                 contentDescription = "go back arrow icon",
                                 modifier = Modifier
                                     .size(28.dp),
                                 tint = MaterialTheme.colorScheme.primary
                             )
+                        }
+                        TextButton(onClick = { /*TODO*/ }) {
+                            Image(painter = painterResource(id = R.drawable.dados),
+                                contentDescription = "Company Logo",
+                                contentScale = ContentScale.Fit,
+                                modifier = Modifier
+                                    .size(48.dp)
+                            )
                             Text(
                                 text = "Turns & Points",
                                 color = MaterialTheme.colorScheme.primary,
-                                modifier = Modifier
-                                    .padding(20.dp, 0.dp),
                                 fontWeight = FontWeight.Bold
                             )
                         }
+
                     }
                 }
             )

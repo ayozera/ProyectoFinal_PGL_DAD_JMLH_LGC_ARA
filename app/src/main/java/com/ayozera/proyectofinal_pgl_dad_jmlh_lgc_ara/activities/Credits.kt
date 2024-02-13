@@ -21,13 +21,9 @@ import com.ayozera.proyectofinal_pgl_dad_jmlh_lgc_ara.R
 import com.ayozera.proyectofinal_pgl_dad_jmlh_lgc_ara.navigation.Routs
 
 @Composable
-fun Credits(navController: NavHostController) {}
-@Preview
-@Composable
-fun CreditsPrueba() {
+fun Credits(navController: NavHostController) {
     Column (
         modifier = Modifier
-            .padding(16.dp)
             .background(MaterialTheme.colorScheme.background)
             .fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally
@@ -42,48 +38,55 @@ fun CreditsPrueba() {
 
 @Composable
 fun CreditsHeader() {
-    Column (horizontalAlignment = Alignment.CenterHorizontally) {
+    Column (horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = Modifier.padding(0.dp, 16.dp)) {
         Text(text = "Turns & Points",
-            modifier = Modifier.padding(16.dp),
-            fontSize = 48.sp)
+            fontSize = 48.sp,
+            color = MaterialTheme.colorScheme.primary)
         Image(painter = painterResource(id = R.drawable.dados), contentDescription = "Company Logo")
     }
 }
 
 @Composable
 fun DescriptionCredits(){
-    Column (modifier = Modifier.padding(16.dp),
+    Column (modifier = Modifier.padding(4.dp,0.dp),
         horizontalAlignment = Alignment.CenterHorizontally) {
         Text(text = "This app was developed by a group of students from the CIFT César Manrique. This app was developed as a final project for the courses PGL & DAD. The app was developed using Jetpack Compose and Kotlin.\n\n This app was developed by the students:",
             fontSize = 16.sp,
-            textAlign = TextAlign.Center)
+            textAlign = TextAlign.Center,
+            color = MaterialTheme.colorScheme.onPrimaryContainer)
     }
 }
 @Composable
 fun StudentsCredits(){
-    Column (modifier = Modifier.padding(12.dp),
+    Column (modifier = Modifier.padding(4.dp),
         horizontalAlignment = Alignment.CenterHorizontally) {
         Text(text = "Ayoze Rodriguez Alvarez",
             modifier = Modifier.padding(0.dp,4.dp),
-            fontSize = 22.sp)
+            fontSize = 22.sp,
+            color = MaterialTheme.colorScheme.primary)
         Text(text = "Juan Marcos León Hernández",
             modifier = Modifier.padding(0.dp,4.dp),
-            fontSize = 22.sp)
+            fontSize = 22.sp,
+            color = MaterialTheme.colorScheme.primary)
         Text(text = "Lorena García Castilla",
             modifier = Modifier.padding(0.dp,4.dp),
-            fontSize = 22.sp)
+            fontSize = 22.sp,
+            color = MaterialTheme.colorScheme.primary)
     }
 }
 @Composable
 fun VersionCredits(){
     Column (modifier = Modifier
-        .padding(16.dp)
-        .fillMaxSize(),
+        .fillMaxSize()
+        .padding(0.dp,4.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Bottom) {
         Text(text = "14/02/2024",
-            fontSize = 16.sp)
+            fontSize = 16.sp,
+            color = MaterialTheme.colorScheme.inversePrimary)
         Text(text = "Version 0.7.23",
-            fontSize = 16.sp)
+            fontSize = 16.sp,
+            color = MaterialTheme.colorScheme.inversePrimary)
     }
 }

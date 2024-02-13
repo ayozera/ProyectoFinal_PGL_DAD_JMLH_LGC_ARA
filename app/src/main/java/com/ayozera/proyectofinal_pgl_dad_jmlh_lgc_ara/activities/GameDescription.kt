@@ -45,10 +45,7 @@ import java.time.LocalDateTime
 
 
 @Composable
-fun GameDescription(navController: NavHostController) {}
-@Preview
-@Composable
-fun GameDescriptionPrueba(){
+fun GameDescription(navController: NavHostController) {
     var comments = DataUp.getComments(LocalContext.current)
     val commentsViewModel = remember { CommentsViewModel() }
     Column (
@@ -74,7 +71,7 @@ fun GameHeader() {
         Text(
             text = "GameName",
             fontSize = 36.sp,
-            color = MaterialTheme.colorScheme.primaryContainer,
+            color = MaterialTheme.colorScheme.tertiary,
             fontWeight = FontWeight.ExtraBold
         )
         Image(
