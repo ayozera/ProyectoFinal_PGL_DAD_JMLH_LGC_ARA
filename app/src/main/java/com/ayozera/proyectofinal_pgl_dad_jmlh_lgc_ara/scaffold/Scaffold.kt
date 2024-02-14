@@ -125,7 +125,7 @@ fun MyScaffold(
                     }
                     TextButton(onClick = {navController.navigate(Routs.JukeBox.rout)}) {
                         Icon(
-                            painter = painterResource(id = R.drawable.play),
+                            painter = painterResource(id = R.drawable.library_music),
                             contentDescription = "Search Game",
                             modifier = Modifier
                                 .size(28.dp),

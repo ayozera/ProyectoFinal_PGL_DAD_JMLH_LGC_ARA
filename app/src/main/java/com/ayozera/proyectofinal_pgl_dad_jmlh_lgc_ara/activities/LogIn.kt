@@ -34,11 +34,10 @@ import androidx.navigation.NavHostController
 import com.ayozera.proyectofinal_pgl_dad_jmlh_lgc_ara.R
 import com.ayozera.proyectofinal_pgl_dad_jmlh_lgc_ara.models.DataUp
 import com.ayozera.proyectofinal_pgl_dad_jmlh_lgc_ara.viewModel.AppMainViewModel
-import com.ayozera.proyectofinal_pgl_dad_jmlh_lgc_ara.viewModel.LogInViewModel
 
 @Composable
 fun LogIn(navController: NavHostController, appMainViewModel: AppMainViewModel) {
-    val logInViewModel = remember { LogInViewModel() }
+    //val logInViewModel = remember { LogInViewModel() }
     Column(
         verticalArrangement = Arrangement.Top,
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -99,7 +98,7 @@ fun LogInBody(navController: NavHostController, weight: Modifier) {
             text = "Iniciar Sesión",
             fontSize = 36.sp,
             fontWeight = FontWeight.Bold,
-            color = MaterialTheme.colorScheme.secondaryContainer,
+            color = MaterialTheme.colorScheme.primary,
             modifier = Modifier.padding(0.dp,10.dp,0.dp,15.dp)
         )
         Text(
