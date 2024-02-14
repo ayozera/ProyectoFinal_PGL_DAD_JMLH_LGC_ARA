@@ -12,13 +12,10 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextField
-import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -34,12 +31,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.core.graphics.toColorInt
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.ayozera.proyectofinal_pgl_dad_jmlh_lgc_ara.R
 import com.ayozera.proyectofinal_pgl_dad_jmlh_lgc_ara.navigation.Routs
-import com.ayozera.proyectofinal_pgl_dad_jmlh_lgc_ara.viewModel.CommentsViewModel
 import com.ayozera.proyectofinal_pgl_dad_jmlh_lgc_ara.viewModel.SignUpViewModel
 
 
@@ -53,41 +47,18 @@ fun SignUp(navController: NavHostController) {
             .fillMaxWidth()
             .background(color = MaterialTheme.colorScheme.background),
     ) {
-        SingUpHeader()
-        SingUpBody(signUpViewModel, navController)
+        LogInHeader(Modifier.fillMaxHeight(0.1f))
+        SingUpBody(signUpViewModel,navController,Modifier.fillMaxHeight(0.8f))
+        ChangeToLogIn(navController,Modifier.fillMaxHeight(0.8f))
     }
 
 }
-
 @Composable
-fun SingUpHeader() {
-    Row(
-        horizontalArrangement = Arrangement.Center,
-        verticalAlignment = Alignment.CenterVertically,
-        modifier = Modifier
-            .background(color = MaterialTheme.colorScheme.primary)
-            .fillMaxWidth()
-            .fillMaxHeight(0.1f)
-    ) {
-        Text(
-            text = "Turn & points",
-            fontSize = 32.sp,
-            fontFamily = FontFamily.Cursive,
-            fontWeight = FontWeight.Bold,
-            modifier = Modifier
-                .padding(start = 25.dp)
-        )
-
-        Image(
-            painter = painterResource(id = R.drawable.dados),
-            contentDescription = "Logo de dados",
-            modifier = Modifier.padding(start = 25.dp)
-        )
-    }
-}
-
-@Composable
-fun SingUpBody(viewModel: SignUpViewModel, navController: NavHostController) {
+fun SingUpBody(
+    viewModel: SignUpViewModel,
+    navController: NavHostController,
+    weight: Modifier
+) {
     var textUser by remember { mutableStateOf("") }
     var textEmail by remember { mutableStateOf("") }
     var textPass by remember { mutableStateOf("") }
@@ -100,27 +71,28 @@ fun SingUpBody(viewModel: SignUpViewModel, navController: NavHostController) {
     // val keys = DataUp.credentialLoader(LocalContext.current)
 
     Column(
-        modifier = Modifier
+        modifier = weight
             .background(color = MaterialTheme.colorScheme.background)
             .fillMaxSize(),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text(
-            text = "Sign Up",
-            fontSize = 48.sp,
+            text = "Crear Cuenta",
+            fontSize = 36.sp,
             fontWeight = FontWeight.Bold,
-            color = MaterialTheme.colorScheme.secondaryContainer
+            color = MaterialTheme.colorScheme.secondaryContainer,
+            modifier = Modifier.padding(0.dp,10.dp,0.dp,15.dp)
         )
-        Spacer(modifier = Modifier.padding(20.dp))
         Text(
-            text = "Pick a username",
-            fontSize = 24.sp,
+            text = "Elige un nombre de usuario",
+            fontSize = 20.sp,
             color = setTextFieldColor(isCorrect = userIsCorrect)
         )
         TextField(
             value = textUser,
-            placeholder = { Text("UserName") },
+            placeholder = { Text("Nombre de usuario",
+                fontSize = 24.sp) },
             onValueChange = { textUser = it
                             userIsCorrect = textUser.isNotBlank()
             },
@@ -135,13 +107,14 @@ fun SingUpBody(viewModel: SignUpViewModel, navController: NavHostController) {
         )
         Spacer(modifier = Modifier.padding(10.dp))
         Text(
-            text = "Add your email",
-            fontSize = 24.sp,
+            text = "Escribe tu correo electrónico",
+            fontSize = 20.sp,
             color = setTextFieldColor(isCorrect = emailIsCorrect)
         )
         TextField(
             value = textEmail,
-            placeholder = { Text("email@example.com") },
+            placeholder = { Text("email@ejemplo.com",
+                fontSize = 24.sp) },
             onValueChange = { textEmail = it
                             emailIsCorrect = emailRegex.matches(textEmail)},
             shape = RoundedCornerShape(10.dp),
@@ -155,13 +128,14 @@ fun SingUpBody(viewModel: SignUpViewModel, navController: NavHostController) {
         )
         Spacer(modifier = Modifier.padding(10.dp))
         Text(
-            text = "Pick a password",
-            fontSize = 24.sp,
+            text = "Elige una contraseña",
+            fontSize = 20.sp,
             color = setTextFieldColor(isCorrect = passIsCorrect)
         )
         TextField(
             value = textPass,
-            placeholder = { Text("Password") },
+            placeholder = { Text("Contraseña",
+                fontSize = 24.sp) },
             onValueChange = { textPass = it
                             passIsCorrect = textPass.isNotBlank()
             },
@@ -177,13 +151,14 @@ fun SingUpBody(viewModel: SignUpViewModel, navController: NavHostController) {
         )
         Spacer(modifier = Modifier.padding(10.dp))
         Text(
-            text = "Repeat your password",
-            fontSize = 24.sp,
+            text = "Repite tu contraseña",
+            fontSize = 20.sp,
             color = setTextFieldColor(isCorrect = passRIsCorrect)
         )
         TextField(
             value = textPassRepeat,
-            placeholder = { Text("Password") },
+            placeholder = { Text("Contraseña",
+                fontSize = 24.sp) },
             onValueChange = { textPassRepeat = it
                             passRIsCorrect = textPass == textPassRepeat},
             shape = RoundedCornerShape(10.dp),
@@ -225,8 +200,43 @@ fun SingUpBody(viewModel: SignUpViewModel, navController: NavHostController) {
 
             ) {
             Text(
-                text = "Sign Up",
-                fontSize = 26.sp,
+                text = "Registrarse",
+                fontSize = 20.sp,
+                color = MaterialTheme.colorScheme.secondaryContainer
+            )
+        }
+    }
+}
+@Composable
+fun ChangeToLogIn(navController: NavHostController, weight: Modifier) {
+    Column (modifier = weight
+        .fillMaxWidth()
+        .padding(10.dp),
+        verticalArrangement = Arrangement.Bottom,
+        horizontalAlignment = Alignment.CenterHorizontally){
+
+        Text(text = "¿Ya tienes cuenta? Inicia Sesión!",
+            fontSize = 16.sp,
+            color = MaterialTheme.colorScheme.onTertiaryContainer,
+            modifier = Modifier.padding(10.dp)
+        )
+        TextButton(
+            onClick = {
+                navController.navigate("logIn")
+            },
+            modifier = Modifier
+                .border(
+                    2.dp,
+                    MaterialTheme.colorScheme.primary,
+                    MaterialTheme.shapes.extraLarge
+                )
+                .clip(MaterialTheme.shapes.extraLarge)
+                .background(MaterialTheme.colorScheme.primary),
+
+            ) {
+            Text(
+                text = "Iniciar Sesión",
+                fontSize = 20.sp,
                 color = MaterialTheme.colorScheme.secondaryContainer
             )
         }

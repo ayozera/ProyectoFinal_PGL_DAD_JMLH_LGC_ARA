@@ -4,7 +4,7 @@ import androidx.lifecycle.ViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 
-class logInViewModel : ViewModel(){
+class LogInViewModel : ViewModel(){
 
 private var _user = MutableStateFlow("")
     val user = _user.asStateFlow()

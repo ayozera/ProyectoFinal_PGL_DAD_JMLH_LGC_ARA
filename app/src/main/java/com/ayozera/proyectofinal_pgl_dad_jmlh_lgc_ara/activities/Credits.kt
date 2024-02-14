@@ -43,7 +43,7 @@ fun CreditsHeader() {
         Text(text = "Turns & Points",
             fontSize = 48.sp,
             color = MaterialTheme.colorScheme.primary)
-        Image(painter = painterResource(id = R.drawable.dados), contentDescription = "Company Logo")
+        Image(painter = painterResource(id = R.drawable.dados), contentDescription = "Logo Turns & Points")
     }
 }
 
@@ -51,7 +51,7 @@ fun CreditsHeader() {
 fun DescriptionCredits(){
     Column (modifier = Modifier.padding(4.dp,0.dp),
         horizontalAlignment = Alignment.CenterHorizontally) {
-        Text(text = "This app was developed by a group of students from the CIFT César Manrique. This app was developed as a final project for the courses PGL & DAD. The app was developed using Jetpack Compose and Kotlin.\n\n This app was developed by the students:",
+        Text(text = "Esta aplicación ha sido desarrollada por un grupo de estudiantes del CIFT César Manrique. Esta aplicación es el proyecto final de los cursos PGL y DAD. La aplicación fue desarrollada usando Jetpack Compose y Kotlin.\n Esta aplicación fue desarrollada por los estudiantes:",
             fontSize = 16.sp,
             textAlign = TextAlign.Center,
             color = MaterialTheme.colorScheme.onPrimaryContainer)
@@ -85,7 +85,7 @@ fun VersionCredits(){
         Text(text = "14/02/2024",
             fontSize = 16.sp,
             color = MaterialTheme.colorScheme.inversePrimary)
-        Text(text = "Version 0.7.23",
+        Text(text = "Versión 0.7.23",
             fontSize = 16.sp,
             color = MaterialTheme.colorScheme.inversePrimary)
     }

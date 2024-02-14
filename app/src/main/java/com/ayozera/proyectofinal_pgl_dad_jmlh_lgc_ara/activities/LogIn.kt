@@ -4,21 +4,13 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.Button
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -31,8 +23,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
@@ -41,39 +31,37 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.ayozera.proyectofinal_pgl_dad_jmlh_lgc_ara.R
-import com.ayozera.proyectofinal_pgl_dad_jmlh_lgc_ara.models.DataUp
-import com.ayozera.proyectofinal_pgl_dad_jmlh_lgc_ara.navigation.Routs
-import com.ayozera.proyectofinal_pgl_dad_jmlh_lgc_ara.viewModel.SignUpViewModel
-import com.ayozera.proyectofinal_pgl_dad_jmlh_lgc_ara.viewModel.logInViewModel
 
 @Composable
 fun LogIn(navController: NavHostController) {
-    val logInViewModel = remember { logInViewModel() }
+    //val logInViewModel = remember { LogInViewModel() }
     Column(
         verticalArrangement = Arrangement.Top,
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier
             .fillMaxWidth()
+            .fillMaxHeight()
             .background(color = MaterialTheme.colorScheme.background),
     ) {
-        LogInHeader()
-        LogInBody(logInViewModel, navController)
+        LogInHeader(Modifier.fillMaxHeight(0.1f))
+        LogInBody(navController,Modifier.fillMaxHeight(0.8f))
+        ChangeToSignUp(navController,Modifier.fillMaxHeight(0.8f))
     }
 
 }
 
+
 @Composable
-fun LogInHeader() {
+fun LogInHeader(weight: Modifier) {
     Row(
         horizontalArrangement = Arrangement.Center,
         verticalAlignment = Alignment.CenterVertically,
-        modifier = Modifier
+        modifier = weight
             .background(color = MaterialTheme.colorScheme.primary)
             .fillMaxWidth()
-            .fillMaxHeight(0.1f)
     ) {
         Text(
-            text = "Turn & points",
+            text = "Turns & points",
             fontSize = 32.sp,
             fontFamily = FontFamily.Cursive,
             fontWeight = FontWeight.Bold,
@@ -83,42 +71,42 @@ fun LogInHeader() {
 
         Image(
             painter = painterResource(id = R.drawable.dados),
-            contentDescription = "Logo de dados",
+            contentDescription = "Logo Turns & Points",
             modifier = Modifier.padding(start = 25.dp)
         )
     }
 }
 
 @Composable
-fun LogInBody(viewModel: logInViewModel, navController: NavHostController) {
+fun LogInBody(navController: NavHostController, weight: Modifier) {
     var textUser by remember { mutableStateOf("") }
     var textPass by remember { mutableStateOf("") }
     var userIsCorrect by remember { mutableStateOf(true) }
     var passIsCorrect by remember { mutableStateOf(true) }
-    val credentials = DataUp.loadCredentials(LocalContext.current)
+    //val credentials = DataUp.loadCredentials(LocalContext.current)
 
     Column(
-        modifier = Modifier
-            .background(color = MaterialTheme.colorScheme.background)
-            .fillMaxSize(),
+        modifier = weight
+            .fillMaxWidth(),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text(
-            text = "Log in",
-            fontSize = 48.sp,
+            text = "Iniciar Sesión",
+            fontSize = 36.sp,
             fontWeight = FontWeight.Bold,
-            color = MaterialTheme.colorScheme.secondaryContainer
+            color = MaterialTheme.colorScheme.secondaryContainer,
+            modifier = Modifier.padding(0.dp,10.dp,0.dp,15.dp)
         )
-        Spacer(modifier = Modifier.padding(20.dp))
         Text(
-            text = "Enter username",
-            fontSize = 24.sp,
+            text = "Escribe tu nombre de usuario",
+            fontSize = 20.sp,
             color = setTextFieldColor(isCorrect = userIsCorrect)
         )
         TextField(
             value = textUser,
-            placeholder = { Text("UserName") },
+            placeholder = { Text("Usuario",
+                fontSize = 24.sp) },
             onValueChange = { textUser = it
                 userIsCorrect = textUser.isNotBlank()
             },
@@ -133,13 +121,14 @@ fun LogInBody(viewModel: logInViewModel, navController: NavHostController) {
         )
         Spacer(modifier = Modifier.padding(10.dp))
         Text(
-            text = "Enter password",
-            fontSize = 24.sp,
+            text = "Escibe tu contraseña",
+            fontSize = 20.sp,
             color = setTextFieldColor(isCorrect = passIsCorrect)
         )
         TextField(
             value = textPass,
-            placeholder = { Text("Password") },
+            placeholder = { Text("Contraseña",
+                fontSize = 24.sp) },
             onValueChange = { textPass = it
                 passIsCorrect = textPass.isNotBlank()
             },
@@ -158,11 +147,9 @@ fun LogInBody(viewModel: logInViewModel, navController: NavHostController) {
             onClick = {
                 passIsCorrect = textPass.isNotBlank()
                 userIsCorrect = textUser.isNotBlank()
-/*                for (i in credentials.indices) {
-                    if (credentials[i] == textUser && credentials[i] == textPass) {
-                        navController.navigate(Routs.Profile.rout)
-                    }
-                }*/
+                if (passIsCorrect && userIsCorrect) {
+                        navController.navigate("home")
+                }
             },
             modifier = Modifier
                 .border(
@@ -175,8 +162,43 @@ fun LogInBody(viewModel: logInViewModel, navController: NavHostController) {
 
             ) {
             Text(
-                text = "Sign Up",
-                fontSize = 26.sp,
+                text = "Entrar",
+                fontSize = 20.sp,
+                color = MaterialTheme.colorScheme.secondaryContainer
+            )
+        }
+    }
+}
+@Composable
+fun ChangeToSignUp(navController: NavHostController, weight: Modifier) {
+    Column (modifier = weight
+        .fillMaxWidth()
+        .padding(10.dp),
+        verticalArrangement = Arrangement.Bottom,
+        horizontalAlignment = Alignment.CenterHorizontally){
+
+        Text(text = "¿No tienes cuenta? Registrate!",
+            fontSize = 16.sp,
+            color = MaterialTheme.colorScheme.onTertiaryContainer,
+            modifier = Modifier.padding(10.dp)
+        )
+        TextButton(
+            onClick = {
+                navController.navigate("signUp")
+            },
+            modifier = Modifier
+                .border(
+                    2.dp,
+                    MaterialTheme.colorScheme.primary,
+                    MaterialTheme.shapes.extraLarge
+                )
+                .clip(MaterialTheme.shapes.extraLarge)
+                .background(MaterialTheme.colorScheme.primary),
+
+            ) {
+            Text(
+                text = "Registrarse",
+                fontSize = 20.sp,
                 color = MaterialTheme.colorScheme.secondaryContainer
             )
         }

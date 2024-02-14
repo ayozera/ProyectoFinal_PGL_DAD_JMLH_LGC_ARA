@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.text.KeyboardOptions
@@ -78,12 +79,10 @@ fun GameHeader(gameName: String, gameArt: Int) {
             painter = painterResource(
                 id = gameArt
             ),
-            contentDescription = "Game Art",
+            contentDescription = "Portada del Juego",
             contentScale = ContentScale.Fit,
             modifier = Modifier
-                .size(300.dp)
- /*               .clip(MaterialTheme.shapes.large)
-                .border(2.dp, MaterialTheme.colorScheme.primary, MaterialTheme.shapes.large)*/
+                .width(300.dp)
         )
     }
 }
@@ -106,14 +105,14 @@ fun Description(description: String) {
                 .padding(10.dp, 0.dp)
         ) {
             Text(
-                text = "Description",
+                text = "Descripción",
                 fontSize = 22.sp,
                 color = MaterialTheme.colorScheme.onBackground
             )
             TextButton(onClick = { showdescription = !showdescription }) {
                 Icon(
                     painter = painterResource(id = R.drawable.arrow_drop_down),
-                    contentDescription = "Expand Description",
+                    contentDescription = "Expandir Descripción",
                     modifier = Modifier.size(48.dp),
                     tint = MaterialTheme.colorScheme.primary
 
@@ -158,7 +157,7 @@ fun WriteReview(viewModel: CommentsViewModel) {
 
         ) {
             Text(
-                text = "Publish",
+                text = "Comentar",
                 fontSize = 22.sp,
                 color = MaterialTheme.colorScheme.onPrimaryContainer
             )
