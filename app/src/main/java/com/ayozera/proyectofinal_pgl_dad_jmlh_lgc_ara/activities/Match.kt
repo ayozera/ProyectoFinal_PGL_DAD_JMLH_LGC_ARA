@@ -1,12 +1,15 @@
 package com.ayozera.proyectofinal_pgl_dad_jmlh_lgc_ara.activities
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -34,6 +37,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -51,7 +55,7 @@ import com.ayozera.proyectofinal_pgl_dad_jmlh_lgc_ara.viewModel.MatchViewModel
 @Composable
 fun Match(navController: NavHostController, appMainViewModel: AppMainViewModel) {
 
-    val matchViewModel : MatchViewModel = viewModel()
+    val matchViewModel: MatchViewModel = viewModel()
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
     matchViewModel.setContext(context)
@@ -61,6 +65,7 @@ fun Match(navController: NavHostController, appMainViewModel: AppMainViewModel) 
     var openDialog2 by remember { mutableStateOf(false) }
     var isEnabled by remember { mutableStateOf(true) }
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
+
 
     ModalNavigationDrawer(
         drawerState = drawerState,
@@ -109,6 +114,7 @@ fun Match(navController: NavHostController, appMainViewModel: AppMainViewModel) 
     )
 }
 
+
 @Composable
 fun PlayersMarks(matchViewModel: MatchViewModel) {
     val players by matchViewModel.players.collectAsStateWithLifecycle()
@@ -121,18 +127,18 @@ fun PlayersMarks(matchViewModel: MatchViewModel) {
 }
 
 @Composable
-fun PlayerMark(matchViewModel: MatchViewModel, player: Player, index : MutableState<Int>) {
+fun PlayerMark(matchViewModel: MatchViewModel, player: Player, index: MutableState<Int>) {
 
     val score by matchViewModel.score.collectAsState()
 
-    Row (
+    Row(
         modifier = Modifier
             .fillMaxWidth()
             .border(3.dp, player.color, CircleShape)
             .padding(top = 8.dp, bottom = 8.dp, end = 16.dp),
         horizontalArrangement = Arrangement.SpaceEvenly,
         verticalAlignment = Alignment.CenterVertically
-    ){
+    ) {
         val imageResourceId = LocalContext.current.resources.getIdentifier(
             player.avatar,
             "drawable",
@@ -158,8 +164,11 @@ fun PlayerMark(matchViewModel: MatchViewModel, player: Player, index : MutableSt
                 contentDescription = "restar",
                 tint = MaterialTheme.colorScheme.primary,
                 modifier = Modifier
-                    .clickable {
-                        matchViewModel.substractScore(index.value)
+                    .pointerInput(Unit) {
+                        detectTapGestures(
+                            onTap = { matchViewModel.substractScore(index.value) },
+                            onLongPress = { matchViewModel.substractFiveScore(index.value) }
+                        )
                     }
                     .size(30.dp)
             )
@@ -175,8 +184,11 @@ fun PlayerMark(matchViewModel: MatchViewModel, player: Player, index : MutableSt
                 contentDescription = "sumar",
                 tint = MaterialTheme.colorScheme.primary,
                 modifier = Modifier
-                    .clickable {
-                        matchViewModel.addScore(index.value)
+                    .pointerInput(Unit) {
+                        detectTapGestures(
+                            onTap = { matchViewModel.addScore(index.value) },
+                            onLongPress = { matchViewModel.addFiveScore(index.value) }
+                        )
                     }
                     .size(30.dp)
             )
@@ -185,7 +197,7 @@ fun PlayerMark(matchViewModel: MatchViewModel, player: Player, index : MutableSt
 }
 
 @Composable
-fun ButtonDiscardMatch(isEnabled : Boolean, onSave: () -> Unit) {
+fun ButtonDiscardMatch(isEnabled: Boolean, onSave: () -> Unit) {
     Button(
         onClick = { onSave() },
         colors = ButtonDefaults.buttonColors(
@@ -197,7 +209,7 @@ fun ButtonDiscardMatch(isEnabled : Boolean, onSave: () -> Unit) {
 }
 
 @Composable
-fun ButtonSaveMatch(isEnabled : Boolean, onSave: () -> Unit) {
+fun ButtonSaveMatch(isEnabled: Boolean, onSave: () -> Unit) {
     Button(
         onClick = { onSave() },
         colors = ButtonDefaults.buttonColors(

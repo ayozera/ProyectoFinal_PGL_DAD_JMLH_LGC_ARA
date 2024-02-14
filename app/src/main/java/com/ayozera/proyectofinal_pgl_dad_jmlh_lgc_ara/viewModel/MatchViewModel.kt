@@ -107,4 +107,18 @@ class MatchViewModel : ViewModel() {
         )
     }
 
+    fun substractFiveScore(index: Int) {
+        if (_score.value[index] > 9) {
+            val newScoreList = _score.value.toMutableList()
+            newScoreList[index] -= 10
+            _score.value = ArrayList(newScoreList)
+        }
+    }
+
+    fun addFiveScore(index: Int) {
+        val newScoreList = _score.value.toMutableList()
+        newScoreList[index] += 10
+        _score.value = ArrayList(newScoreList)
+    }
+
 }

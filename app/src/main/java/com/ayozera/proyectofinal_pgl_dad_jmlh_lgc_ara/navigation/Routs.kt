@@ -4,7 +4,7 @@ sealed class Routs(val rout : String) {
     object LogIn : Routs("logIn")
     object SignUp : Routs("signUp")
     object Profile : Routs("profile")
-    object Game : Routs("game")
+    object Game : Routs("game/{gameName}")
     object SearchBar : Routs("searchBar")
     object Match : Routs("match")
     object SelectMatch : Routs("selectMatch")

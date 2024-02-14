@@ -5,8 +5,10 @@ import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -60,60 +62,77 @@ fun SelectMatch(navController: NavHostController, appMainViewModel: AppMainViewM
     val playersName = arrayListOf<String>()
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
 
-    ModalNavigationDrawer(
-        drawerState = drawerState,
-        drawerContent = {
-            Menu(navController = navController, appMainViewModel)
-        },
-        content = {
-            Column(
-                modifier = Modifier
-                    .background(color = MaterialTheme.colorScheme.background)
-                    .verticalScroll(rememberScrollState())
-                    .fillMaxSize(),
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(color = MaterialTheme.colorScheme.background)
+    ) {
 
-                Spacer(modifier = Modifier.size(30.dp))
-                GameSelection(games) { onGameSelected ->
-                    selectMatchViewModel.setGame(onGameSelected)
-                }
-                Spacer(modifier = Modifier.size(30.dp))
-                PlayerSelection(players, playersName, selectMatchViewModel)
-                Spacer(modifier = Modifier.size(30.dp))
-                ButtonBegin {
-                    var check = true
-                    playersName.forEach { player ->
-                        if (player.isEmpty()) {
-                            check = false
-                        }
+
+        ModalNavigationDrawer(
+            drawerState = drawerState,
+            drawerContent = {
+                Menu(navController = navController, appMainViewModel)
+            },
+            content = {
+                Column(
+                    modifier = Modifier
+                        .verticalScroll(rememberScrollState())
+                        .fillMaxSize()
+                        .fillMaxHeight()
+                        .background(color = MaterialTheme.colorScheme.background)
+                        .padding(top = 30.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Text(
+                        text = "Selecciona el juego y los jugadores",
+                        fontSize = 20.sp,
+                        fontFamily = FontFamily.Serif,
+                        color = MaterialTheme.colorScheme.primary,
+                        fontWeight = FontWeight.Bold
+                    )
+
+                    Spacer(modifier = Modifier.size(30.dp))
+                    GameSelection(games) { onGameSelected ->
+                        selectMatchViewModel.setGame(onGameSelected)
                     }
-                    if (selectedGame.value.isNotEmpty() && check) {
+                    Spacer(modifier = Modifier.size(30.dp))
+                    PlayerSelection(players, playersName, selectMatchViewModel)
+                    Spacer(modifier = Modifier.size(30.dp))
+                    ButtonBegin {
+                        var check = true
                         playersName.forEach { player ->
-                            players.forEach { playerInList ->
-                                if (player == playerInList.name) {
-                                    selectMatchViewModel.addPlayers(playerInList)
-                                }
+                            if (player.isEmpty()) {
+                                check = false
                             }
                         }
-                        selectMatchViewModel.setDate(LocalDate.now())
-                        selectMatchViewModel.saveSelections()
-                        appMainViewModel.startMatch()
-                        navController.navigate(Routs.Match.rout)
-                    } else {
-                        openDialogError = true
+                        if (selectedGame.value.isNotEmpty() && check) {
+                            playersName.forEach { player ->
+                                players.forEach { playerInList ->
+                                    if (player == playerInList.name) {
+                                        selectMatchViewModel.addPlayers(playerInList)
+                                    }
+                                }
+                            }
+                            selectMatchViewModel.setDate(LocalDate.now())
+                            selectMatchViewModel.saveSelections()
+                            appMainViewModel.startMatch()
+                            navController.navigate(Routs.Match.rout)
+                        } else {
+                            openDialogError = true
+                        }
                     }
-                }
-                Spacer(modifier = Modifier.size(80.dp))
+                    Spacer(modifier = Modifier.size(80.dp))
 
-                if (openDialogError) {
-                    AlertDialogError() {
-                        openDialogError = false
+                    if (openDialogError) {
+                        AlertDialogError() {
+                            openDialogError = false
+                        }
                     }
                 }
             }
-        }
-    )
+        )
+    }
 }
 
 @Composable
