@@ -1,6 +1,7 @@
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
+    id("com.google.gms.google-services")
 }
 
 android {
@@ -77,5 +78,6 @@ dependencies {
     implementation("com.google.firebase:firebase-inappmessaging-ktx:20.4.0")
     implementation("androidx.navigation:navigation-compose:2.7.7")
     implementation ("androidx.constraintlayout:constraintlayout-compose:1.1.0-alpha13")
-
+    implementation ("com.google.firebase:firebase-storage-ktx:20.3.0")
 }
+
