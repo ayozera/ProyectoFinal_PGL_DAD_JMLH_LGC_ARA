@@ -62,7 +62,7 @@ fun CreditsHeader() {
 fun DescriptionCredits(){
     Column (modifier = Modifier.padding(4.dp,0.dp),
         horizontalAlignment = Alignment.CenterHorizontally) {
-        Text(text = "Esta aplicación ha sido desarrollada por un grupo de estudiantes del CIFT César Manrique. Esta aplicación es el proyecto final de los cursos PGL y DAD. La aplicación fue desarrollada usando Jetpack Compose y Kotlin.\n Esta aplicación fue desarrollada por los estudiantes:",
+        Text(text = "Esta aplicación ha sido desarrollada por un grupo de estudiantes del CIFP César Manrique. Esta aplicación es el proyecto final de los cursos PGL y DAD. La aplicación fue desarrollada usando Jetpack Compose y Kotlin.\n Esta aplicación fue desarrollada por los estudiantes:",
             fontSize = 16.sp,
             textAlign = TextAlign.Center,
             color = MaterialTheme.colorScheme.onPrimaryContainer)
