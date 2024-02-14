@@ -85,7 +85,7 @@ fun Profile(navController: NavHostController, appMainViewModel: AppMainViewModel
 
 @Composable
 fun ProfileHeader(appMainViewModel: AppMainViewModel) {
-    val user = appMainViewModel.user?.collectAsState()
+    val user = appMainViewModel.user!!.collectAsState()
     var showDialog by remember { mutableStateOf(false) }
     if (showDialog) {
         ProfileAlertDialogError { showDialog = false }
@@ -98,12 +98,17 @@ fun ProfileHeader(appMainViewModel: AppMainViewModel) {
             .fillMaxWidth()
             .padding(10.dp)
     ) {
+        val imageResourceId = LocalContext.current.resources.getIdentifier(
+            user.value!!.avatar,
+            "drawable",
+            LocalContext.current.packageName
+        )
         Image(
-            painter = painterResource(id = user!!.value.avatar.toInt()),
+            painter = painterResource(id = imageResourceId),
             contentDescription = "Avatar",
             modifier = Modifier
                 .size(125.dp)
-                .border(3.dp, user.value.color, shape = CircleShape)
+                .border(3.dp, user!!.value!!.color, shape = CircleShape)
                 .clip(CircleShape)
         )
         Column(
@@ -121,7 +126,7 @@ fun ProfileHeader(appMainViewModel: AppMainViewModel) {
                     .padding(0.dp)
             ) {
                 Text(
-                    text = user.value.name,
+                    text = user.value!!.name,
                     style = MaterialTheme.typography.headlineMedium,
                     color = MaterialTheme.colorScheme.onPrimary
                 )

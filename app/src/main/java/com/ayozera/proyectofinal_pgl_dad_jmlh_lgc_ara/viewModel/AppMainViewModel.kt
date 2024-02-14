@@ -11,13 +11,11 @@ import kotlinx.coroutines.flow.asStateFlow
 
 class AppMainViewModel : ViewModel() {
 
-    private var _context: Context? = null
-
     private var _isLogged = MutableStateFlow(false)
     val isLogged = _isLogged.asStateFlow()
 
-    //private var _user : MutableStateFlow<Player>? = null
-    private var _user = MutableStateFlow(Player("Laura Lorena", Color.Green, (R.drawable.avatar1).toString()))
+    private var _user = MutableStateFlow<Player?>(null)
+    //private var _user = MutableStateFlow(Player("Laura Lorena", Color.Green, (R.drawable.avatar1).toString()))
     val user = _user?.asStateFlow()
 
     private var _isMatching = MutableStateFlow(false)
@@ -26,20 +24,15 @@ class AppMainViewModel : ViewModel() {
     private var isContextInitialized = false
 
 
-    fun setContext(context: Context) {
-        if (isContextInitialized) return
-        isContextInitialized = true
-        this._context = context
-    }
-
-    fun logIn(userName : String) {
+    fun logIn(userName : String, context: Context) {
         _isLogged.value = true
-        val players = DataUp.playerLoader(_context!!)
+        val players = DataUp.playerLoader(context)
         players.forEach {
             if (it.name == userName) {
-                _user = MutableStateFlow(it)
+                _user.value = it
             }
         }
+        println("Usuario: ${_user?.value?.name}")
     }
 
     fun logOut() {

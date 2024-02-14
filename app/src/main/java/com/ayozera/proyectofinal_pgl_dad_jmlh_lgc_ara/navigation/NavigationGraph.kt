@@ -40,9 +40,8 @@ fun NavigationGraph() {
             exoPlayerViewModel.createPlayer(context, exoPlayerViewModel)
         }
     }
-    val logInViewModel: LogInViewModel = viewModel()
 
-    NavHost(navController = navController, startDestination = Routs.Profile.rout) {
+    NavHost(navController = navController, startDestination = Routs.LogIn.rout) {
 
         composable(Routs.LogIn.rout) {
             LogIn(navController = navController, appMainViewModel)
