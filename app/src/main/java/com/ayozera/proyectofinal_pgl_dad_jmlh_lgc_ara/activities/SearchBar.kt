@@ -21,6 +21,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -80,9 +81,11 @@ fun PruebaSubirImagen() {
     var isUpLoading by remember { mutableStateOf(false) }
     val img: Bitmap = BitmapFactory.decodeResource(
         Resources.getSystem(),
-        android.R.drawable.ic_menu_report_image)
+        android.R.drawable.ic_menu_report_image
+    )
     val bitmap = remember { mutableStateOf(img) }
     val context = LocalContext.current
+    var showDialog by remember { mutableStateOf(false) }
 
     val launcher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.TakePicturePreview()
@@ -120,6 +123,20 @@ fun PruebaSubirImagen() {
         )
     }
 
+    Box(
+        modifier = Modifier.padding(top = 280.dp, start = 260.dp)
+    ){
+        Image(
+            painter = painterResource(id = R.drawable.round_add_box_24),
+            contentDescription = null,
+            modifier = Modifier.clip(CircleShape)
+                .background(MaterialTheme.colorScheme.tertiaryContainer)
+                .size(50.dp)
+                .padding(10.dp)
+                .clickable { showDialog = true }
+        )
+    }
+
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.SpaceBetween,
@@ -127,22 +144,23 @@ fun PruebaSubirImagen() {
             .fillMaxWidth()
             .padding(top = 100.dp),
     ) {
-        Button(onClick = {
-            isUpLoading = true
-
-            bitmap.value.let { bitmap ->
-                FirebaseApp.initializeApp(context)
-                uploadImageToFirebase(bitmap, context as ComponentActivity) { success ->
-                    isUpLoading = success
-                    if (success) {
-                        Toast.makeText(context, "Imagen subida", Toast.LENGTH_SHORT).show()
-                    } else {
-                        Toast.makeText(context, "Error al subir la imagen", Toast.LENGTH_SHORT).show()
+        Button(
+            onClick = {
+                isUpLoading = true
+                bitmap.value.let { bitmap ->
+                    FirebaseApp.initializeApp(context)
+                    uploadImageToFirebase(bitmap, context as ComponentActivity) { success ->
+                        isUpLoading = success
+                        if (success) {
+                            Toast.makeText(context, "Imagen subida", Toast.LENGTH_SHORT).show()
+                        } else {
+                            Toast.makeText(context, "Error al subir la imagen", Toast.LENGTH_SHORT)
+                                .show()
+                        }
                     }
+                    isUpLoading = false
                 }
-                isUpLoading = false
-            }
-        },
+            },
             colors = ButtonDefaults.buttonColors(
                 Color.Blue
             )
@@ -158,7 +176,7 @@ fun PruebaSubirImagen() {
             .fillMaxSize()
             .padding(bottom = 10.dp),
     ) {
-        if(showDialog){
+        if (showDialog) {
             Row(
                 horizontalArrangement = Arrangement.Center,
                 verticalAlignment = Alignment.CenterVertically,
@@ -167,12 +185,12 @@ fun PruebaSubirImagen() {
                     .height(100.dp)
                     .clip(RoundedCornerShape(10.dp))
                     .background(MaterialTheme.colorScheme.tertiary)
-            ){
+            ) {
                 Column(
                     modifier = Modifier.padding(start = 60.dp)
                 ) {
                     Image(
-                        painter = painterResource(id = R.drawable.game_search), 
+                        painter = painterResource(id = R.drawable.game_search),
                         contentDescription = null,
                         modifier = Modifier
                             .size(50.dp)
@@ -189,7 +207,24 @@ fun PruebaSubirImagen() {
                 Spacer(modifier = Modifier.padding(30.dp))
                 Column {
                     Image(
-                        painter =
+                        painter = painterResource(id = R.drawable.dados),
+                        contentDescription = null,
+                        modifier = Modifier
+                            .size(50.dp)
+                            .clickable {
+                                launcherGallery.launch("image/*")
+                                showDialog = false
+                            }
+                    )
+                    Text(text = "Galeria", color = MaterialTheme.colorScheme.primary)
+                }
+                Column(
+                    modifier = Modifier.padding(start = 50.dp, bottom = 80.dp)
+                ) {
+                    Text(
+                        text = "X",
+                        color = MaterialTheme.colorScheme.primary,
+                        modifier = Modifier.clickable { showDialog = false }
                     )
                 }
             }
