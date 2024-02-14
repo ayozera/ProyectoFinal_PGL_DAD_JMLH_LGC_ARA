@@ -174,7 +174,7 @@ fun ProfileAlertDialogError(onDismissRequest: () -> Unit) {
     AlertDialog(
         onDismissRequest = onDismissRequest,
         title = { Text(text = "Error") },
-        text = { Text(text = "An error occurred") },
+        text = { Text(text = "Aun estamos trabajando en esta funcionalidad, disculpe las molestias.") },
         confirmButton = {
             Button(onClick = onDismissRequest) {
                 Text("OK")
