@@ -6,6 +6,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.platform.LocalContext
+import androidx.lifecycle.viewmodel.compose.LocalViewModelStoreOwner
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -23,6 +24,7 @@ import com.ayozera.proyectofinal_pgl_dad_jmlh_lgc_ara.activities.SelectMatch
 import com.ayozera.proyectofinal_pgl_dad_jmlh_lgc_ara.activities.SignUp
 import com.ayozera.proyectofinal_pgl_dad_jmlh_lgc_ara.viewModel.AppMainViewModel
 import com.ayozera.proyectofinal_pgl_dad_jmlh_lgc_ara.viewModel.JukeBoxViewModel
+import com.ayozera.proyectofinal_pgl_dad_jmlh_lgc_ara.viewModel.LogInViewModel
 import kotlinx.coroutines.launch
 
 @RequiresApi(Build.VERSION_CODES.O)
@@ -38,9 +40,9 @@ fun NavigationGraph() {
             exoPlayerViewModel.createPlayer(context, exoPlayerViewModel)
         }
     }
+    val logInViewModel: LogInViewModel = viewModel()
 
-
-    NavHost(navController = navController, startDestination = Routs.JukeBox.rout) {
+    NavHost(navController = navController, startDestination = Routs.Profile.rout) {
 
         composable(Routs.LogIn.rout) {
             LogIn(navController = navController, appMainViewModel)
