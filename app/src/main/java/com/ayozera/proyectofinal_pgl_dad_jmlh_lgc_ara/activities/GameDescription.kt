@@ -13,7 +13,9 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -72,6 +74,7 @@ fun GameDescription(
                 modifier = Modifier
                     .fillMaxWidth()
                     .background(MaterialTheme.colorScheme.background)
+                    .verticalScroll(rememberScrollState())
             ) {
                 GameHeader(gameName, gameArt)
                 Description(description)
@@ -223,12 +226,12 @@ fun ReviewBox(comments: Comment) {
 
 @Composable
 fun ReviewList(comments: List<Comment>) {
-    LazyColumn(
+    Column(
         modifier = Modifier
             .fillMaxWidth()
             .padding(16.dp)
     ) {
-        items(comments) { comment ->
+        comments.forEach { comment ->
             ReviewBox(comment)
         }
     }
