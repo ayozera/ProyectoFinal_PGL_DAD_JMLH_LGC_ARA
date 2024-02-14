@@ -23,15 +23,19 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.ayozera.proyectofinal_pgl_dad_jmlh_lgc_ara.R
 import com.ayozera.proyectofinal_pgl_dad_jmlh_lgc_ara.viewModel.AppMainViewModel
+import com.ayozera.proyectofinal_pgl_dad_jmlh_lgc_ara.viewModel.LogInViewModel
+
 @Composable
 fun LogIn(
     navController: NavHostController,
@@ -47,8 +51,8 @@ fun LogIn(
             .background(color = MaterialTheme.colorScheme.background),
     ) {
         LogInHeader(Modifier.fillMaxHeight(0.1f))
-        LogInBody(navController,Modifier.fillMaxHeight(0.8f))
-        ChangeToSignUp(navController,Modifier.fillMaxHeight(0.8f))
+        LogInBody(navController, Modifier.fillMaxHeight(0.8f), appMainViewModel)
+        ChangeToSignUp(navController, Modifier.fillMaxHeight(0.8f))
     }
 
 }
@@ -81,14 +85,18 @@ fun LogInHeader(weight: Modifier) {
 }
 
 @Composable
+
 fun LogInBody(
     navController: NavHostController,
-    weight: Modifier
+    weight: Modifier,
+    appMainViewModel: AppMainViewModel
 ) {
     var textUser by remember { mutableStateOf("") }
     var textPass by remember { mutableStateOf("") }
     var userIsCorrect by remember { mutableStateOf(true) }
     var passIsCorrect by remember { mutableStateOf(true) }
+
+    val logInViewModel: LogInViewModel = viewModel()
     //val credentials = DataUp.loadCredentials(LocalContext.current)
 
 
@@ -112,9 +120,14 @@ fun LogInBody(
         )
         TextField(
             value = textUser,
-            placeholder = { Text("Usuario",
-                fontSize = 24.sp) },
-            onValueChange = { textUser = it
+            placeholder = {
+                Text(
+                    "Usuario",
+                    fontSize = 24.sp
+                )
+            },
+            onValueChange = {
+                textUser = it
                 userIsCorrect = textUser.isNotBlank()
             },
             shape = RoundedCornerShape(10.dp),
@@ -134,9 +147,14 @@ fun LogInBody(
         )
         TextField(
             value = textPass,
-            placeholder = { Text("Contraseña",
-                fontSize = 24.sp) },
-            onValueChange = { textPass = it
+            placeholder = {
+                Text(
+                    "Contraseña",
+                    fontSize = 24.sp
+                )
+            },
+            onValueChange = {
+                textPass = it
                 passIsCorrect = textPass.isNotBlank()
             },
             shape = RoundedCornerShape(10.dp),
@@ -150,13 +168,21 @@ fun LogInBody(
                 )
         )
         Spacer(modifier = Modifier.padding(10.dp))
+        val context = LocalContext.current
         TextButton(
+
             onClick = {
-                passIsCorrect = textPass.isNotBlank()
-                userIsCorrect = textUser.isNotBlank()
-                /*logInViewModel.signInWithEmailAndPassword(textUser, textPass) {
-                    navController.navigate("profile")
-                }*/
+                userIsCorrect = logInViewModel.signInWithUsernameAndPassword(
+                    textUser, textPass, context
+                )
+                if (userIsCorrect) {
+                    appMainViewModel.logIn(textUser)
+                    navController.navigate("home")
+//                passIsCorrect = textPass.isNotBlank()
+//                userIsCorrect = textUser.isNotBlank()
+//                if (passIsCorrect && userIsCorrect) {
+//                    navController.navigate("home")
+                }
             },
             modifier = Modifier
                 .border(
@@ -175,16 +201,22 @@ fun LogInBody(
             )
         }
     }
+
 }
+
+
 @Composable
 fun ChangeToSignUp(navController: NavHostController, weight: Modifier) {
-    Column (modifier = weight
-        .fillMaxWidth()
-        .padding(10.dp),
+    Column(
+        modifier = weight
+            .fillMaxWidth()
+            .padding(10.dp),
         verticalArrangement = Arrangement.Bottom,
-        horizontalAlignment = Alignment.CenterHorizontally){
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
 
-        Text(text = "¿No tienes cuenta? Registrate!",
+        Text(
+            text = "¿No tienes cuenta? Registrate!",
             fontSize = 16.sp,
             color = MaterialTheme.colorScheme.onTertiaryContainer,
             modifier = Modifier.padding(10.dp)
