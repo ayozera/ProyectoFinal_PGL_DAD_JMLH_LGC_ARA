@@ -42,6 +42,8 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.ayozera.proyectofinal_pgl_dad_jmlh_lgc_ara.R
 import com.ayozera.proyectofinal_pgl_dad_jmlh_lgc_ara.models.Comment
+import com.ayozera.proyectofinal_pgl_dad_jmlh_lgc_ara.models.DataUp
+import com.ayozera.proyectofinal_pgl_dad_jmlh_lgc_ara.models.Match
 import com.ayozera.proyectofinal_pgl_dad_jmlh_lgc_ara.viewModel.AppMainViewModel
 import com.ayozera.proyectofinal_pgl_dad_jmlh_lgc_ara.viewModel.ProfileViewModel
 
@@ -58,6 +60,7 @@ fun Profile(navController: NavHostController, appMainViewModel: AppMainViewModel
         val favouriteGame = profileViewModel.favouriteGame.value*/
 
     var isEditClicked by remember { mutableStateOf(false) }
+    var matches = DataUp.loadMatches(LocalContext.current)
 
     ModalNavigationDrawer(
         drawerState = drawerState,
@@ -74,6 +77,7 @@ fun Profile(navController: NavHostController, appMainViewModel: AppMainViewModel
             ) {
                 ProfileHeader(appMainViewModel)
                 ProfileBody()
+                MatchList(matches)
             }
         }
     )
@@ -91,7 +95,7 @@ fun ProfileHeader(appMainViewModel: AppMainViewModel) {
         verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier
             .background(color = MaterialTheme.colorScheme.primary)
-                .fillMaxWidth()
+            .fillMaxWidth()
             .padding(10.dp)
     ) {
         Image(
@@ -161,7 +165,6 @@ fun ProfileBody() {
             modifier = Modifier
                 .padding(10.dp)
         )
-        MatchList(comments = listOf())
     }
 
 }
@@ -180,48 +183,62 @@ fun ProfileAlertDialogError(onDismissRequest: () -> Unit) {
     )
 }
 @Composable
-fun MatchList(comments: List<Comment>) {
+fun MatchList(matchs: List<Match>) {
     LazyColumn(
         modifier = Modifier
             .fillMaxWidth()
             .padding(16.dp)
     ) {
-        items(comments) { comment ->
-            ReviewBox(comment)
+        items(matchs) { match ->
+            MatchBox(match)
         }
     }
 }
 
 @Composable
-fun MatchBox(comments: Comment) {
-    Column(
+fun MatchBox(match: Match) {
+    Row (verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier
-            .fillMaxWidth()
-            .border(
-                2.dp,
-                MaterialTheme.colorScheme.onPrimaryContainer,
-                MaterialTheme.shapes.large
+        .fillMaxWidth()
+        .border(
+            2.dp,
+            MaterialTheme.colorScheme.onPrimaryContainer,
+            MaterialTheme.shapes.large
+        )
+        .clip(MaterialTheme.shapes.large)
+        .background(MaterialTheme.colorScheme.primaryContainer)
+        .padding(16.dp, 10.dp)
+    ){
+        Image(
+            painter = painterResource(id = match.gameArt),
+            contentDescription = "Game Art",
+
+            modifier = Modifier
+                .size(80.dp)
+                .clip(MaterialTheme.shapes.large)
+        )
+        Column(
+            modifier = Modifier
+                .fillMaxHeight()
+                .padding(10.dp)
+        ) {
+            Text(
+                text = match.game,
+                fontSize = 22.sp,
+                color = MaterialTheme.colorScheme.onBackground,
+                fontWeight = FontWeight.Bold
             )
-            .clip(MaterialTheme.shapes.large)
-            .background(MaterialTheme.colorScheme.primaryContainer)
-            .padding(16.dp, 10.dp)
-    ) {
-        Text(
-            text = comments.user,
-            fontSize = 22.sp,
-            color = MaterialTheme.colorScheme.onBackground,
-            fontWeight = FontWeight.Bold
-        )
-        Text(
-            text = comments.comment,
-            fontSize = 14.sp,
-            color = MaterialTheme.colorScheme.onBackground
-        )
-        Text(
-            text = comments.date,
-            fontSize = 14.sp,
-            color = MaterialTheme.colorScheme.onBackground
-        )
+            Text(
+                text = "Jugadores: ${match.players.size}",
+                fontSize = 14.sp,
+                color = MaterialTheme.colorScheme.onBackground
+            )
+            Text(
+                text = "Fecha: ${match.day}/${match.month}/${match.year}",
+                fontSize = 14.sp,
+                color = MaterialTheme.colorScheme.onBackground
+            )
+        }
     }
     Spacer(modifier = Modifier.size(10.dp))
 }

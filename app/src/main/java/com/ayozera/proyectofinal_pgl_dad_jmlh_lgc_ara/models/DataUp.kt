@@ -180,8 +180,11 @@ class DataUp {
             writer.close()
         }
 
-        fun loadMatches(context : Context) {
+        fun loadMatches(context : Context) : ArrayList<Match>{
             val file = File(context.filesDir, "matches.txt")
+            if (!file.exists()) {
+                loadMatchesFirstTime(context)
+            }
             val fileInput = FileInputStream(file)
             val reader = BufferedReader(InputStreamReader(fileInput))
             var counter = -1
@@ -224,6 +227,7 @@ class DataUp {
                     }
                 }
             }
+            return matchesList
         }
 
         fun loadGames(current: Context): ArrayList<String> {
@@ -248,6 +252,19 @@ class DataUp {
                 description.append("$line\n")
             }
             return description.toString()
+        }
+
+        fun loadMatchesFirstTime(context: Context) {
+            val assetManager = context.assets
+            val inputStream = assetManager.open("matches.txt")
+            val reader = BufferedReader(InputStreamReader(inputStream))
+            val writer: FileOutputStream =
+                context.openFileOutput("matches.txt", Context.MODE_PRIVATE)
+            reader.forEachLine { line ->
+                writer.write("$line\n".toByteArray())
+            }
+            reader.close()
+            writer.close()
         }
     }
 }
