@@ -23,7 +23,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
@@ -32,12 +31,13 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.ayozera.proyectofinal_pgl_dad_jmlh_lgc_ara.R
-import com.ayozera.proyectofinal_pgl_dad_jmlh_lgc_ara.models.DataUp
 import com.ayozera.proyectofinal_pgl_dad_jmlh_lgc_ara.viewModel.AppMainViewModel
-
 @Composable
-fun LogIn(navController: NavHostController, appMainViewModel: AppMainViewModel) {
-    //val logInViewModel = remember { LogInViewModel() }
+fun LogIn(
+    navController: NavHostController,
+    appMainViewModel: AppMainViewModel
+) {
+
     Column(
         verticalArrangement = Arrangement.Top,
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -81,12 +81,16 @@ fun LogInHeader(weight: Modifier) {
 }
 
 @Composable
-fun LogInBody(navController: NavHostController, weight: Modifier) {
+fun LogInBody(
+    navController: NavHostController,
+    weight: Modifier
+) {
     var textUser by remember { mutableStateOf("") }
     var textPass by remember { mutableStateOf("") }
     var userIsCorrect by remember { mutableStateOf(true) }
     var passIsCorrect by remember { mutableStateOf(true) }
     //val credentials = DataUp.loadCredentials(LocalContext.current)
+
 
     Column(
         modifier = weight
@@ -150,9 +154,9 @@ fun LogInBody(navController: NavHostController, weight: Modifier) {
             onClick = {
                 passIsCorrect = textPass.isNotBlank()
                 userIsCorrect = textUser.isNotBlank()
-                if (passIsCorrect && userIsCorrect) {
-                        navController.navigate("home")
-                }
+                /*logInViewModel.signInWithEmailAndPassword(textUser, textPass) {
+                    navController.navigate("profile")
+                }*/
             },
             modifier = Modifier
                 .border(

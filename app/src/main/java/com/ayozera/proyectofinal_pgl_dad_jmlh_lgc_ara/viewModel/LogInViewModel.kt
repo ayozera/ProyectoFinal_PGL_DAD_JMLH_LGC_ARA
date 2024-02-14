@@ -7,11 +7,10 @@ import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.auth
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
 class LogInViewModel : ViewModel(){
-    private val auth: FirebaseAuth = Firebase.auth
+    /*private val auth: FirebaseAuth = Firebase.auth
     private val _loading = MutableStateFlow(false)
 
 /*private var _user = MutableStateFlow("")
@@ -38,5 +37,5 @@ private var _password = MutableStateFlow("")
             Log.d("LogInViewModel", "Ha ocurrido un error: ${ex.message}")
         }
 
-    }
+    }*/
 }
