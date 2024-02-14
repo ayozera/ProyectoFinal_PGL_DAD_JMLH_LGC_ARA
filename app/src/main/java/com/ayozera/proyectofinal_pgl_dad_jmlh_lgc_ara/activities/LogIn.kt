@@ -33,6 +33,7 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.ayozera.proyectofinal_pgl_dad_jmlh_lgc_ara.R
+import com.ayozera.proyectofinal_pgl_dad_jmlh_lgc_ara.navigation.Routs
 import com.ayozera.proyectofinal_pgl_dad_jmlh_lgc_ara.viewModel.AppMainViewModel
 import com.ayozera.proyectofinal_pgl_dad_jmlh_lgc_ara.viewModel.LogInViewModel
 
@@ -41,6 +42,7 @@ fun LogIn(
     navController: NavHostController,
     appMainViewModel: AppMainViewModel
 ) {
+    val logInViewModel: LogInViewModel = viewModel()
 
     Column(
         verticalArrangement = Arrangement.Top,
@@ -51,7 +53,7 @@ fun LogIn(
             .background(color = MaterialTheme.colorScheme.background),
     ) {
         LogInHeader(Modifier.fillMaxHeight(0.1f))
-        LogInBody(navController, Modifier.fillMaxHeight(0.8f), appMainViewModel)
+        LogInBody(navController, Modifier.fillMaxHeight(0.8f), appMainViewModel, logInViewModel)
         ChangeToSignUp(navController, Modifier.fillMaxHeight(0.8f))
     }
 
@@ -89,14 +91,15 @@ fun LogInHeader(weight: Modifier) {
 fun LogInBody(
     navController: NavHostController,
     weight: Modifier,
-    appMainViewModel: AppMainViewModel
+    appMainViewModel: AppMainViewModel,
+    logInViewModel: LogInViewModel
 ) {
     var textUser by remember { mutableStateOf("") }
     var textPass by remember { mutableStateOf("") }
     var userIsCorrect by remember { mutableStateOf(true) }
     var passIsCorrect by remember { mutableStateOf(true) }
 
-    val logInViewModel: LogInViewModel = viewModel()
+
     //val credentials = DataUp.loadCredentials(LocalContext.current)
 
 
@@ -176,8 +179,8 @@ fun LogInBody(
                     textUser, textPass, context
                 )
                 if (userIsCorrect) {
-                    appMainViewModel.logIn(textUser)
-                    navController.navigate("home")
+                    appMainViewModel.logIn(textUser, context)
+                    navController.navigate(Routs.Profile.rout)
 //                passIsCorrect = textPass.isNotBlank()
 //                userIsCorrect = textUser.isNotBlank()
 //                if (passIsCorrect && userIsCorrect) {

@@ -21,6 +21,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
@@ -90,16 +91,21 @@ fun CardProfile(appMainViewModel: AppMainViewModel, weight: Modifier) {
     ) {
         Column(
             modifier = Modifier.fillMaxWidth(0.5f).fillMaxHeight()
-                .background(user!!.value.color, shape = MaterialTheme.shapes.medium),
+                .background(user!!.value!!.color, shape = MaterialTheme.shapes.medium),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
+            val imageResourceId = LocalContext.current.resources.getIdentifier(
+                user.value!!.avatar,
+                "drawable",
+                LocalContext.current.packageName
+            )
             Image(
-                painter = painterResource(id = user!!.value.avatar.toInt()),
+                painter = painterResource(id = imageResourceId),
                 contentDescription = "Avatar",
                 modifier = Modifier
                     .size(125.dp)
-                    .border(3.dp, user.value.color, shape = CircleShape)
+                    .border(3.dp, user.value!!.color, shape = CircleShape)
                     .clip(CircleShape)
             )
         }
@@ -109,7 +115,7 @@ fun CardProfile(appMainViewModel: AppMainViewModel, weight: Modifier) {
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
-            Text(text = user!!.value.name, color = MaterialTheme.colorScheme.tertiary)
+            Text(text = user!!.value!!.name, color = MaterialTheme.colorScheme.tertiary)
         }
     }
 }

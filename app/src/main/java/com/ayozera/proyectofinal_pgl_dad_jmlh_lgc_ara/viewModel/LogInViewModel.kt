@@ -1,21 +1,14 @@
 package com.ayozera.proyectofinal_pgl_dad_jmlh_lgc_ara.viewModel
 
 import android.content.Context
-import android.util.Log
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import com.ayozera.proyectofinal_pgl_dad_jmlh_lgc_ara.models.DataUp
-import com.google.firebase.Firebase
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.auth
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.launch
 
-class LogInViewModel(private val appMainViewModel: AppMainViewModel) : ViewModel() {
 
-    private val auth: FirebaseAuth = Firebase.auth
-    private val _loading = MutableStateFlow(false)
+class LogInViewModel() : ViewModel() {
+
+    //private val auth: FirebaseAuth = Firebase.auth
+    //private val _loading = MutableStateFlow(false)
 
 /*private var _user = MutableStateFlow("")
     val user = _user.asStateFlow()
@@ -23,7 +16,7 @@ class LogInViewModel(private val appMainViewModel: AppMainViewModel) : ViewModel
 private var _password = MutableStateFlow("")
     val password = _password.asStateFlow()*/
 
-    fun signInWithEmailAndPassword(email: String, password: String, home: () -> Unit) =
+    /*fun signInWithEmailAndPassword(email: String, password: String, home: () -> Unit) =
         viewModelScope.launch {
             try {
                 auth.signInWithEmailAndPassword(email, password)
@@ -44,7 +37,7 @@ private var _password = MutableStateFlow("")
             Log.d("LogInViewModel", "Ha ocurrido un error: ${ex.message}")
         }
 
-        }
+        }*/
 
 
 

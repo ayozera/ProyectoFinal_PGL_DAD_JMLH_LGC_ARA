@@ -12,4 +12,6 @@ sealed class Routs(val rout : String) {
     object Invitations : Routs("invitations")
     object JukeBox : Routs("jukeBox")
     object Credits : Routs("credits")
+
+    object Welcome : Routs("welcome")
     }
