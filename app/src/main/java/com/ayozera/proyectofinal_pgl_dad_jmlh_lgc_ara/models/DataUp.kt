@@ -13,12 +13,12 @@ class DataUp {
     companion object {
         fun getSongs(): ArrayList<Song> {
             return arrayListOf(
-                Song("Chop Suey", "chop_suey"),
-                Song("Rise up", "rise_up"),
-                Song("Respira el momento", "respira_el_momento"),
-                Song("Adentro", "adentro"),
-                Song("Jeremias17.5", "jeremias17_5"),
-                Song("Maquiavelico", "maquiavelico")
+                Song("Dyson Sphere Program ", "dysonsphere"),
+                Song("Journey", "journey"),
+                Song("Minecraft", "minecraft"),
+                Song("Outer Wilds", "outerwilds"),
+                Song("Potion Craft", "potioncraft"),
+                Song("Stardew Valley", "stardewvalley")
             )
         }
 
