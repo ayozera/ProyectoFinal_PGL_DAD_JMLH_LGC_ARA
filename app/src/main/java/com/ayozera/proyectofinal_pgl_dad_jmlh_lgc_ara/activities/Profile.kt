@@ -12,14 +12,22 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ModalNavigationDrawer
 import androidx.compose.material3.Text
+import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
@@ -27,44 +35,91 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.ayozera.proyectofinal_pgl_dad_jmlh_lgc_ara.R
+import com.ayozera.proyectofinal_pgl_dad_jmlh_lgc_ara.viewModel.AppMainViewModel
+import com.ayozera.proyectofinal_pgl_dad_jmlh_lgc_ara.viewModel.ProfileViewModel
+
 
 @Composable
-fun Profile(navController: NavHostController) {
+fun Profile(navController: NavHostController, appMainViewModel: AppMainViewModel) {
+    val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
+    val profileViewModel = ProfileViewModel()
+    val context = LocalContext.current
+    profileViewModel.setContext(context)
+/*    val userName = profileViewModel.userName.value
+    val userAvatar = profileViewModel.userAvatar.value
+    val matches = profileViewModel.matches.value
+    val favouriteGame = profileViewModel.favouriteGame.value*/
 
-    Column(
-        verticalArrangement = Arrangement.SpaceBetween,
-        horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = Modifier
-            .fillMaxWidth()
-            .background(color = MaterialTheme.colorScheme.background),
-    ) {
-        Row(
-            horizontalArrangement = Arrangement.Start,
-            verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier
-                .fillMaxHeight(0.10f)
-                .background(color = MaterialTheme.colorScheme.primary)
-                .fillMaxWidth()
-        ) {
-            ArrowBackWelcome(navController)
-            Text(
-                text = "Turn & points",
-                fontSize = 32.sp,
-                fontFamily = FontFamily.Cursive,
-                fontWeight = FontWeight.Bold,
+    var isEditClicked by remember { mutableStateOf(false) }
+
+    ModalNavigationDrawer(
+        drawerState = drawerState,
+        drawerContent = {
+            Menu(navController = navController, appMainViewModel)
+        },
+        content = {
+            Column(
+                verticalArrangement = Arrangement.SpaceBetween,
+                horizontalAlignment = Alignment.CenterHorizontally,
                 modifier = Modifier
-                    .padding(start = 25.dp)
-            )
+                    .fillMaxWidth()
+                    .background(color = MaterialTheme.colorScheme.background),
+            ) {
+                Row(
+                    horizontalArrangement = Arrangement.Start,
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier
+                        .fillMaxHeight(0.10f)
+                        .background(color = MaterialTheme.colorScheme.primary)
+                        .fillMaxWidth()
+                ) {
+                    ArrowBackWelcome(navController)
+                    Text(
+                        text = "Turn & points",
+                        fontSize = 32.sp,
+                        fontFamily = FontFamily.Cursive,
+                        fontWeight = FontWeight.Bold,
+                        modifier = Modifier
+                            .padding(start = 25.dp)
+                    )
+                    Column(
+                        verticalArrangement = Arrangement.SpaceBetween,
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        modifier = Modifier
+                            .fillMaxWidth()
 
-            Image(
-                painter = painterResource(id = R.drawable.dados),
-                contentDescription = "Logo de dados",
-                modifier = Modifier.padding(start = 25.dp)
-            )
+                            .background(color = MaterialTheme.colorScheme.background),
+                    ) {
+                        Row(
+                            horizontalArrangement = Arrangement.Start,
+                            verticalAlignment = Alignment.CenterVertically,
+                            modifier = Modifier
+                                .fillMaxHeight(0.10f)
+                                .background(color = MaterialTheme.colorScheme.primary)
+                                .fillMaxWidth()
+                        ) {
+                            //ArrowBackWelcome(navController)
+                            ArrowBackWelcome(navController)
+                            Text(
+                                text = "Turn & points",
+                                fontSize = 32.sp,
+                                fontFamily = FontFamily.Cursive,
+                                fontWeight = FontWeight.Bold,
+                                modifier = Modifier.padding(start = 25.dp)
+                            )
+
+                            Image(
+                                painter = painterResource(id = R.drawable.dados),
+                                contentDescription = "Logo de dados",
+                                modifier = Modifier.padding(start = 25.dp)
+                            )
+                        }
+                    }
+                }
+            }
         }
-    }
+    )
 }
-
 @Composable
 fun ArrowBackWelcome(navController: NavHostController) {
 

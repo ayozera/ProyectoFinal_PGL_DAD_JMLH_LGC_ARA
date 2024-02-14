@@ -23,6 +23,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
@@ -31,10 +32,13 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.ayozera.proyectofinal_pgl_dad_jmlh_lgc_ara.R
+import com.ayozera.proyectofinal_pgl_dad_jmlh_lgc_ara.models.DataUp
+import com.ayozera.proyectofinal_pgl_dad_jmlh_lgc_ara.viewModel.AppMainViewModel
+import com.ayozera.proyectofinal_pgl_dad_jmlh_lgc_ara.viewModel.logInViewModel
 
 @Composable
-fun LogIn(navController: NavHostController) {
-    //val logInViewModel = remember { LogInViewModel() }
+fun LogIn(navController: NavHostController, appMainViewModel: AppMainViewModel) {
+    val logInViewModel = remember { logInViewModel() }
     Column(
         verticalArrangement = Arrangement.Top,
         horizontalAlignment = Alignment.CenterHorizontally,

@@ -4,6 +4,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -27,12 +28,14 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.ayozera.proyectofinal_pgl_dad_jmlh_lgc_ara.R
+import com.ayozera.proyectofinal_pgl_dad_jmlh_lgc_ara.navigation.Routs
+import com.ayozera.proyectofinal_pgl_dad_jmlh_lgc_ara.viewModel.AppMainViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MyScaffold(
     navController: NavController,
-    //loginModel: LoginModel,
+    appMainViewModel: AppMainViewModel,
     content: @Composable () -> Unit
 ) {
     Scaffold(
@@ -46,24 +49,24 @@ fun MyScaffold(
                 title = {
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.Start,
+                        horizontalArrangement = Arrangement.Center,
                         modifier = Modifier
                             .fillMaxWidth()
                     ) {
-                        TextButton(onClick = { /*TODO*/},
+                        /*TextButton(onClick = { *//*TODO*//*},
                             modifier = Modifier
                                 .align(Alignment.CenterVertically)
                                 .padding(5.dp, 0.dp, 20.dp, 0.dp)
                             ) {
                             Icon(
                                 painter = painterResource(id = R.drawable.menu),
-                                contentDescription = "go back arrow icon",
+                                contentDescription = "icono perfil",
                                 modifier = Modifier
                                     .size(28.dp),
                                 tint = MaterialTheme.colorScheme.primary
                             )
-                        }
-                        TextButton(onClick = { /*TODO*/ }) {
+                        }*/
+                        TextButton(onClick = { navController.navigate(Routs.Profile.rout) }) {
                             Image(painter = painterResource(id = R.drawable.dados),
                                 contentDescription = "Company Logo",
                                 contentScale = ContentScale.Fit,
@@ -75,6 +78,7 @@ fun MyScaffold(
                                 color = MaterialTheme.colorScheme.primary,
                                 fontWeight = FontWeight.Bold
                             )
+                            Spacer(modifier = Modifier.size(48.dp))
                         }
 
                     }
@@ -94,7 +98,7 @@ fun MyScaffold(
                     modifier = Modifier
                         .fillMaxWidth()
                 ) {
-                    TextButton(onClick = {/*TODO*/}) {
+                    TextButton(onClick = {navController.navigate(Routs.SearchBar.rout)}) {
                         Icon(
                             painter = painterResource(id = R.drawable.game_search),
                             contentDescription = "Search Player",
@@ -103,7 +107,14 @@ fun MyScaffold(
                             tint = MaterialTheme.colorScheme.primary
                         )
                     }
-                    TextButton(onClick = {/*TODO*/}) {
+                    val isMatchRunning = appMainViewModel.isMatching
+                    TextButton(onClick = {
+                        if (isMatchRunning.value) {
+                            navController.navigate(Routs.Match.rout)
+                        } else {
+                            navController.navigate(Routs.SelectMatch.rout)
+                        }
+                    }) {
                         Icon(
                             painter = painterResource(id = R.drawable.round_add_box_24),
                             contentDescription = "Start New Game",
@@ -112,9 +123,9 @@ fun MyScaffold(
                             tint = MaterialTheme.colorScheme.primary
                         )
                     }
-                    TextButton(onClick = {/*TODO*/}) {
+                    TextButton(onClick = {navController.navigate(Routs.JukeBox.rout)}) {
                         Icon(
-                            painter = painterResource(id = R.drawable.person_search),
+                            painter = painterResource(id = R.drawable.play),
                             contentDescription = "Search Game",
                             modifier = Modifier
                                 .size(28.dp),

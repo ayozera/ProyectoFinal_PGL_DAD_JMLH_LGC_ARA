@@ -6,34 +6,45 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ModalNavigationDrawer
 import androidx.compose.material3.Text
+import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.key.Key.Companion.Menu
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.ayozera.proyectofinal_pgl_dad_jmlh_lgc_ara.R
-import com.ayozera.proyectofinal_pgl_dad_jmlh_lgc_ara.navigation.Routs
+import com.ayozera.proyectofinal_pgl_dad_jmlh_lgc_ara.viewModel.AppMainViewModel
 
 @Composable
-fun Credits(navController: NavHostController) {
-    Column (
-        modifier = Modifier
-            .background(MaterialTheme.colorScheme.background)
-            .fillMaxSize(),
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        CreditsHeader()
-        DescriptionCredits()
-        StudentsCredits()
-        VersionCredits()
-    }
-
+fun Credits(navController: NavHostController, appMainViewModel: AppMainViewModel) {
+    val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
+    ModalNavigationDrawer(
+        drawerState = drawerState,
+        drawerContent = {
+            Menu(navController = navController, appMainViewModel)
+        },
+        content = {
+            Column(
+                modifier = Modifier
+                    .background(MaterialTheme.colorScheme.background)
+                    .fillMaxSize(),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                CreditsHeader()
+                DescriptionCredits()
+                StudentsCredits()
+                VersionCredits()
+            }
+        }
+    )
 }
 
 @Composable

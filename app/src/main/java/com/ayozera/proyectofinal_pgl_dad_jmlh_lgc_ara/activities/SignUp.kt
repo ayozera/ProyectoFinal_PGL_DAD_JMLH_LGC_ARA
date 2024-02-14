@@ -34,11 +34,12 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.ayozera.proyectofinal_pgl_dad_jmlh_lgc_ara.R
 import com.ayozera.proyectofinal_pgl_dad_jmlh_lgc_ara.navigation.Routs
+import com.ayozera.proyectofinal_pgl_dad_jmlh_lgc_ara.viewModel.AppMainViewModel
 import com.ayozera.proyectofinal_pgl_dad_jmlh_lgc_ara.viewModel.SignUpViewModel
 
 
 @Composable
-fun SignUp(navController: NavHostController) {
+fun SignUp(navController: NavHostController, appMainViewModel: AppMainViewModel) {
     val signUpViewModel = remember { SignUpViewModel() }
     Column(
         verticalArrangement = Arrangement.Top,

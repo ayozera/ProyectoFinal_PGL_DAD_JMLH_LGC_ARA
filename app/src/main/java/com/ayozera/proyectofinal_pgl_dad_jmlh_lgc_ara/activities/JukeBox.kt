@@ -24,13 +24,11 @@ import androidx.compose.material3.Slider
 import androidx.compose.material3.SliderDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberDrawerState
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -43,30 +41,25 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.ayozera.proyectofinal_pgl_dad_jmlh_lgc_ara.R
-import kotlinx.coroutines.launch
+import com.ayozera.proyectofinal_pgl_dad_jmlh_lgc_ara.viewModel.AppMainViewModel
 
 @Composable
-fun JukeBox(navController: NavHostController) {
+fun JukeBox(
+    navController: NavHostController,
+    exoPlayerViewModel: JukeBoxViewModel,
+    appMainViewModel: AppMainViewModel
+) {
 
-    val exoPlayerViewModel: JukeBoxViewModel = viewModel()
     val context = LocalContext.current
     val songs = exoPlayerViewModel.canciones.collectAsState()
     val index = exoPlayerViewModel.index.collectAsState()
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
 
-    val corutinaScope = rememberCoroutineScope()
-    LaunchedEffect(key1 = Unit) {
-        corutinaScope.launch {
-            exoPlayerViewModel.createPlayer(context)
-        }
-    }
-
     ModalNavigationDrawer(
         drawerState = drawerState,
         drawerContent = {
-            //TODO: Implementar la barra de busqueda
+            Menu(navController = navController, appMainViewModel)
         },
         content = {
             Column(
