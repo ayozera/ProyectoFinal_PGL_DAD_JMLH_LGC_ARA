@@ -162,8 +162,8 @@ fun ProfileBody() {
             text = "Partidas Jugadas",
             color = MaterialTheme.colorScheme.tertiary,
             fontWeight = FontWeight.Bold,
-            modifier = Modifier
-                .padding(10.dp)
+            fontSize = 24.sp,
+            modifier = Modifier.padding(16.dp)
         )
     }
 
@@ -197,47 +197,60 @@ fun MatchList(matchs: List<Match>) {
 
 @Composable
 fun MatchBox(match: Match) {
+    var players = match.players.size
     Row (verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier
-        .fillMaxWidth()
-        .border(
-            2.dp,
-            MaterialTheme.colorScheme.onPrimaryContainer,
-            MaterialTheme.shapes.large
-        )
-        .clip(MaterialTheme.shapes.large)
-        .background(MaterialTheme.colorScheme.primaryContainer)
-        .padding(16.dp, 10.dp)
+            .fillMaxWidth()
+            .border(
+                2.dp,
+                MaterialTheme.colorScheme.onPrimaryContainer,
+                MaterialTheme.shapes.large
+            )
+            .clip(MaterialTheme.shapes.large)
+            .background(MaterialTheme.colorScheme.primaryContainer)
+            .padding(16.dp, 10.dp)
     ){
         Image(
             painter = painterResource(id = match.gameArt),
             contentDescription = "Game Art",
 
             modifier = Modifier
-                .size(80.dp)
+                .size(110.dp)
                 .clip(MaterialTheme.shapes.large)
+                .padding(0.dp, 0.dp, 10.dp, 0.dp)
         )
         Column(
             modifier = Modifier
                 .fillMaxHeight()
+                .fillMaxWidth()
                 .padding(10.dp)
         ) {
-            Text(
-                text = match.game,
-                fontSize = 22.sp,
-                color = MaterialTheme.colorScheme.onBackground,
-                fontWeight = FontWeight.Bold
-            )
-            Text(
-                text = "Jugadores: ${match.players.size}",
-                fontSize = 14.sp,
-                color = MaterialTheme.colorScheme.onBackground
-            )
-            Text(
-                text = "Fecha: ${match.day}/${match.month}/${match.year}",
-                fontSize = 14.sp,
-                color = MaterialTheme.colorScheme.onBackground
-            )
+            Row (horizontalArrangement = Arrangement.SpaceBetween,
+                modifier = Modifier
+                    .fillMaxHeight()
+                    .fillMaxWidth()){
+                Text(
+                    text = match.game,
+                    fontSize = 22.sp,
+                    color = MaterialTheme.colorScheme.onBackground,
+                    fontWeight = FontWeight.Bold
+                )
+                Text(
+                    text = "${match.day}/${match.month}/${match.year}",
+                    fontSize = 14.sp,
+                    color = MaterialTheme.colorScheme.onBackground,
+                    modifier = Modifier.padding(20.dp, 0.dp, 0.dp, 0.dp)
+                )
+            }
+            Spacer(modifier = Modifier.size(4.dp))
+
+            for (i in players-1 downTo 0) {
+                Text(
+                    text = match.players[i].name + ": " + match.score[i].toString() + " puntos",
+                    fontSize = 14.sp,
+                    color = MaterialTheme.colorScheme.onBackground
+                )
+            }
         }
     }
     Spacer(modifier = Modifier.size(10.dp))
