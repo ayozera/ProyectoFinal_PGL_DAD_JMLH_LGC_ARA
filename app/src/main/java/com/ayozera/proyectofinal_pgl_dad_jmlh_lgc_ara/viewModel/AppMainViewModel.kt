@@ -1,7 +1,9 @@
 package com.ayozera.proyectofinal_pgl_dad_jmlh_lgc_ara.viewModel
 
 import android.content.Context
+import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.ViewModel
+import com.ayozera.proyectofinal_pgl_dad_jmlh_lgc_ara.R
 import com.ayozera.proyectofinal_pgl_dad_jmlh_lgc_ara.models.DataUp
 import com.ayozera.proyectofinal_pgl_dad_jmlh_lgc_ara.models.Player
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -14,7 +16,8 @@ class AppMainViewModel : ViewModel() {
     private var _isLogged = MutableStateFlow(false)
     val isLogged = _isLogged.asStateFlow()
 
-    private var _user : MutableStateFlow<Player>? = null
+    //private var _user : MutableStateFlow<Player>? = null
+    private var _user = MutableStateFlow(Player("Laura Lorena", Color.Green, (R.drawable.avatar1).toString()))
     val user = _user?.asStateFlow()
 
     private var _isMatching = MutableStateFlow(false)
@@ -41,7 +44,7 @@ class AppMainViewModel : ViewModel() {
 
     fun logOut() {
         _isLogged.value = false
-        _user = null
+        //_user = null
     }
 
     fun discardMatch() {
