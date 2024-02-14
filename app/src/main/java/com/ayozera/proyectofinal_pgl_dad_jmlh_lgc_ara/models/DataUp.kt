@@ -225,5 +225,29 @@ class DataUp {
                 }
             }
         }
+
+        fun loadGames(current: Context): ArrayList<String> {
+            val gamesList = ArrayList<String>()
+            val assetManager = current.assets
+            val inputStream = assetManager.open("games.txt")
+            val reader = BufferedReader(InputStreamReader(inputStream))
+            reader.forEachLine { line ->
+                if (line.isNotBlank()) {
+                    gamesList.add(line)
+                }
+            }
+            return gamesList
+        }
+
+        fun getDescription(current: Context, gameName: String): String {
+            val assetManager = current.assets
+            val inputStream = assetManager.open("gamesInformation/$gameName.txt")
+            val reader = BufferedReader(InputStreamReader(inputStream))
+            val description = StringBuilder()
+            reader.forEachLine { line ->
+                description.append("$line\n")
+            }
+            return description.toString()
+        }
     }
 }

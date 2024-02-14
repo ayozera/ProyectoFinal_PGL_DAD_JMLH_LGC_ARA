@@ -53,9 +53,10 @@ fun NavigationGraph() {
                 Profile(navController = navController, appMainViewModel)
             }
         }
-        composable(Routs.Game.rout) {
+        composable("${Routs.Game.rout}/{gameName}") { backStackEntry ->
+            val gameName = backStackEntry.arguments?.getString("gameName")
             MyScaffold(navController = navController, appMainViewModel) {
-                GameDescription(navController = navController, appMainViewModel)
+                GameDescription(navController = navController, appMainViewModel, gameName)
             }
         }
         composable(Routs.SearchBar.rout) {

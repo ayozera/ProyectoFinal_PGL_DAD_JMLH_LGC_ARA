@@ -1,43 +1,23 @@
 package com.ayozera.proyectofinal_pgl_dad_jmlh_lgc_ara.activities
 
-import androidx.compose.material3.DrawerValue
-import androidx.compose.material3.ModalNavigationDrawer
-import androidx.compose.material3.rememberDrawerState
-import androidx.navigation.NavHostController
-import com.ayozera.proyectofinal_pgl_dad_jmlh_lgc_ara.viewModel.AppMainViewModel
-import android.content.res.Resources
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
-import android.graphics.ImageDecoder
-import android.os.Build
-import android.provider.MediaStore
-import android.widget.Toast
-import androidx.activity.ComponentActivity
-import androidx.activity.compose.rememberLauncherForActivityResult
-import androidx.activity.result.contract.ActivityResultContracts
-import androidx.activity.result.launch
-import androidx.compose.foundation.Image
+
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.MaterialTheme
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Clear
+import androidx.compose.material.icons.filled.Search
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -45,221 +25,110 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.asImageBitmap
-import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import androidx.compose.material3.SearchBar
+import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.unit.dp
+import androidx.navigation.NavHostController
 import com.ayozera.proyectofinal_pgl_dad_jmlh_lgc_ara.R
-import com.google.firebase.FirebaseApp
-import com.google.firebase.ktx.Firebase
-import com.google.firebase.storage.ktx.storage
-import java.io.ByteArrayOutputStream
+import com.ayozera.proyectofinal_pgl_dad_jmlh_lgc_ara.models.DataUp
+import com.ayozera.proyectofinal_pgl_dad_jmlh_lgc_ara.navigation.Routs
+import com.ayozera.proyectofinal_pgl_dad_jmlh_lgc_ara.viewModel.AppMainViewModel
 
 
 @Composable
 fun SearchBar(navController: NavHostController, appMainViewModel: AppMainViewModel) {
-    val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
 
-    ModalNavigationDrawer(
-        drawerState = drawerState,
-        drawerContent = {
-            Menu(navController = navController, appMainViewModel)
-        },
-        content = {
-            PruebaSubirImagen()
-        }
-    )
+    Column(
+        modifier = Modifier.fillMaxWidth()
+            .fillMaxHeight()
+            .padding(20.dp)
+    ) {
+        Searcher(onSearchSelected = {
+            navController.navigate("${Routs.Game.rout}/$it")
+        })
+    }
 }
 
-
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun PruebaSubirImagen() {
-
-    var isUpLoading by remember { mutableStateOf(false) }
-    val img: Bitmap = BitmapFactory.decodeResource(
-        Resources.getSystem(),
-        android.R.drawable.ic_menu_report_image
-    )
-    val bitmap = remember { mutableStateOf(img) }
+fun Searcher(onSearchSelected: (String) -> Unit) {
     val context = LocalContext.current
-    var showDialog by remember { mutableStateOf(false) }
+    val games = DataUp.loadGames(context)
+    var query by remember { mutableStateOf("") }
+    var isActive by remember { mutableStateOf(true) }
+    var filteredSongs: List<String> by remember { mutableStateOf(games) }
 
-    val launcher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.TakePicturePreview()
-    ) {
-        if (it != null) {
-            bitmap.value = it
-        }
-    }
-
-    val launcherGallery = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.GetContent()
-    ) {
-        if (Build.VERSION.SDK_INT < 28) {
-            bitmap.value = MediaStore.Images.Media.getBitmap(context.contentResolver, it)
-        } else {
-            val source = it?.let { it2 ->
-                ImageDecoder.createSource(context.contentResolver, it2)
-            }
-            bitmap.value = source?.let { it1 ->
-                ImageDecoder.decodeBitmap(it1)
-            }!!
-        }
-    }
-
-    Column {
-        Image(
-            bitmap = bitmap.value.asImageBitmap(),
-            contentDescription = "Imagen",
-            contentScale = ContentScale.Crop,
-            modifier = Modifier
-                .clip(CircleShape)
-                .size(200.dp)
-                .background(MaterialTheme.colorScheme.tertiary)
-                .border(2.dp, MaterialTheme.colorScheme.primary, shape = CircleShape)
-        )
-    }
-
-    Box(
-        modifier = Modifier.padding(top = 280.dp, start = 260.dp)
-    ){
-        Image(
-            painter = painterResource(id = R.drawable.round_add_box_24),
-            contentDescription = null,
-            modifier = Modifier.clip(CircleShape)
-                .background(MaterialTheme.colorScheme.tertiaryContainer)
-                .size(50.dp)
-                .padding(10.dp)
-                .clickable { showDialog = true }
-        )
-    }
-
-    Column(
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.SpaceBetween,
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(top = 100.dp),
-    ) {
-        Button(
-            onClick = {
-                isUpLoading = true
-                bitmap.value.let { bitmap ->
-                    FirebaseApp.initializeApp(context)
-                    uploadImageToFirebase(bitmap, context as ComponentActivity) { success ->
-                        isUpLoading = success
-                        if (success) {
-                            Toast.makeText(context, "Imagen subida", Toast.LENGTH_SHORT).show()
-                        } else {
-                            Toast.makeText(context, "Error al subir la imagen", Toast.LENGTH_SHORT)
-                                .show()
-                        }
-                    }
-                    isUpLoading = false
-                }
-            },
-            colors = ButtonDefaults.buttonColors(
-                Color.Blue
+    SearchBar(
+        query = query,
+        onQueryChange = { newQuery ->
+            query = newQuery
+            filteredSongs = games.filter { it.contains(newQuery, ignoreCase = true) }
+        },
+        onSearch = { onSearchSelected(query) },
+        active = isActive,
+        onActiveChange = { },
+        placeholder = { Text("¿Cuál es el juego?") },
+        leadingIcon = {
+            Icon(
+                imageVector = Icons.Filled.Search, contentDescription = "Icono para buscar"
             )
+        },
+        trailingIcon = {
+            IconButton(onClick = {
+                query = ""
+                filteredSongs = games
+                onSearchSelected("")
+            }) {
+                Icon(
+                    imageVector = Icons.Filled.Clear,
+                    contentDescription = "Icono para borrar lo escrito"
+                )
+            }
+        },
+        modifier = Modifier.fillMaxWidth()
+    ) {
+        LazyColumn(
+            modifier = Modifier.fillMaxWidth()
         ) {
-            Text(text = "Subir imagen")
-        }
-    }
-
-    Column(
-        verticalArrangement = Arrangement.Bottom,
-        horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(bottom = 10.dp),
-    ) {
-        if (showDialog) {
-            Row(
-                horizontalArrangement = Arrangement.Center,
-                verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier
-                    .width(300.dp)
-                    .height(100.dp)
-                    .clip(RoundedCornerShape(10.dp))
-                    .background(MaterialTheme.colorScheme.tertiary)
-            ) {
-                Column(
-                    modifier = Modifier.padding(start = 60.dp)
+            items(filteredSongs) { cancion ->
+                TextButton(
+                    onClick = {
+                        query = cancion
+                        onSearchSelected(cancion)
+                    }, modifier = Modifier
+                        .fillMaxWidth()
+                        .background(color = MaterialTheme.colorScheme.background)
+                        .border(
+                            width = .5.dp,
+                            color = MaterialTheme.colorScheme.primary,
+                        )
                 ) {
-                    Image(
-                        painter = painterResource(id = R.drawable.game_search),
-                        contentDescription = null,
+                    Row(
                         modifier = Modifier
-                            .size(50.dp)
-                            .clickable {
-                                launcher.launch()
-                                showDialog = false
-                            }
-                    )
-                    Text(
-                        text = "Camara",
-                        color = MaterialTheme.colorScheme.primary
-                    )
-                }
-                Spacer(modifier = Modifier.padding(30.dp))
-                Column {
-                    Image(
-                        painter = painterResource(id = R.drawable.dados),
-                        contentDescription = null,
-                        modifier = Modifier
-                            .size(50.dp)
-                            .clickable {
-                                launcherGallery.launch("image/*")
-                                showDialog = false
-                            }
-                    )
-                    Text(text = "Galeria", color = MaterialTheme.colorScheme.primary)
-                }
-                Column(
-                    modifier = Modifier.padding(start = 50.dp, bottom = 80.dp)
-                ) {
-                    Text(
-                        text = "X",
-                        color = MaterialTheme.colorScheme.primary,
-                        modifier = Modifier.clickable { showDialog = false }
-                    )
+                            .fillMaxWidth()
+                            .padding(5.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Icon(
+                            painter = painterResource(id = R.drawable.game_search),
+                            contentDescription = "Icono de búsqueda",
+                            modifier = Modifier.size(24.dp),
+                            tint = Color.Green
+                        )
+                        Text(
+                            text = cancion,
+                            fontSize = 26.sp,
+                            color = MaterialTheme.colorScheme.primary,
+                            modifier = Modifier.padding(start = 10.dp)
+                        )
+                    }
                 }
             }
         }
     }
-
-    Column(
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.SpaceBetween,
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(450.dp)
-    ) {
-        if (isUpLoading) {
-            CircularProgressIndicator(
-                modifier = Modifier.padding(16.dp),
-                color = Color.White
-            )
-        }
-    }
-}
-
-fun uploadImageToFirebase(bitmap: Bitmap, context: ComponentActivity, callback: (Boolean) -> Unit) {
-    val storageRef = Firebase.storage.reference
-    val imageRef = storageRef.child("images/${bitmap}")
-
-    val baos = ByteArrayOutputStream()
-    bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos)
-    val imageData = baos.toByteArray()
-
-    imageRef.putBytes(imageData)
-        .addOnSuccessListener {
-            callback(true)
-        }
-        .addOnFailureListener {
-            callback(false)
-        }
 }

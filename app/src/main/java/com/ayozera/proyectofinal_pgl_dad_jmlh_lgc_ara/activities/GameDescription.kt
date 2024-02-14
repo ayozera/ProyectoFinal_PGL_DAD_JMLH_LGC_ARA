@@ -46,12 +46,20 @@ import com.ayozera.proyectofinal_pgl_dad_jmlh_lgc_ara.viewModel.CommentsViewMode
 
 
 @Composable
-fun GameDescription(navController: NavHostController, appMainViewModel: AppMainViewModel) {
+fun GameDescription(
+    navController: NavHostController,
+    appMainViewModel: AppMainViewModel,
+    gameName: String?
+) {
     var comments = DataUp.getComments(LocalContext.current)
     val commentsViewModel = remember { CommentsViewModel() }
-    val gameName = "Cluedo"
-    val gameArt = R.drawable.cluedo
-    val description = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam in dolor in enim vulputate accumsan. Fusce euismod arcu vitae odio hendrerit, vel dapibus justo vulputate. Integer cursus accumsan felis, a cursus elit. Sed sit amet hendrerit elit. Sed tincidunt vestibulum risus, vel vulputate purus efficitur ac. Praesent et vulputate odio. Nunc euismod risus a augue lacinia, in pulvinar turpis hendrerit. Nam sed quam quis sem fermentum suscipit. Nullam varius purus eu nisl malesuada, in dictum leo tristique. In hac habitasse platea dictumst. Nullam nec nunc justo."
+    val gameArt = LocalContext.current.resources.getIdentifier(
+        gameName?.replace(" ", "_")?.lowercase(),
+        "drawable",
+        LocalContext.current.packageName
+    )
+    println("Nombre del juego: $gameName")
+    val description = DataUp.getDescription(LocalContext.current, gameName!!)
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
 
     ModalNavigationDrawer(
