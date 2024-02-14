@@ -34,11 +34,10 @@ import androidx.navigation.NavHostController
 import com.ayozera.proyectofinal_pgl_dad_jmlh_lgc_ara.R
 import com.ayozera.proyectofinal_pgl_dad_jmlh_lgc_ara.models.DataUp
 import com.ayozera.proyectofinal_pgl_dad_jmlh_lgc_ara.viewModel.AppMainViewModel
-import com.ayozera.proyectofinal_pgl_dad_jmlh_lgc_ara.viewModel.LogInViewModel
 
 @Composable
 fun LogIn(navController: NavHostController, appMainViewModel: AppMainViewModel) {
-    val logInViewModel = remember { LogInViewModel() }
+    //val logInViewModel = remember { LogInViewModel() }
     Column(
         verticalArrangement = Arrangement.Top,
         horizontalAlignment = Alignment.CenterHorizontally,
