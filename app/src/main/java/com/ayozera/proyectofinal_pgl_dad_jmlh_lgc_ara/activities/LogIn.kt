@@ -99,7 +99,7 @@ fun LogInBody(navController: NavHostController, weight: Modifier) {
             text = "Iniciar Sesión",
             fontSize = 36.sp,
             fontWeight = FontWeight.Bold,
-            color = MaterialTheme.colorScheme.secondaryContainer,
+            color = MaterialTheme.colorScheme.primary,
             modifier = Modifier.padding(0.dp,10.dp,0.dp,15.dp)
         )
         Text(
