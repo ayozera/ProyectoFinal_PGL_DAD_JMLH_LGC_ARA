@@ -27,11 +27,13 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.ayozera.proyectofinal_pgl_dad_jmlh_lgc_ara.R
+import com.ayozera.proyectofinal_pgl_dad_jmlh_lgc_ara.viewModel.AppMainViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MyScaffold(
     navController: NavController,
+    appMainViewModel: AppMainViewModel,
     //loginModel: LoginModel,
     content: @Composable () -> Unit
 ) {

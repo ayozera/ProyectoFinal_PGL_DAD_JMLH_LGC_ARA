@@ -13,11 +13,14 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ModalNavigationDrawer
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextField
+import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -31,33 +34,43 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.ayozera.proyectofinal_pgl_dad_jmlh_lgc_ara.R
 import com.ayozera.proyectofinal_pgl_dad_jmlh_lgc_ara.models.Comment
 import com.ayozera.proyectofinal_pgl_dad_jmlh_lgc_ara.models.DataUp
+import com.ayozera.proyectofinal_pgl_dad_jmlh_lgc_ara.viewModel.AppMainViewModel
 import com.ayozera.proyectofinal_pgl_dad_jmlh_lgc_ara.viewModel.CommentsViewModel
 
 
 @Composable
-fun GameDescription(navController: NavHostController) {
+fun GameDescription(navController: NavHostController, appMainViewModel: AppMainViewModel) {
     var comments = DataUp.getComments(LocalContext.current)
     val commentsViewModel = remember { CommentsViewModel() }
     val gameName = "Cluedo"
     val gameArt = R.drawable.cluedo
     val description = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam in dolor in enim vulputate accumsan. Fusce euismod arcu vitae odio hendrerit, vel dapibus justo vulputate. Integer cursus accumsan felis, a cursus elit. Sed sit amet hendrerit elit. Sed tincidunt vestibulum risus, vel vulputate purus efficitur ac. Praesent et vulputate odio. Nunc euismod risus a augue lacinia, in pulvinar turpis hendrerit. Nam sed quam quis sem fermentum suscipit. Nullam varius purus eu nisl malesuada, in dictum leo tristique. In hac habitasse platea dictumst. Nullam nec nunc justo."
-    Column (
-        modifier = Modifier
-            .fillMaxWidth()
-            .background(MaterialTheme.colorScheme.background)
-    ){
-        GameHeader(gameName, gameArt)
-        Description(description)
-        WriteReview(commentsViewModel)
-        ReviewList(comments)
-    }
+    val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
+
+    ModalNavigationDrawer(
+        drawerState = drawerState,
+        drawerContent = {
+            Menu(navController = navController, appMainViewModel)
+        },
+        content = {
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(MaterialTheme.colorScheme.background)
+            ) {
+                GameHeader(gameName, gameArt)
+                Description(description)
+                WriteReview(commentsViewModel)
+                ReviewList(comments)
+            }
+        }
+    )
 }
 
 @Composable

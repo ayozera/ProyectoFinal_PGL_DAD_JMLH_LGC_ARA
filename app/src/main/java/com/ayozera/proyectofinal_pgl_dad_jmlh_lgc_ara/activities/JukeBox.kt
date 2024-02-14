@@ -45,10 +45,11 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.ayozera.proyectofinal_pgl_dad_jmlh_lgc_ara.R
+import com.ayozera.proyectofinal_pgl_dad_jmlh_lgc_ara.viewModel.AppMainViewModel
 import kotlinx.coroutines.launch
 
 @Composable
-fun JukeBox(navController: NavHostController) {
+fun JukeBox(navController: NavHostController, appMainViewModel: AppMainViewModel) {
 
     val exoPlayerViewModel: JukeBoxViewModel = viewModel()
     val context = LocalContext.current
@@ -66,7 +67,7 @@ fun JukeBox(navController: NavHostController) {
     ModalNavigationDrawer(
         drawerState = drawerState,
         drawerContent = {
-            //TODO: Implementar la barra de busqueda
+            Menu(navController = navController, appMainViewModel)
         },
         content = {
             Column(

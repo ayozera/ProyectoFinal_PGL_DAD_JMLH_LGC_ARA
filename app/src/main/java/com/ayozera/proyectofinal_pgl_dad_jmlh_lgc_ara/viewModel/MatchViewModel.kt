@@ -47,8 +47,12 @@ class MatchViewModel : ViewModel() {
     val _score: MutableStateFlow<ArrayList<Int>> = MutableStateFlow(ArrayList())
     val score = _score.asStateFlow()
 
+    var isInitialized: Boolean = false
+
 
     fun setContext(context: Context) {
+        if (isInitialized) return
+        isInitialized = true
         this._context = context
         this._selectionMatch = MutableStateFlow(DataUp.loadSelection(context))
         this._gameName = MutableStateFlow(_selectionMatch!!.value.game)

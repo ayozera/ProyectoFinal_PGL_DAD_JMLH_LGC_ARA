@@ -13,11 +13,15 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ModalNavigationDrawer
 import androidx.compose.material3.Text
+import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.collectAsState
@@ -25,6 +29,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -32,8 +37,6 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.font.FontFamily
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -46,54 +49,64 @@ import com.ayozera.proyectofinal_pgl_dad_jmlh_lgc_ara.viewModel.AppMainViewModel
 import com.ayozera.proyectofinal_pgl_dad_jmlh_lgc_ara.viewModel.MatchViewModel
 
 @Composable
-fun Match(navController: NavHostController) {
-    val appMainViewModel: AppMainViewModel = viewModel()
+fun Match(navController: NavHostController, appMainViewModel: AppMainViewModel) {
+
     val matchViewModel : MatchViewModel = viewModel()
     val context = LocalContext.current
+    val scope = rememberCoroutineScope()
     matchViewModel.setContext(context)
     val gameName = matchViewModel.getGameName()
     val gameArt = matchViewModel.getGameArt()
     var openDialog by remember { mutableStateOf(false) }
     var openDialog2 by remember { mutableStateOf(false) }
     var isEnabled by remember { mutableStateOf(true) }
+    val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
 
-    Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 16.dp)
-            .verticalScroll(rememberScrollState()),
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        GameHeader(gameName, gameArt)
-        PlayersMarks(matchViewModel)
-        ButtonSaveMatch(isEnabled) {
-            matchViewModel.saveMatch()
-            appMainViewModel.discardMatch()
-            isEnabled = false
-            openDialog = true
-        }
-        Spacer(modifier = Modifier.size(20.dp))
-        ButtonDiscardMatch(isEnabled) {
-            openDialog2 = true
-        }
-        Spacer(modifier = Modifier.size(60.dp))
+    ModalNavigationDrawer(
+        drawerState = drawerState,
+        drawerContent = {
+            Menu(navController = navController, appMainViewModel)
+        },
+        content = {
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp)
+                    .verticalScroll(rememberScrollState()),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                GameHeader(gameName, gameArt)
+                PlayersMarks(matchViewModel)
+                ButtonSaveMatch(isEnabled) {
+                    matchViewModel.saveMatch()
+                    appMainViewModel.discardMatch()
+                    isEnabled = false
+                    openDialog = true
+                }
+                Spacer(modifier = Modifier.size(20.dp))
+                ButtonDiscardMatch(isEnabled) {
+                    openDialog2 = true
+                }
+                Spacer(modifier = Modifier.size(60.dp))
 
-        if (openDialog) {
-            AlertDialogSaveMatch() {
-                openDialog = false
+                if (openDialog) {
+                    AlertDialogSaveMatch() {
+                        openDialog = false
+                    }
+                }
+
+                if (openDialog2) {
+                    AlertDialogDiscardMatch(onConfirmClick = {
+                        openDialog2 = false
+                        appMainViewModel.discardMatch()
+                        navController.navigate(Routs.Profile.rout)
+                    }, onCancelClick = {
+                        openDialog2 = false
+                    })
+                }
             }
         }
-
-        if (openDialog2) {
-            AlertDialogDiscardMatch(onConfirmClick = {
-                openDialog2 = false
-                appMainViewModel.discardMatch()
-                navController.navigate(Routs.Profile.rout)
-            }, onCancelClick = {
-                openDialog2 = false
-            })
-        }
-    }
+    )
 }
 
 @Composable
@@ -179,7 +192,7 @@ fun ButtonDiscardMatch(isEnabled : Boolean, onSave: () -> Unit) {
             containerColor = MaterialTheme.colorScheme.primaryContainer
         ), enabled = isEnabled
     ) {
-        Text(text = "Empezar Partida", color = MaterialTheme.colorScheme.primary)
+        Text(text = "Descartar Partida", color = MaterialTheme.colorScheme.primary)
     }
 }
 
@@ -191,7 +204,7 @@ fun ButtonSaveMatch(isEnabled : Boolean, onSave: () -> Unit) {
             containerColor = MaterialTheme.colorScheme.primaryContainer
         ), enabled = isEnabled
     ) {
-        Text(text = "Empezar Partida", color = MaterialTheme.colorScheme.primary)
+        Text(text = "Guardar Partida", color = MaterialTheme.colorScheme.primary)
     }
 }
 
@@ -199,7 +212,7 @@ fun ButtonSaveMatch(isEnabled : Boolean, onSave: () -> Unit) {
 fun AlertDialogSaveMatch(onDismissClick: () -> Unit) {
     MaterialTheme {
         Column {
-            androidx.compose.material3.AlertDialog(
+            AlertDialog(
                 onDismissRequest = {
                     onDismissClick()
                 },
@@ -226,15 +239,15 @@ fun AlertDialogSaveMatch(onDismissClick: () -> Unit) {
 fun AlertDialogDiscardMatch(onConfirmClick: () -> Unit, onCancelClick: () -> Unit) {
     MaterialTheme {
         Column {
-            androidx.compose.material3.AlertDialog(
+            AlertDialog(
                 onDismissRequest = {
                     onCancelClick()
                 },
                 title = {
-                    Text(text = "Partida guardada")
+                    Text(text = "Partida descartada")
                 },
                 text = {
-                    Text("Partida añadida correctamente")
+                    Text("¿Está seguro de que desea eliminar esta partida?")
                 },
                 confirmButton = {
                     Row {

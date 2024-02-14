@@ -15,13 +15,16 @@ import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ModalNavigationDrawer
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
+import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -38,13 +41,14 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.ayozera.proyectofinal_pgl_dad_jmlh_lgc_ara.models.Player
 import com.ayozera.proyectofinal_pgl_dad_jmlh_lgc_ara.navigation.Routs
+import com.ayozera.proyectofinal_pgl_dad_jmlh_lgc_ara.viewModel.AppMainViewModel
 import com.ayozera.proyectofinal_pgl_dad_jmlh_lgc_ara.viewModel.SelectMatchViewModel
 import java.time.LocalDate
 
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun SelectMatch(navController: NavHostController) {
+fun SelectMatch(navController: NavHostController, appMainViewModel: AppMainViewModel) {
 
     val selectMatchViewModel: SelectMatchViewModel = viewModel()
     val context = LocalContext.current
@@ -54,52 +58,62 @@ fun SelectMatch(navController: NavHostController) {
     val selectedGame = selectMatchViewModel.game
     var openDialogError by remember { mutableStateOf(false) }
     val playersName = arrayListOf<String>()
+    val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
 
-    Column(
-        modifier = Modifier
-            .background(color = MaterialTheme.colorScheme.background)
-            .verticalScroll(rememberScrollState())
-            .fillMaxSize(),
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
+    ModalNavigationDrawer(
+        drawerState = drawerState,
+        drawerContent = {
+            Menu(navController = navController, appMainViewModel)
+        },
+        content = {
+            Column(
+                modifier = Modifier
+                    .background(color = MaterialTheme.colorScheme.background)
+                    .verticalScroll(rememberScrollState())
+                    .fillMaxSize(),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
 
-        Spacer(modifier = Modifier.size(30.dp))
-        GameSelection(games) { onGameSelected ->
-            selectMatchViewModel.setGame(onGameSelected)
-        }
-        Spacer(modifier = Modifier.size(30.dp))
-        PlayerSelection(players, playersName, selectMatchViewModel)
-        Spacer(modifier = Modifier.size(30.dp))
-        ButtonBegin {
-            var check = true
-            playersName.forEach { player ->
-                if (player.isEmpty()) {
-                    check = false
+                Spacer(modifier = Modifier.size(30.dp))
+                GameSelection(games) { onGameSelected ->
+                    selectMatchViewModel.setGame(onGameSelected)
                 }
-            }
-            if (selectedGame.value.isNotEmpty() && check) {
-                playersName.forEach { player ->
-                    players.forEach { playerInList ->
-                        if (player == playerInList.name) {
-                            selectMatchViewModel.addPlayers(playerInList)
+                Spacer(modifier = Modifier.size(30.dp))
+                PlayerSelection(players, playersName, selectMatchViewModel)
+                Spacer(modifier = Modifier.size(30.dp))
+                ButtonBegin {
+                    var check = true
+                    playersName.forEach { player ->
+                        if (player.isEmpty()) {
+                            check = false
                         }
                     }
+                    if (selectedGame.value.isNotEmpty() && check) {
+                        playersName.forEach { player ->
+                            players.forEach { playerInList ->
+                                if (player == playerInList.name) {
+                                    selectMatchViewModel.addPlayers(playerInList)
+                                }
+                            }
+                        }
+                        selectMatchViewModel.setDate(LocalDate.now())
+                        selectMatchViewModel.saveSelections()
+                        appMainViewModel.startMatch()
+                        navController.navigate(Routs.Match.rout)
+                    } else {
+                        openDialogError = true
+                    }
                 }
-                selectMatchViewModel.setDate(LocalDate.now())
-                selectMatchViewModel.saveSelections()
-                navController.navigate(Routs.Match.rout)
-            } else {
-                openDialogError = true
-            }
-        }
-        Spacer(modifier = Modifier.size(80.dp))
+                Spacer(modifier = Modifier.size(80.dp))
 
-        if (openDialogError) {
-            AlertDialogError() {
-                openDialogError = false
+                if (openDialogError) {
+                    AlertDialogError() {
+                        openDialogError = false
+                    }
+                }
             }
         }
-    }
+    )
 }
 
 @Composable
