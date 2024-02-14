@@ -87,7 +87,7 @@ class JukeBoxViewModel : ViewModel() {
         }
     }
 
-    fun createPlayer(contexto: Context) {
+    fun createPlayer(contexto: Context, exoPlayerViewModel: JukeBoxViewModel) {
         _mediaPlayer.value = ExoPlayer.Builder(contexto).build()
         _mediaPlayer.value!!.prepare()
         updateSong(contexto)

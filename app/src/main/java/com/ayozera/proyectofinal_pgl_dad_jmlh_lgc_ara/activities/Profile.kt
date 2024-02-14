@@ -45,10 +45,10 @@ fun Profile(navController: NavHostController, appMainViewModel: AppMainViewModel
     val profileViewModel = ProfileViewModel()
     val context = LocalContext.current
     profileViewModel.setContext(context)
-    val userName = profileViewModel.userName.value
+/*    val userName = profileViewModel.userName.value
     val userAvatar = profileViewModel.userAvatar.value
     val matches = profileViewModel.matches.value
-    val favouriteGame = profileViewModel.favouriteGame.value
+    val favouriteGame = profileViewModel.favouriteGame.value*/
 
     var isEditClicked by remember { mutableStateOf(false) }
 
@@ -82,41 +82,44 @@ fun Profile(navController: NavHostController, appMainViewModel: AppMainViewModel
                         modifier = Modifier
                             .padding(start = 25.dp)
                     )
-    Column(
-        verticalArrangement = Arrangement.SpaceBetween,
-        horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = Modifier
-            .fillMaxWidth()
+                    Column(
+                        verticalArrangement = Arrangement.SpaceBetween,
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        modifier = Modifier
+                            .fillMaxWidth()
 
-            .background(color = MaterialTheme.colorScheme.background),
-    ) {
-        Row(
-            horizontalArrangement = Arrangement.Start,
-            verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier
-                .fillMaxHeight(0.10f)
-                .background(color = MaterialTheme.colorScheme.primary)
-                .fillMaxWidth()
-        ) {
-            //ArrowBackWelcome(navController)
-            ArrowBackWelcome(navController)
-            Text(
-                text = "Turn & points",
-                fontSize = 32.sp,
-                fontFamily = FontFamily.Cursive,
-                fontWeight = FontWeight.Bold,
-                modifier = Modifier.padding(start = 25.dp)
-            )
+                            .background(color = MaterialTheme.colorScheme.background),
+                    ) {
+                        Row(
+                            horizontalArrangement = Arrangement.Start,
+                            verticalAlignment = Alignment.CenterVertically,
+                            modifier = Modifier
+                                .fillMaxHeight(0.10f)
+                                .background(color = MaterialTheme.colorScheme.primary)
+                                .fillMaxWidth()
+                        ) {
+                            //ArrowBackWelcome(navController)
+                            ArrowBackWelcome(navController)
+                            Text(
+                                text = "Turn & points",
+                                fontSize = 32.sp,
+                                fontFamily = FontFamily.Cursive,
+                                fontWeight = FontWeight.Bold,
+                                modifier = Modifier.padding(start = 25.dp)
+                            )
 
-            Image(
-                painter = painterResource(id = R.drawable.dados),
-                contentDescription = "Logo de dados",
-                modifier = Modifier.padding(start = 25.dp)
-            )
+                            Image(
+                                painter = painterResource(id = R.drawable.dados),
+                                contentDescription = "Logo de dados",
+                                modifier = Modifier.padding(start = 25.dp)
+                            )
+                        }
+                    }
+                }
+            }
         }
-    }
+    )
 }
-
 @Composable
 fun ArrowBackWelcome(navController: NavHostController) {
 

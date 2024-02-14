@@ -74,6 +74,7 @@ fun Menu(navController: NavHostController, appMainViewModel: AppMainViewModel) {
 @Composable
 fun ButtonMenu(text: String, onButtonClick : () -> Unit) {
     Button(
+        modifier = Modifier.fillMaxWidth(0.5f),
         onClick = { onButtonClick() },
         colors = ButtonDefaults.buttonColors(
             containerColor = MaterialTheme.colorScheme.onTertiary
