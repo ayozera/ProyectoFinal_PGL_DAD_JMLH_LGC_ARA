@@ -24,8 +24,8 @@ class MatchViewModel : ViewModel() {
     val gameName: StateFlow<String>
         get() = _gameName?.asStateFlow() ?: throw IllegalStateException("Context not initialized")
 
-    var _gameArt: MutableStateFlow<Int>? = null
-    val gameArt: StateFlow<Int>
+    var _gameArt: MutableStateFlow<String>? = null
+    val gameArt: StateFlow<String>
         get() = _gameArt?.asStateFlow() ?: throw IllegalStateException("Context not initialized")
 
     var _players: MutableStateFlow<ArrayList<Player>>? = null
@@ -56,13 +56,7 @@ class MatchViewModel : ViewModel() {
         this._context = context
         this._selectionMatch = MutableStateFlow(DataUp.loadSelection(context))
         this._gameName = MutableStateFlow(_selectionMatch!!.value.game)
-        this._gameArt = MutableStateFlow(
-            context.resources.getIdentifier(
-                _selectionMatch!!.value.game,
-                "drawable",
-                context.packageName
-            )
-        )
+        this._gameArt = MutableStateFlow(_selectionMatch!!.value.game)
         this._players = MutableStateFlow(_selectionMatch!!.value.players)
         this._day = MutableStateFlow(_selectionMatch!!.value.day)
         this._month = MutableStateFlow(_selectionMatch!!.value.month)
@@ -76,7 +70,7 @@ class MatchViewModel : ViewModel() {
         return _gameName?.value ?: throw IllegalStateException("Context not initialized")
     }
 
-    fun getGameArt(): Int {
+    fun getGameArt(): String {
         return _gameArt?.value ?: throw IllegalStateException("Context not initialized")
     }
 

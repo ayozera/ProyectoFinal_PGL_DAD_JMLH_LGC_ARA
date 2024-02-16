@@ -215,8 +215,13 @@ fun MatchBox(match: Match) {
             .background(MaterialTheme.colorScheme.primaryContainer)
             .padding(16.dp, 10.dp)
     ){
+        val imageResourceId = LocalContext.current.resources.getIdentifier(
+            match.gameArt,
+            "drawable",
+            LocalContext.current.packageName
+        )
         Image(
-            painter = painterResource(id = match.gameArt),
+            painter = painterResource(id = imageResourceId),
             contentDescription = "Game Art",
 
             modifier = Modifier

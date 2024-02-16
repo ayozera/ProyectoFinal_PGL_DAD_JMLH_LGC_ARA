@@ -60,7 +60,11 @@ fun Match(navController: NavHostController, appMainViewModel: AppMainViewModel) 
     val scope = rememberCoroutineScope()
     matchViewModel.setContext(context)
     val gameName = matchViewModel.getGameName()
-    val gameArt = matchViewModel.getGameArt()
+    val gameArt = LocalContext.current.resources.getIdentifier(
+        matchViewModel.getGameArt(),
+        "drawable",
+        LocalContext.current.packageName
+    )
     var openDialog by remember { mutableStateOf(false) }
     var openDialog2 by remember { mutableStateOf(false) }
     var isEnabled by remember { mutableStateOf(true) }
