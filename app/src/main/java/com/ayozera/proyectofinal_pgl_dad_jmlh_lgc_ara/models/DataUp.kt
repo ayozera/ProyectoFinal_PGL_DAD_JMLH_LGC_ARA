@@ -220,7 +220,7 @@ class DataUp {
                                 score.add(reader.readLine().toInt())
                             }
                             counter = -1
-                            matchesList.add(Match(game, gameArt.toInt(), players, day, month, year, score))
+                            matchesList.add(Match(game, gameArt, players, day, month, year, score))
                             players = ArrayList()
                             score = ArrayList()
                         }
