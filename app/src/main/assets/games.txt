@@ -3,7 +3,7 @@ damas
 backgammon
 monopoly
 scrabble
-cluedo
+Cluedo
 risk
 catan
 carcassonne

@@ -59,12 +59,12 @@ fun GameDescription(
     val game by gameViewModel.game.collectAsState()
     val comments by gameViewModel.listComment.collectAsState()
     val gameArt = LocalContext.current.resources.getIdentifier(
-        gameName?.replace(" ", "_")?.lowercase(),
+        gameName.replace(" ", "_").lowercase(),
         "drawable",
         LocalContext.current.packageName
     )
     println("Nombre del juego: $gameName")
-    val description = game?.description ?: "No hay descripción"
+    val description by gameViewModel.description.collectAsState()
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
 
     Column(
