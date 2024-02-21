@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -41,7 +42,6 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.ayozera.proyectofinal_pgl_dad_jmlh_lgc_ara.R
 import com.ayozera.proyectofinal_pgl_dad_jmlh_lgc_ara.models.Comment
-import com.ayozera.proyectofinal_pgl_dad_jmlh_lgc_ara.models.DataUp
 import com.ayozera.proyectofinal_pgl_dad_jmlh_lgc_ara.viewModel.AppMainViewModel
 import com.ayozera.proyectofinal_pgl_dad_jmlh_lgc_ara.viewModel.GameDescriptionViewModel
 
@@ -53,7 +53,9 @@ fun GameDescription(
     gameName: String?
 ) {
     val gameViewModel = remember { GameDescriptionViewModel() }
-    gameViewModel.loadGame(gameName!!)
+    //Cargamos el juego y sus comentarios en el viemodel en un hilo que sólo se ejecuta una vez
+    val player by appMainViewModel.user!!.collectAsState()
+    gameViewModel.loadViewModel(gameName!!, player)
     val game by gameViewModel.game.collectAsState()
     val comments by gameViewModel.listComment.collectAsState()
     val gameArt = LocalContext.current.resources.getIdentifier(
@@ -65,25 +67,31 @@ fun GameDescription(
     val description = game?.description ?: "No hay descripción"
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
 
-    ModalNavigationDrawer(
-        drawerState = drawerState,
-        drawerContent = {
-            Menu(navController = navController, appMainViewModel)
-        },
-        content = {
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .background(MaterialTheme.colorScheme.background)
-                    .verticalScroll(rememberScrollState())
-            ) {
-                GameHeader(gameName, gameArt)
-                Description(description)
-                WriteReview(gameViewModel)
-                ReviewList(comments)
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(MaterialTheme.colorScheme.background)
+    ) {
+        ModalNavigationDrawer(
+            drawerState = drawerState,
+            drawerContent = {
+                Menu(navController = navController, appMainViewModel)
+            },
+            content = {
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .background(MaterialTheme.colorScheme.background)
+                        .verticalScroll(rememberScrollState())
+                ) {
+                    GameHeader(gameName, gameArt)
+                    Description(description)
+                    WriteReview(gameViewModel)
+                    ReviewList(comments)
+                }
             }
-        }
-    )
+        )
+    }
 }
 
 @Composable
@@ -153,6 +161,7 @@ fun Description(description: String) {
         }
     }
 }
+
 @Composable
 fun WriteReview(viewModel: GameDescriptionViewModel) {
     var userReview by remember { mutableStateOf("") }
@@ -171,16 +180,21 @@ fun WriteReview(viewModel: GameDescriptionViewModel) {
             modifier = Modifier.fillMaxWidth()
         )
         TextButton(
-            onClick = { viewModel.addComment(userReview)
-                      userReview = ""
+            onClick = {
+                viewModel.addComment(userReview)
+                userReview = ""
             },
             modifier = Modifier
                 .padding(8.dp)
-                .border(2.dp, MaterialTheme.colorScheme.primary, MaterialTheme.shapes.extraLarge)
+                .border(
+                    2.dp,
+                    MaterialTheme.colorScheme.primary,
+                    MaterialTheme.shapes.extraLarge
+                )
                 .clip(MaterialTheme.shapes.extraLarge)
                 .background(MaterialTheme.colorScheme.primaryContainer),
 
-        ) {
+            ) {
             Text(
                 text = "Comentar",
                 fontSize = 22.sp,
@@ -188,41 +202,42 @@ fun WriteReview(viewModel: GameDescriptionViewModel) {
             )
         }
     }
+
 }
 
 @Composable
 fun ReviewBox(comments: Comment) {
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .border(
-                    2.dp,
-                    MaterialTheme.colorScheme.onPrimaryContainer,
-                    MaterialTheme.shapes.large
-                )
-                .clip(MaterialTheme.shapes.large)
-                .background(MaterialTheme.colorScheme.primaryContainer)
-                .padding(16.dp, 10.dp)
-        ) {
-            Text(
-                text = comments.player,
-                fontSize = 22.sp,
-                color = MaterialTheme.colorScheme.onBackground,
-                fontWeight = FontWeight.Bold
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .border(
+                2.dp,
+                MaterialTheme.colorScheme.onPrimaryContainer,
+                MaterialTheme.shapes.large
             )
-            Text(
-                text = comments.comment,
-                fontSize = 14.sp,
-                color = MaterialTheme.colorScheme.onBackground
-            )
-            Text(
-                text = comments.date,
-                fontSize = 14.sp,
-                color = MaterialTheme.colorScheme.onBackground
-            )
-        }
-        Spacer(modifier = Modifier.size(10.dp))
+            .clip(MaterialTheme.shapes.large)
+            .background(MaterialTheme.colorScheme.primaryContainer)
+            .padding(16.dp, 10.dp)
+    ) {
+        Text(
+            text = comments.player,
+            fontSize = 22.sp,
+            color = MaterialTheme.colorScheme.onBackground,
+            fontWeight = FontWeight.Bold
+        )
+        Text(
+            text = comments.comment,
+            fontSize = 14.sp,
+            color = MaterialTheme.colorScheme.onBackground
+        )
+        Text(
+            text = comments.date,
+            fontSize = 14.sp,
+            color = MaterialTheme.colorScheme.onBackground
+        )
     }
+    Spacer(modifier = Modifier.size(10.dp))
+}
 
 
 @Composable

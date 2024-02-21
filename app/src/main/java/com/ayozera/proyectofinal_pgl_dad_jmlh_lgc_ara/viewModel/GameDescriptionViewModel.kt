@@ -7,6 +7,7 @@ import androidx.annotation.RequiresApi
 import androidx.compose.runtime.mutableStateListOf
 import androidx.lifecycle.ViewModel
 import com.ayozera.proyectofinal_pgl_dad_jmlh_lgc_ara.models.Comment
+import com.ayozera.proyectofinal_pgl_dad_jmlh_lgc_ara.models.Player
 import com.ayozera.proyectofinal_pgl_dad_jmlh_lgc_ara.repositories.CommentDB
 import com.ayozera.proyectofinal_pgl_dad_jmlh_lgc_ara.repositories.GameDB
 import com.ayozera.proyectofinal_pgl_dad_jmlh_lgc_ara.repositories.PlayerDB
@@ -43,22 +44,24 @@ class GameDescriptionViewModel : ViewModel() {
     private var isRunning = false
 
 
-    fun loadGame(name: String) {
+    fun loadViewModel(gameName: String, playerName: Player?) {
         //obtenemos el juego a partir de su nombre
         if (isRunning) {
             return
         }
         isRunning = true
-        conexion.collection("Game").whereEqualTo("name", name).get()
+        conexion.collection("Game").whereEqualTo("name", gameName).get()
             .addOnSuccessListener { documents ->
                 for (document in documents) {
                     val game = document.toObject<GameDB>()
-                    _game.value = game
+                    _game = MutableStateFlow(game)
 
                     _listCommentDB.value.clear()
                     listenComment()
                 }
             }
+
+        /* TODO cargar PlayerDB */
     }
 
     fun listenComment() {
@@ -85,25 +88,46 @@ class GameDescriptionViewModel : ViewModel() {
                             }.addOnFailureListener { exception ->
                                 Log.d(TAG, "get failed with ", exception)
                             }
-
                         }
                     } else if (change.type == DocumentChange.Type.MODIFIED) {
                         val commentDB = change.document.toObject<CommentDB>()
                         _listCommentDB.value[change.newIndex] = commentDB
                         if (!commentDB.player.isNullOrEmpty()) {
-                            val player = conexion.collection("Player").document(commentDB.player)
-                                .get().result?.toObject<PlayerDB>()
-                            val comment = Comment(player!!.name, commentDB.text, commentDB.date)
-                            _listComment.value[change.newIndex] = comment
+                            val playerDocument =
+                                conexion.collection("Player").document(commentDB.player)
+                            playerDocument.get().addOnSuccessListener { documentSnapshot ->
+                                if (documentSnapshot.exists()) {
+                                    val player = documentSnapshot.toObject(PlayerDB::class.java)
+                                    val playerName = player?.name
+                                    val comment =
+                                        Comment(playerName!!, commentDB.text, commentDB.date)
+                                    _listComment.value[change.newIndex] = comment
+                                } else {
+                                    Log.d(TAG, "No such document")
+                                }
+                            }.addOnFailureListener { exception ->
+                                Log.d(TAG, "get failed with ", exception)
+                            }
                         }
                     } else {
                         val commentDB = change.document.toObject<CommentDB>()
                         _listCommentDB.value.remove(commentDB)
                         if (!commentDB.player.isNullOrEmpty()) {
-                            val player = conexion.collection("Player").document(commentDB.player)
-                                .get().result?.toObject<PlayerDB>()
-                            val comment = Comment(player!!.name, commentDB.text, commentDB.date)
-                            _listComment.value.remove(comment)
+                            val playerDocument =
+                                conexion.collection("Player").document(commentDB.player)
+                            playerDocument.get().addOnSuccessListener { documentSnapshot ->
+                                if (documentSnapshot.exists()) {
+                                    val player = documentSnapshot.toObject(PlayerDB::class.java)
+                                    val playerName = player?.name
+                                    val comment =
+                                        Comment(playerName!!, commentDB.text, commentDB.date)
+                                    _listComment.value.remove(comment)
+                                } else {
+                                    Log.d(TAG, "No such document")
+                                }
+                            }.addOnFailureListener { exception ->
+                                Log.d(TAG, "get failed with ", exception)
+                            }
                         }
                     }
                 }
@@ -137,6 +161,10 @@ class GameDescriptionViewModel : ViewModel() {
         }
         //generamos el id del comentario a partir del generador automático de Firebase
         val id = conexion.collection("Comment").document().id
+        println("game: ${_game.value!!.id}")
+        println("player: ${_player.value!!.id}")
+        println("text: $text")
+        println("date: ${_date.value}")
         val commentDB = CommentDB(id, _game.value!!.id, _player.value!!.id, text, _date.value)
         conexion.collection("Comment").add(commentDB)
     }
