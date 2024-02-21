@@ -6,5 +6,6 @@ data class Player (
 
     val name: String,
     val color: Color,
-    val avatar: String
+    val avatar: String,
+
 )

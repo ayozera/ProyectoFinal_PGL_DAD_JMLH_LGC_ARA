@@ -1,6 +1,8 @@
 package com.ayozera.proyectofinal_pgl_dad_jmlh_lgc_ara.viewModel
 
+import android.content.ContentValues.TAG
 import android.os.Build
+import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.compose.runtime.mutableStateListOf
 import androidx.lifecycle.ViewModel
@@ -51,7 +53,6 @@ class GameDescriptionViewModel: ViewModel(){
             }
         }
     }
-
     fun listenComment() {
         listenerComment = conexion.collection("Comment").addSnapshotListener { data, error ->
             if (error == null) {
@@ -60,21 +61,38 @@ class GameDescriptionViewModel: ViewModel(){
                         val commentDB = change.document.toObject<CommentDB>()
                         commentDB.id = change.document.id
                         _listCommentDB.value.add(commentDB)
-                        val player = conexion.collection("Player").document(commentDB.playerId).get().result?.toObject<PlayerDB>()
-                        val comment = Comment(player!!.name, commentDB.text, commentDB.date)
-                        _listComment.value.add(comment)
+                        if (!commentDB.player.isNullOrEmpty()) {
+                           val playerDocument = conexion.collection("Player").document(commentDB.player)
+                            playerDocument.get().addOnSuccessListener { documentSnapshot ->
+                                if (documentSnapshot.exists()) {
+                                    val player = documentSnapshot.toObject(PlayerDB::class.java)
+                                    val playerName = player?.name
+                                    val comment = Comment(playerName!!, commentDB.text, commentDB.date)
+                                    _listComment.value.add(comment)
+                                } else {
+                                    Log.d(TAG, "No such document")
+                                }
+                            }.addOnFailureListener { exception ->
+                                Log.d(TAG, "get failed with ", exception)
+                                }
+
+                        }
                     } else if (change.type == DocumentChange.Type.MODIFIED) {
                         val commentDB = change.document.toObject<CommentDB>()
                         _listCommentDB.value[change.newIndex] = commentDB
-                        val player = conexion.collection("Player").document(commentDB.playerId).get().result?.toObject<PlayerDB>()
-                        val comment = Comment(player!!.name, commentDB.text, commentDB.date)
-                        _listComment.value[change.newIndex] = comment
+                        if (!commentDB.player.isNullOrEmpty()) {
+                            val player = conexion.collection("Player").document(commentDB.player).get().result?.toObject<PlayerDB>()
+                            val comment = Comment(player!!.name, commentDB.text, commentDB.date)
+                            _listComment.value[change.newIndex] = comment
+                        }
                     } else {
                         val commentDB = change.document.toObject<CommentDB>()
                         _listCommentDB.value.remove(commentDB)
-                        val player = conexion.collection("Player").document(commentDB.playerId).get().result?.toObject<PlayerDB>()
-                        val comment = Comment(player!!.name, commentDB.text, commentDB.date)
-                        _listComment.value.remove(comment)
+                        if (!commentDB.player.isNullOrEmpty()) {
+                            val player = conexion.collection("Player").document(commentDB.player).get().result?.toObject<PlayerDB>()
+                            val comment = Comment(player!!.name, commentDB.text, commentDB.date)
+                            _listComment.value.remove(comment)
+                        }
                     }
                 }
             }

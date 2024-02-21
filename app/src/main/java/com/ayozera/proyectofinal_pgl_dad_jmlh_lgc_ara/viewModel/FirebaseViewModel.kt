@@ -31,17 +31,17 @@ class FirebaseViewModel : ViewModel() {
                     if (change.type == DocumentChange.Type.ADDED) {
                         val commentDB = change.document.toObject<CommentDB>()
                         commentDB.id = change.document.id
-                        val player = conexion.collection("Player").document(commentDB.playerId).get().result?.toObject<PlayerDB>()
+                        val player = conexion.collection("Player").document(commentDB.player).get().result?.toObject<PlayerDB>()
                         val comment = Comment(player!!.name, commentDB.text, commentDB.date)
                         _listComment.value.add(comment)
                     } else if (change.type == DocumentChange.Type.MODIFIED) {
                         val commentDB = change.document.toObject<CommentDB>()
-                        val player = conexion.collection("Player").document(commentDB.playerId).get().result?.toObject<PlayerDB>()
+                        val player = conexion.collection("Player").document(commentDB.player).get().result?.toObject<PlayerDB>()
                         val comment = Comment(player!!.name, commentDB.text, commentDB.date)
                         _listComment.value[change.newIndex] = comment
                     } else {
                         val commentDB = change.document.toObject<CommentDB>()
-                        val player = conexion.collection("Player").document(commentDB.playerId).get().result?.toObject<PlayerDB>()
+                        val player = conexion.collection("Player").document(commentDB.player).get().result?.toObject<PlayerDB>()
                         val comment = Comment(player!!.name, commentDB.text, commentDB.date)
                         _listComment.value.remove(comment)
                     }
