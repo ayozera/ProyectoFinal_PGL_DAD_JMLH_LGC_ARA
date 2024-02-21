@@ -181,6 +181,7 @@ fun SingUpBody(
         TextButton(
             onClick = {
                 viewModel.createAccount(
+                    textUser,
                     textEmail,
                     textPass,
                     onSuccess = {

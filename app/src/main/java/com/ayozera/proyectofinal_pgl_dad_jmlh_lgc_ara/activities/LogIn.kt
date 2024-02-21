@@ -37,6 +37,10 @@ import com.ayozera.proyectofinal_pgl_dad_jmlh_lgc_ara.R
 import com.ayozera.proyectofinal_pgl_dad_jmlh_lgc_ara.navigation.Routs
 import com.ayozera.proyectofinal_pgl_dad_jmlh_lgc_ara.viewModel.AppMainViewModel
 import com.ayozera.proyectofinal_pgl_dad_jmlh_lgc_ara.viewModel.LogInViewModel
+import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 @Composable
 fun LogIn(
@@ -114,7 +118,7 @@ fun LogInBody(
             fontSize = 36.sp,
             fontWeight = FontWeight.Bold,
             color = MaterialTheme.colorScheme.primary,
-            modifier = Modifier.padding(0.dp,10.dp,0.dp,15.dp)
+            modifier = Modifier.padding(0.dp, 10.dp, 0.dp, 15.dp)
         )
         Text(
             text = "Escribe tu nombre de usuario",
@@ -172,36 +176,44 @@ fun LogInBody(
         )
         Spacer(modifier = Modifier.padding(10.dp))
         val context = LocalContext.current
+        val viewModelScope = CoroutineScope(Dispatchers.Main)
         TextButton(
-
             onClick = {
                 logInViewModel.signIn(
-
                     textUser,
                     textPass,
-                    onSuccess = {
-                        appMainViewModel.logIn(textUser, context)
-                        Toast.makeText(context, "Inicio de sesión exitoso", Toast.LENGTH_SHORT).show()
-                       // navController.navigate(Routs.Profile.rout)
+                    onSuccess = { uid ->
+                        viewModelScope.launch {
+                            println("UID: $uid")
+                            appMainViewModel.logIn(uid)
+                            Toast.makeText(context, "Inicio de sesión exitoso", Toast.LENGTH_SHORT).show()
+                            navController.navigate(Routs.Profile.rout)
+                        }
                     },
                     onFailure = { error ->
                         Toast.makeText(context, error, Toast.LENGTH_SHORT).show()
                     }
                 )
             },
+
 //            onClick = {
-//                userIsCorrect = logInViewModel.signInWithUsernameAndPassword(
-//                    textUser, textPass, context
+//                logInViewModel.signIn(
+//                    textUser,
+//                    textPass,
+//                    onSuccess = {
+//                        val uid = it
+//                        println("UID: $uid")
+//                        appMainViewModel.logIn(uid)
+//                        Toast.makeText(context, "Inicio de sesión exitoso", Toast.LENGTH_SHORT)
+//                            .show()
+//                        navController.navigate(Routs.Profile.rout)
+//                    },
+//                    onFailure = { error ->
+//                        Toast.makeText(context, error, Toast.LENGTH_SHORT).show()
+//                    }
 //                )
-//                if (userIsCorrect) {
-//                    appMainViewModel.logIn(textUser, context)
-//                    navController.navigate(Routs.Profile.rout)
-//                    passIsCorrect = textPass.isNotBlank()
-//                    userIsCorrect = textUser.isNotBlank()
-//                if (passIsCorrect && userIsCorrect) {
-//                    navController.navigate("home")
-//                }
 //            },
+
             modifier = Modifier
                 .border(
                     2.dp,

@@ -86,7 +86,7 @@ dependencies {
     implementation(platform("com.google.firebase:firebase-bom:32.7.2"))
     implementation("com.google.firebase:firebase-auth")
 
-    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.2")
+        implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.7.0")
     implementation("androidx.lifecycle:lifecycle-runtime-compose:2.6.0-beta01")
     implementation(platform("com.google.firebase:firebase-bom:32.7.2"))
     implementation("androidx.navigation:navigation-compose:2.7.5")

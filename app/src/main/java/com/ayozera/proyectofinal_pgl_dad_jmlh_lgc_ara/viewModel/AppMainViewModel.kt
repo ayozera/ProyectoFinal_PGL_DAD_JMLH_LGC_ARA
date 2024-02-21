@@ -14,6 +14,9 @@ import kotlinx.coroutines.flow.asStateFlow
 import com.google.android.gms.tasks.Tasks
 import kotlinx.coroutines.tasks.await
 import java.util.concurrent.TimeUnit
+import kotlin.coroutines.resume
+import kotlin.coroutines.resumeWithException
+import kotlin.coroutines.suspendCoroutine
 
 class AppMainViewModel : ViewModel() {
 
@@ -32,28 +35,70 @@ class AppMainViewModel : ViewModel() {
     val isMatching = _isMatching.asStateFlow()
 
 
-    fun logIn(uid: String?) {
+//    fun logIn(uid: String) {
+//        _isLogged.value = true
+//        //obtenemos el jugador a partir del id del usuario, realizando una consulta a firebase
+//        connection.collection("Player").document(uid).get()
+//            .addOnSuccessListener { document ->
+//                val player = document.toObject(PlayerDB::class.java)
+//                _playerDB = MutableStateFlow(player)
+//                println("Player: ${player?.name}")
+//                println("Player: ${player?.color}")
+//                _player = MutableStateFlow(
+//                    Player(
+//                        player?.name.toString(),
+//                        Color(android.graphics.Color.parseColor(player?.color.toString())),
+//                        player?.avatar.toString()
+//                    )
+//                )
+//            }
+//            .addOnFailureListener { exception ->
+//                println("Error getting documents: $exception")
+//            }
+//        while (_player.value == null) {
+//            TimeUnit.SECONDS.sleep(1)
+//        }
+//    }
+
+    suspend fun getPlayer(uid: String): Player? {
+        return suspendCoroutine { continuation ->
+            connection.collection("Player").document(uid).get()
+                .addOnSuccessListener { document ->
+                    val playerDB = document.toObject(PlayerDB::class.java)
+                    val player = playerDB?.let {
+                        Player(
+                            it.name ?: "",
+                            Color(android.graphics.Color.parseColor(it.color ?: "")),
+                            it.avatar ?: ""
+                        )
+                    }
+                    continuation.resume(player)
+                }
+                .addOnFailureListener { exception ->
+                    continuation.resumeWithException(exception)
+                }
+        }
+    }
+
+    suspend fun logIn(uid: String) {
         _isLogged.value = true
-        //obtenemos el jugador a partir del id del usuario, realizando una consulta a firebase
-        connection.collection("Player").document(uid!!).get()
-            .addOnSuccessListener { document ->
-                val player = document.toObject(PlayerDB::class.java)
-                _playerDB = MutableStateFlow(player)
-                println("Player: ${player?.name}")
-                println("Player: ${player?.color}")
-                _player = MutableStateFlow(
-                    Player(
-                        player?.name.toString(),
-                        Color(android.graphics.Color.parseColor(player?.color.toString())),
-                        player?.avatar.toString()
-                    )
+        try {
+            val player = getPlayer(uid)
+            if (player != null) {
+                val playerDB = PlayerDB(
+                    name = player.name,
+                    color = player.color.toString(), // aquí podrías convertir el color a un formato que PlayerDB espera
+                    avatar = player.avatar
                 )
+                _playerDB.value = playerDB
+                println("Player: ${player.name}")
+                println("Player: ${player.color}")
+                _player.value = player
+            } else {
+                println("Player is null")
             }
-            .addOnFailureListener { exception ->
-                println("Error getting documents: $exception")
-            }
-        while (_player.value == null) {
-            TimeUnit.SECONDS.sleep(1)
+        } catch (e: Exception) {
+            println("Error getting player: $e")
         }
     }
 
