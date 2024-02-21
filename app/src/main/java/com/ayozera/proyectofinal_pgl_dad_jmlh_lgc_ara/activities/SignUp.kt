@@ -1,5 +1,6 @@
 package com.ayozera.proyectofinal_pgl_dad_jmlh_lgc_ara.activities
 
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -39,11 +40,11 @@ import com.ayozera.proyectofinal_pgl_dad_jmlh_lgc_ara.viewModel.AppMainViewModel
 import com.ayozera.proyectofinal_pgl_dad_jmlh_lgc_ara.viewModel.LogInViewModel
 import com.ayozera.proyectofinal_pgl_dad_jmlh_lgc_ara.viewModel.SignUpViewModel
 
-
 @Composable
 fun SignUp(navController: NavHostController, appMainViewModel: AppMainViewModel) {
     val signUpViewModel = remember { SignUpViewModel() }
     val logInViewModel: LogInViewModel = viewModel()
+
     Column(
         verticalArrangement = Arrangement.Top,
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -179,21 +180,17 @@ fun SingUpBody(
         Spacer(modifier = Modifier.padding(10.dp))
         TextButton(
             onClick = {
-               /*if (textPass != textPassRepeat || textPass.isBlank()) {
-                    passIsCorrect = false
-                    passRIsCorrect = false
-                } else {
-                    passIsCorrect = true
-                    passRIsCorrect = true
-                }
-                emailIsCorrect = emailRegex.matches(textEmail)
-                userIsCorrect = textUser.isNotBlank()
-
-                if (passIsCorrect && passRIsCorrect && emailIsCorrect && userIsCorrect) {
-                    viewModel.addSingUp(textUser, textPass, textEmail)
-                    navController.navigate(Routs.Profile.rout)
-                }*/
-                logInViewModel.signInWithEmailAndPassword(textEmail, textPass, {navController.navigate(Routs.Profile.rout)})
+                viewModel.createAccount(
+                    textEmail,
+                    textPass,
+                    onSuccess = {
+                        //navController.navigate(Routs.Profile.rout)
+                        Toast.makeText(navController.context, "Usuario creado", Toast.LENGTH_SHORT).show()
+                    },
+                    onFailure = { error ->
+                        Toast.makeText(navController.context, error, Toast.LENGTH_SHORT).show()
+                    }
+                )
             },
             modifier = Modifier
                 .border(

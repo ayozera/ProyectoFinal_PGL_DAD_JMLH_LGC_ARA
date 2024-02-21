@@ -1,5 +1,6 @@
 package com.ayozera.proyectofinal_pgl_dad_jmlh_lgc_ara.activities
 
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -174,18 +175,33 @@ fun LogInBody(
         TextButton(
 
             onClick = {
-                userIsCorrect = logInViewModel.signInWithUsernameAndPassword(
-                    textUser, textPass, context
+                logInViewModel.signIn(
+
+                    textUser,
+                    textPass,
+                    onSuccess = {
+                        appMainViewModel.logIn(textUser, context)
+                        Toast.makeText(context, "Inicio de sesión exitoso", Toast.LENGTH_SHORT).show()
+                       // navController.navigate(Routs.Profile.rout)
+                    },
+                    onFailure = { error ->
+                        Toast.makeText(context, error, Toast.LENGTH_SHORT).show()
+                    }
                 )
-                if (userIsCorrect) {
-                    appMainViewModel.logIn(textUser, context)
-                    navController.navigate(Routs.Profile.rout)
-                    passIsCorrect = textPass.isNotBlank()
-                    userIsCorrect = textUser.isNotBlank()
+            },
+//            onClick = {
+//                userIsCorrect = logInViewModel.signInWithUsernameAndPassword(
+//                    textUser, textPass, context
+//                )
+//                if (userIsCorrect) {
+//                    appMainViewModel.logIn(textUser, context)
+//                    navController.navigate(Routs.Profile.rout)
+//                    passIsCorrect = textPass.isNotBlank()
+//                    userIsCorrect = textUser.isNotBlank()
 //                if (passIsCorrect && userIsCorrect) {
 //                    navController.navigate("home")
-                }
-            },
+//                }
+//            },
             modifier = Modifier
                 .border(
                     2.dp,
