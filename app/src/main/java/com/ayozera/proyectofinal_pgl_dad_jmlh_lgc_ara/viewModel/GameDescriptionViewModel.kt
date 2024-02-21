@@ -8,7 +8,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
-class CommentsViewModel: ViewModel(){
+class GameDescriptionViewModel: ViewModel(){
     private var _user = MutableStateFlow("")
     val user = _user.asStateFlow()
 

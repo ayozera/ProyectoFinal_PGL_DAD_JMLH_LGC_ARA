@@ -11,8 +11,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
@@ -44,7 +42,7 @@ import com.ayozera.proyectofinal_pgl_dad_jmlh_lgc_ara.R
 import com.ayozera.proyectofinal_pgl_dad_jmlh_lgc_ara.models.Comment
 import com.ayozera.proyectofinal_pgl_dad_jmlh_lgc_ara.models.DataUp
 import com.ayozera.proyectofinal_pgl_dad_jmlh_lgc_ara.viewModel.AppMainViewModel
-import com.ayozera.proyectofinal_pgl_dad_jmlh_lgc_ara.viewModel.CommentsViewModel
+import com.ayozera.proyectofinal_pgl_dad_jmlh_lgc_ara.viewModel.GameDescriptionViewModel
 
 
 @Composable
@@ -54,7 +52,7 @@ fun GameDescription(
     gameName: String?
 ) {
     var comments = DataUp.getComments(LocalContext.current)
-    val commentsViewModel = remember { CommentsViewModel() }
+    val gameViewModel = remember { GameDescriptionViewModel() }
     val gameArt = LocalContext.current.resources.getIdentifier(
         gameName?.replace(" ", "_")?.lowercase(),
         "drawable",
@@ -78,7 +76,7 @@ fun GameDescription(
             ) {
                 GameHeader(gameName, gameArt)
                 Description(description)
-                WriteReview(commentsViewModel)
+                WriteReview(gameViewModel)
                 ReviewList(comments)
             }
         }
@@ -153,7 +151,7 @@ fun Description(description: String) {
     }
 }
 @Composable
-fun WriteReview(viewModel: CommentsViewModel) {
+fun WriteReview(viewModel: GameDescriptionViewModel) {
     var userReview by remember { mutableStateOf("") }
     Column(
         modifier = Modifier
@@ -204,7 +202,7 @@ fun ReviewBox(comments: Comment) {
                 .padding(16.dp, 10.dp)
         ) {
             Text(
-                text = comments.user,
+                text = comments.player,
                 fontSize = 22.sp,
                 color = MaterialTheme.colorScheme.onBackground,
                 fontWeight = FontWeight.Bold

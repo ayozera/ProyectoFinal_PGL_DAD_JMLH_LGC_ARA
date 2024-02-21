@@ -51,6 +51,7 @@ import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.ayozera.proyectofinal_pgl_dad_jmlh_lgc_ara.R
 import com.google.firebase.FirebaseApp
@@ -75,6 +76,7 @@ fun UploadPhoto(navController: NavHostController, appMainViewModel: AppMainViewM
 }
 
 
+@Preview
 @Composable
 fun PruebaSubirImagen() {
 
@@ -257,6 +259,11 @@ fun uploadImageToFirebase(bitmap: Bitmap, context: ComponentActivity, callback: 
 
     imageRef.putBytes(imageData)
         .addOnSuccessListener {
+            it.storage.downloadUrl.addOnSuccessListener { uri ->
+                println("Upload success with uri: $uri")
+                // actualizar la bdd con la uri
+                // firebase.document(iodusuario).set("fotoperfil",uri)
+            }
             callback(true)
         }
         .addOnFailureListener {

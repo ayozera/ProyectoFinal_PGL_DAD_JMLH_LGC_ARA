@@ -154,7 +154,7 @@ fun JukeBox(
 
                     var isRepeatOn by remember { mutableStateOf(false) }
                     var isShuffleOn by remember { mutableStateOf(false) }
-                    var isPlaying by remember { mutableStateOf(false) }
+                    var isPlaying by remember { mutableStateOf(exoPlayerViewModel.mediaPlayer.value!!.isPlaying ?: false) }
 
                     Row(
                         modifier = Modifier.fillMaxWidth(),
