@@ -143,7 +143,7 @@ fun SingUpBody(
             placeholder = { Text("Contraseña",
                 fontSize = 24.sp) },
             onValueChange = { textPass = it
-                            passIsCorrect = textPass.isNotBlank()
+                            textPass.length > 8
             },
             shape = RoundedCornerShape(10.dp),
             visualTransformation = PasswordVisualTransformation(),
@@ -180,9 +180,10 @@ fun SingUpBody(
         Spacer(modifier = Modifier.padding(10.dp))
         TextButton(
             onClick = {
+                if (textPass.length > 8 && textPass == textPassRepeat && emailRegex.matches(textEmail) && textUser.isNotBlank()) {
                 viewModel.createAccount(
-                    textUser,
-                    textEmail,
+                    textUser.trim(),
+                    textEmail.trim(),
                     textPass,
                     onSuccess = {
                         //navController.navigate(Routs.Profile.rout)
@@ -192,6 +193,9 @@ fun SingUpBody(
                         Toast.makeText(navController.context, error, Toast.LENGTH_SHORT).show()
                     }
                 )
+                } else {
+                    Toast.makeText(navController.context, "Datos incorrectos", Toast.LENGTH_SHORT).show()
+                }
             },
             modifier = Modifier
                 .border(
