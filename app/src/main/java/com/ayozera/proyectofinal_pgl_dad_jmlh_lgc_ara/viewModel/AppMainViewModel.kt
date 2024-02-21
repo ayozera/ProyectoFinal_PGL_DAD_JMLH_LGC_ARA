@@ -32,29 +32,29 @@ class AppMainViewModel : ViewModel() {
     val isMatching = _isMatching.asStateFlow()
 
 
-    fun logIn(userName : String, context: Context) {
+    fun logIn(uid: String?) {
         _isLogged.value = true
         //obtenemos el jugador a partir del id del usuario, realizando una consulta a firebase
-        var userId = ""
-        connection.collection("User").whereEqualTo("username", userName).get()
-            .addOnSuccessListener { documents ->
-                val document = documents.first()
-                userId = document.id
-                connection.collection("Player").whereEqualTo("user", userId).get()
-                    .addOnSuccessListener { documents ->
-                        val player = documents.first().toObject(PlayerDB::class.java)
-                        _playerDB = MutableStateFlow(player)
-                        println("player ${_playerDB.value?.name.toString()}")
-                        println("color ${_playerDB.value?.color.toString()}")
-                        _player = MutableStateFlow(
-                            Player(
-                                _playerDB.value?.name.toString(),
-                                Color(android.graphics.Color.parseColor(_playerDB.value?.color.toString())),
-                                _playerDB.value?.avatar.toString()
-                            )
-                        )
-                    }
+        connection.collection("Player").document(uid!!).get()
+            .addOnSuccessListener { document ->
+                val player = document.toObject(PlayerDB::class.java)
+                _playerDB = MutableStateFlow(player)
+                println("Player: ${player?.name}")
+                println("Player: ${player?.color}")
+                _player = MutableStateFlow(
+                    Player(
+                        player?.name.toString(),
+                        Color(android.graphics.Color.parseColor(player?.color.toString())),
+                        player?.avatar.toString()
+                    )
+                )
             }
+            .addOnFailureListener { exception ->
+                println("Error getting documents: $exception")
+            }
+        while (_player.value == null) {
+            TimeUnit.SECONDS.sleep(1)
+        }
     }
 
 
