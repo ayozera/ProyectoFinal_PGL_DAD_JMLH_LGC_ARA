@@ -23,6 +23,7 @@ import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextField
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -51,15 +52,17 @@ fun GameDescription(
     appMainViewModel: AppMainViewModel,
     gameName: String?
 ) {
-    var comments = DataUp.getComments(LocalContext.current)
     val gameViewModel = remember { GameDescriptionViewModel() }
+    gameViewModel.loadGame(gameName!!)
+    val game by gameViewModel.game.collectAsState()
+    val comments by gameViewModel.listComment.collectAsState()
     val gameArt = LocalContext.current.resources.getIdentifier(
         gameName?.replace(" ", "_")?.lowercase(),
         "drawable",
         LocalContext.current.packageName
     )
     println("Nombre del juego: $gameName")
-    val description = DataUp.getDescription(LocalContext.current, gameName!!)
+    val description = game?.description ?: "No hay descripción"
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
 
     ModalNavigationDrawer(
@@ -168,7 +171,7 @@ fun WriteReview(viewModel: GameDescriptionViewModel) {
             modifier = Modifier.fillMaxWidth()
         )
         TextButton(
-            onClick = { viewModel.addComment("user",userReview)
+            onClick = { viewModel.addComment(userReview)
                       userReview = ""
             },
             modifier = Modifier

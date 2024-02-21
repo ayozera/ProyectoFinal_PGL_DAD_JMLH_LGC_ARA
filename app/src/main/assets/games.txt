@@ -9,7 +9,7 @@ catan
 carcassonne
 dominion
 pandemic
-agricola
+Agricola
 splendor
 codenames
 azul
