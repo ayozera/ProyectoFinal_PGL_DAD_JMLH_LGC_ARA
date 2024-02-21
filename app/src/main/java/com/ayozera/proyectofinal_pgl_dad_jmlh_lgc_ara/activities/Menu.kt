@@ -84,19 +84,19 @@ fun Menu(navController: NavHostController, appMainViewModel: AppMainViewModel) {
 
 @Composable
 fun CardProfile(appMainViewModel: AppMainViewModel, weight: Modifier) {
-    val user = appMainViewModel.user?.collectAsState()
+    val player = appMainViewModel.player?.collectAsState()
 
     Row(
         weight.fillMaxWidth()
     ) {
         Column(
             modifier = Modifier.fillMaxWidth(0.5f).fillMaxHeight()
-                .background(user!!.value!!.color, shape = MaterialTheme.shapes.medium),
+                .background(player!!.value!!.color, shape = MaterialTheme.shapes.medium),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
             val imageResourceId = LocalContext.current.resources.getIdentifier(
-                user.value!!.avatar,
+                player.value!!.avatar,
                 "drawable",
                 LocalContext.current.packageName
             )
@@ -105,7 +105,7 @@ fun CardProfile(appMainViewModel: AppMainViewModel, weight: Modifier) {
                 contentDescription = "Avatar",
                 modifier = Modifier
                     .size(125.dp)
-                    .border(3.dp, user.value!!.color, shape = CircleShape)
+                    .border(3.dp, player.value!!.color, shape = CircleShape)
                     .clip(CircleShape)
             )
         }
@@ -115,7 +115,7 @@ fun CardProfile(appMainViewModel: AppMainViewModel, weight: Modifier) {
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
-            Text(text = user!!.value!!.name, color = MaterialTheme.colorScheme.tertiary)
+            Text(text = player!!.value!!.name, color = MaterialTheme.colorScheme.tertiary)
         }
     }
 }
