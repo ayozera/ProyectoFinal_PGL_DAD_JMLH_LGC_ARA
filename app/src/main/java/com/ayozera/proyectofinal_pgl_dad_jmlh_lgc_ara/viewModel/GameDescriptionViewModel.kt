@@ -19,7 +19,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
-class GameDescriptionViewModel: ViewModel(){
+class GameDescriptionViewModel : ViewModel() {
 
     val conexion = FirebaseFirestore.getInstance()
 
@@ -40,19 +40,27 @@ class GameDescriptionViewModel: ViewModel(){
     private var _date = MutableStateFlow("")
     val date = _date.asStateFlow()
 
+    private var isRunning = false
+
 
     fun loadGame(name: String) {
         //obtenemos el juego a partir de su nombre
-        conexion.collection("Game").whereEqualTo("name", name).get().addOnSuccessListener { documents ->
-            for (document in documents) {
-                val game = document.toObject<GameDB>()
-                _game.value = game
-
-                _listCommentDB.value.clear()
-                listenComment()
-            }
+        if (isRunning) {
+            return
         }
+        isRunning = true
+        conexion.collection("Game").whereEqualTo("name", name).get()
+            .addOnSuccessListener { documents ->
+                for (document in documents) {
+                    val game = document.toObject<GameDB>()
+                    _game.value = game
+
+                    _listCommentDB.value.clear()
+                    listenComment()
+                }
+            }
     }
+
     fun listenComment() {
         listenerComment = conexion.collection("Comment").addSnapshotListener { data, error ->
             if (error == null) {
@@ -62,26 +70,29 @@ class GameDescriptionViewModel: ViewModel(){
                         commentDB.id = change.document.id
                         _listCommentDB.value.add(commentDB)
                         if (!commentDB.player.isNullOrEmpty()) {
-                           val playerDocument = conexion.collection("Player").document(commentDB.player)
+                            val playerDocument =
+                                conexion.collection("Player").document(commentDB.player)
                             playerDocument.get().addOnSuccessListener { documentSnapshot ->
                                 if (documentSnapshot.exists()) {
                                     val player = documentSnapshot.toObject(PlayerDB::class.java)
                                     val playerName = player?.name
-                                    val comment = Comment(playerName!!, commentDB.text, commentDB.date)
+                                    val comment =
+                                        Comment(playerName!!, commentDB.text, commentDB.date)
                                     _listComment.value.add(comment)
                                 } else {
                                     Log.d(TAG, "No such document")
                                 }
                             }.addOnFailureListener { exception ->
                                 Log.d(TAG, "get failed with ", exception)
-                                }
+                            }
 
                         }
                     } else if (change.type == DocumentChange.Type.MODIFIED) {
                         val commentDB = change.document.toObject<CommentDB>()
                         _listCommentDB.value[change.newIndex] = commentDB
                         if (!commentDB.player.isNullOrEmpty()) {
-                            val player = conexion.collection("Player").document(commentDB.player).get().result?.toObject<PlayerDB>()
+                            val player = conexion.collection("Player").document(commentDB.player)
+                                .get().result?.toObject<PlayerDB>()
                             val comment = Comment(player!!.name, commentDB.text, commentDB.date)
                             _listComment.value[change.newIndex] = comment
                         }
@@ -89,7 +100,8 @@ class GameDescriptionViewModel: ViewModel(){
                         val commentDB = change.document.toObject<CommentDB>()
                         _listCommentDB.value.remove(commentDB)
                         if (!commentDB.player.isNullOrEmpty()) {
-                            val player = conexion.collection("Player").document(commentDB.player).get().result?.toObject<PlayerDB>()
+                            val player = conexion.collection("Player").document(commentDB.player)
+                                .get().result?.toObject<PlayerDB>()
                             val comment = Comment(player!!.name, commentDB.text, commentDB.date)
                             _listComment.value.remove(comment)
                         }
@@ -113,12 +125,13 @@ class GameDescriptionViewModel: ViewModel(){
         val idComment = _listCommentDB.value.get(index).id
         return idComment.equals(_player.value!!.id)
     }
+
     fun deleteComment(index: Int) {
         val idComment = _listCommentDB.value.get(index).id
         conexion.collection("Comment").document(idComment).delete()
     }
 
-    fun addComment(text: String){
+    fun addComment(text: String) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             _date.value = getCurrentDateTime()
         }
@@ -127,6 +140,7 @@ class GameDescriptionViewModel: ViewModel(){
         val commentDB = CommentDB(id, _game.value!!.id, _player.value!!.id, text, _date.value)
         conexion.collection("Comment").add(commentDB)
     }
+
     @RequiresApi(Build.VERSION_CODES.O)
     fun getCurrentDateTime(): String {
         val currentDateTime = LocalDateTime.now()
