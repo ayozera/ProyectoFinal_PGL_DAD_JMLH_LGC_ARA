@@ -43,7 +43,6 @@ fun LogIn(
     appMainViewModel: AppMainViewModel
 ) {
     val logInViewModel: LogInViewModel = viewModel()
-
     Column(
         verticalArrangement = Arrangement.Top,
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -181,8 +180,8 @@ fun LogInBody(
                 if (userIsCorrect) {
                     appMainViewModel.logIn(textUser, context)
                     navController.navigate(Routs.Profile.rout)
-//                passIsCorrect = textPass.isNotBlank()
-//                userIsCorrect = textUser.isNotBlank()
+                    passIsCorrect = textPass.isNotBlank()
+                    userIsCorrect = textUser.isNotBlank()
 //                if (passIsCorrect && userIsCorrect) {
 //                    navController.navigate("home")
                 }

@@ -31,16 +31,19 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.ayozera.proyectofinal_pgl_dad_jmlh_lgc_ara.R
 import com.ayozera.proyectofinal_pgl_dad_jmlh_lgc_ara.navigation.Routs
 import com.ayozera.proyectofinal_pgl_dad_jmlh_lgc_ara.viewModel.AppMainViewModel
+import com.ayozera.proyectofinal_pgl_dad_jmlh_lgc_ara.viewModel.LogInViewModel
 import com.ayozera.proyectofinal_pgl_dad_jmlh_lgc_ara.viewModel.SignUpViewModel
 
 
 @Composable
 fun SignUp(navController: NavHostController, appMainViewModel: AppMainViewModel) {
     val signUpViewModel = remember { SignUpViewModel() }
+    val logInViewModel: LogInViewModel = viewModel()
     Column(
         verticalArrangement = Arrangement.Top,
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -49,7 +52,7 @@ fun SignUp(navController: NavHostController, appMainViewModel: AppMainViewModel)
             .background(color = MaterialTheme.colorScheme.background),
     ) {
         LogInHeader(Modifier.fillMaxHeight(0.1f))
-        SingUpBody(signUpViewModel,navController,Modifier.fillMaxHeight(0.8f))
+        SingUpBody(signUpViewModel,navController,Modifier.fillMaxHeight(0.8f), logInViewModel)
         ChangeToLogIn(navController,Modifier.fillMaxHeight(0.8f))
     }
 
@@ -58,7 +61,8 @@ fun SignUp(navController: NavHostController, appMainViewModel: AppMainViewModel)
 fun SingUpBody(
     viewModel: SignUpViewModel,
     navController: NavHostController,
-    weight: Modifier
+    weight: Modifier,
+    logInViewModel: LogInViewModel
 ) {
     var textUser by remember { mutableStateOf("") }
     var textEmail by remember { mutableStateOf("") }
@@ -175,7 +179,7 @@ fun SingUpBody(
         Spacer(modifier = Modifier.padding(10.dp))
         TextButton(
             onClick = {
-               if (textPass != textPassRepeat || textPass.isBlank()) {
+               /*if (textPass != textPassRepeat || textPass.isBlank()) {
                     passIsCorrect = false
                     passRIsCorrect = false
                 } else {
@@ -188,7 +192,8 @@ fun SingUpBody(
                 if (passIsCorrect && passRIsCorrect && emailIsCorrect && userIsCorrect) {
                     viewModel.addSingUp(textUser, textPass, textEmail)
                     navController.navigate(Routs.Profile.rout)
-                }
+                }*/
+                logInViewModel.signInWithEmailAndPassword(textEmail, textPass, {navController.navigate(Routs.Profile.rout)})
             },
             modifier = Modifier
                 .border(
