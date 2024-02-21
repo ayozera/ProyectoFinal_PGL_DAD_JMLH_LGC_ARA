@@ -41,7 +41,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.ayozera.proyectofinal_pgl_dad_jmlh_lgc_ara.R
-import com.ayozera.proyectofinal_pgl_dad_jmlh_lgc_ara.models.Comment
 import com.ayozera.proyectofinal_pgl_dad_jmlh_lgc_ara.models.DataUp
 import com.ayozera.proyectofinal_pgl_dad_jmlh_lgc_ara.models.Match
 import com.ayozera.proyectofinal_pgl_dad_jmlh_lgc_ara.viewModel.AppMainViewModel
@@ -85,7 +84,7 @@ fun Profile(navController: NavHostController, appMainViewModel: AppMainViewModel
 
 @Composable
 fun ProfileHeader(appMainViewModel: AppMainViewModel) {
-    val user = appMainViewModel.user!!.collectAsState()
+    val user = appMainViewModel.player!!.collectAsState()
     var showDialog by remember { mutableStateOf(false) }
     if (showDialog) {
         ProfileAlertDialogError { showDialog = false }

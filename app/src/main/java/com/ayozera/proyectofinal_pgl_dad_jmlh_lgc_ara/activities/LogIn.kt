@@ -30,12 +30,15 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.ayozera.proyectofinal_pgl_dad_jmlh_lgc_ara.R
 import com.ayozera.proyectofinal_pgl_dad_jmlh_lgc_ara.navigation.Routs
 import com.ayozera.proyectofinal_pgl_dad_jmlh_lgc_ara.viewModel.AppMainViewModel
 import com.ayozera.proyectofinal_pgl_dad_jmlh_lgc_ara.viewModel.LogInViewModel
+import kotlinx.coroutines.launch
+import java.util.concurrent.TimeUnit
 
 @Composable
 fun LogIn(
@@ -113,7 +116,7 @@ fun LogInBody(
             fontSize = 36.sp,
             fontWeight = FontWeight.Bold,
             color = MaterialTheme.colorScheme.primary,
-            modifier = Modifier.padding(0.dp,10.dp,0.dp,15.dp)
+            modifier = Modifier.padding(0.dp, 10.dp, 0.dp, 15.dp)
         )
         Text(
             text = "Escribe tu nombre de usuario",
@@ -180,10 +183,6 @@ fun LogInBody(
                 if (userIsCorrect) {
                     appMainViewModel.logIn(textUser, context)
                     navController.navigate(Routs.Profile.rout)
-                    passIsCorrect = textPass.isNotBlank()
-                    userIsCorrect = textUser.isNotBlank()
-//                if (passIsCorrect && userIsCorrect) {
-//                    navController.navigate("home")
                 }
             },
             modifier = Modifier

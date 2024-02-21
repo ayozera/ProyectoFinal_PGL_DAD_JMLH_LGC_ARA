@@ -22,7 +22,7 @@ import java.time.format.DateTimeFormatter
 
 class GameDescriptionViewModel : ViewModel() {
 
-    val conexion = FirebaseFirestore.getInstance()
+    private val connection = FirebaseFirestore.getInstance()
 
     private lateinit var listenerComment: ListenerRegistration
 
@@ -44,13 +44,13 @@ class GameDescriptionViewModel : ViewModel() {
     private var isRunning = false
 
 
-    fun loadViewModel(gameName: String, playerName: Player?) {
+    fun loadViewModel(gameName: String, player: PlayerDB?) {
         //obtenemos el juego a partir de su nombre
         if (isRunning) {
             return
         }
         isRunning = true
-        conexion.collection("Game").whereEqualTo("name", gameName).get()
+        connection.collection("Game").whereEqualTo("name", gameName).get()
             .addOnSuccessListener { documents ->
                 for (document in documents) {
                     val game = document.toObject<GameDB>()
@@ -61,11 +61,11 @@ class GameDescriptionViewModel : ViewModel() {
                 }
             }
 
-        /* TODO cargar PlayerDB */
+        _player = MutableStateFlow(player)
     }
 
     fun listenComment() {
-        listenerComment = conexion.collection("Comment").addSnapshotListener { data, error ->
+        listenerComment = connection.collection("Comment").addSnapshotListener { data, error ->
             if (error == null) {
                 data?.documentChanges?.forEach { change ->
                     if (change.type == DocumentChange.Type.ADDED) {
@@ -74,7 +74,7 @@ class GameDescriptionViewModel : ViewModel() {
                         _listCommentDB.value.add(commentDB)
                         if (!commentDB.player.isNullOrEmpty()) {
                             val playerDocument =
-                                conexion.collection("Player").document(commentDB.player)
+                                connection.collection("Player").document(commentDB.player)
                             playerDocument.get().addOnSuccessListener { documentSnapshot ->
                                 if (documentSnapshot.exists()) {
                                     val player = documentSnapshot.toObject(PlayerDB::class.java)
@@ -94,7 +94,7 @@ class GameDescriptionViewModel : ViewModel() {
                         _listCommentDB.value[change.newIndex] = commentDB
                         if (!commentDB.player.isNullOrEmpty()) {
                             val playerDocument =
-                                conexion.collection("Player").document(commentDB.player)
+                                connection.collection("Player").document(commentDB.player)
                             playerDocument.get().addOnSuccessListener { documentSnapshot ->
                                 if (documentSnapshot.exists()) {
                                     val player = documentSnapshot.toObject(PlayerDB::class.java)
@@ -114,7 +114,7 @@ class GameDescriptionViewModel : ViewModel() {
                         _listCommentDB.value.remove(commentDB)
                         if (!commentDB.player.isNullOrEmpty()) {
                             val playerDocument =
-                                conexion.collection("Player").document(commentDB.player)
+                                connection.collection("Player").document(commentDB.player)
                             playerDocument.get().addOnSuccessListener { documentSnapshot ->
                                 if (documentSnapshot.exists()) {
                                     val player = documentSnapshot.toObject(PlayerDB::class.java)
@@ -152,7 +152,7 @@ class GameDescriptionViewModel : ViewModel() {
 
     fun deleteComment(index: Int) {
         val idComment = _listCommentDB.value.get(index).id
-        conexion.collection("Comment").document(idComment).delete()
+        connection.collection("Comment").document(idComment).delete()
     }
 
     fun addComment(text: String) {
@@ -160,13 +160,13 @@ class GameDescriptionViewModel : ViewModel() {
             _date.value = getCurrentDateTime()
         }
         //generamos el id del comentario a partir del generador automático de Firebase
-        val id = conexion.collection("Comment").document().id
+        val id = connection.collection("Comment").document().id
         println("game: ${_game.value!!.id}")
         println("player: ${_player.value!!.id}")
         println("text: $text")
         println("date: ${_date.value}")
         val commentDB = CommentDB(id, _game.value!!.id, _player.value!!.id, text, _date.value)
-        conexion.collection("Comment").add(commentDB)
+        connection.collection("Comment").add(commentDB)
     }
 
     @RequiresApi(Build.VERSION_CODES.O)

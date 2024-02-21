@@ -54,7 +54,7 @@ fun GameDescription(
 ) {
     val gameViewModel = remember { GameDescriptionViewModel() }
     //Cargamos el juego y sus comentarios en el viemodel en un hilo que sólo se ejecuta una vez
-    val player by appMainViewModel.user!!.collectAsState()
+    val player by appMainViewModel.playerDB!!.collectAsState()
     gameViewModel.loadViewModel(gameName!!, player)
     val game by gameViewModel.game.collectAsState()
     val comments by gameViewModel.listComment.collectAsState()
