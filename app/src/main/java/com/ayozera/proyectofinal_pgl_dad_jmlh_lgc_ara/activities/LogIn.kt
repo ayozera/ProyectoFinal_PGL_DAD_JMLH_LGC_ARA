@@ -121,7 +121,7 @@ fun LogInBody(
             modifier = Modifier.padding(0.dp, 10.dp, 0.dp, 15.dp)
         )
         Text(
-            text = "Escribe tu nombre de usuario",
+            text = "Escribe tu email",
             fontSize = 20.sp,
             color = setTextFieldColor(isCorrect = emailIsCorrect)
         )
@@ -179,7 +179,7 @@ fun LogInBody(
         val viewModelScope = CoroutineScope(Dispatchers.Main)
         TextButton(
             onClick = {
-                if (textPass.length > 8 && textEmail.isNotBlank()) {
+                if (textPass.length >= 8 && textEmail.isNotBlank()) {
                     logInViewModel.signIn(
                         textEmail.trim(),
                         textPass,

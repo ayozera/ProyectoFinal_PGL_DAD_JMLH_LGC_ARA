@@ -288,3 +288,8 @@ fun ReviewList(comments: List<Comment>, gameViewModel: GameDescriptionViewModel)
         }
     }
 }
+
+@Composable
+fun deleteReview() {
+
+}
