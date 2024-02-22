@@ -179,7 +179,7 @@ fun LogInBody(
         val viewModelScope = CoroutineScope(Dispatchers.Main)
         TextButton(
             onClick = {
-                if (textPass.length > 8 && textEmail.isNotBlank()) {
+                if (textPass.length >= 8 && textEmail.isNotBlank()) {
                     logInViewModel.signIn(
                         textEmail.trim(),
                         textPass,
