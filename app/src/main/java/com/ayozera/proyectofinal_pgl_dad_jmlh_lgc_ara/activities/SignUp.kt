@@ -180,7 +180,7 @@ fun SingUpBody(
         Spacer(modifier = Modifier.padding(10.dp))
         TextButton(
             onClick = {
-                if (textPass.length > 8 && textPass == textPassRepeat && emailRegex.matches(textEmail) && textUser.isNotBlank()) {
+                if (textPass.length >= 8 && textPass == textPassRepeat && emailRegex.matches(textEmail) && textUser.isNotBlank()) {
                 viewModel.createAccount(
                     textUser.trim(),
                     textEmail.trim(),
@@ -191,6 +191,7 @@ fun SingUpBody(
                     },
                     onFailure = { error ->
                         Toast.makeText(navController.context, error, Toast.LENGTH_SHORT).show()
+                        println("Error: $error")
                     }
                 )
                 } else {
