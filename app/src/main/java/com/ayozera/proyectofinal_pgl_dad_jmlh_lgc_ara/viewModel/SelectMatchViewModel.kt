@@ -55,6 +55,7 @@ class SelectMatchViewModel : ViewModel() {
             loadViewModel()
         }
     }
+
     suspend fun loadViewModel() {
         if (isInitialized) {
             return
