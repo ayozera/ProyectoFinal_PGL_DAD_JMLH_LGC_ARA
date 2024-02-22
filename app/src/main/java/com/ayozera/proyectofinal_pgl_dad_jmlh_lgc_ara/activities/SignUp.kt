@@ -197,6 +197,7 @@ fun SingUpBody(
                     },
                     onFailure = { error ->
                         Toast.makeText(navController.context, error, Toast.LENGTH_SHORT).show()
+                        println("Error: $error")
                     }
                 )
                 }

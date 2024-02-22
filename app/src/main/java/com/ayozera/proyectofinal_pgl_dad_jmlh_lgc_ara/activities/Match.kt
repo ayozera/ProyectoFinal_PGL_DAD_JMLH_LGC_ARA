@@ -48,6 +48,7 @@ import com.ayozera.proyectofinal_pgl_dad_jmlh_lgc_ara.models.Player
 import com.ayozera.proyectofinal_pgl_dad_jmlh_lgc_ara.navigation.Routs
 import com.ayozera.proyectofinal_pgl_dad_jmlh_lgc_ara.viewModel.AppMainViewModel
 import com.ayozera.proyectofinal_pgl_dad_jmlh_lgc_ara.viewModel.MatchViewModel
+import kotlinx.coroutines.launch
 
 @Composable
 fun Match(navController: NavHostController, appMainViewModel: AppMainViewModel) {
@@ -66,7 +67,7 @@ fun Match(navController: NavHostController, appMainViewModel: AppMainViewModel) 
     var openDialog2 by remember { mutableStateOf(false) }
     var isEnabled by remember { mutableStateOf(true) }
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
-
+    val courutineScope = rememberCoroutineScope()
 
     ModalNavigationDrawer(
         drawerState = drawerState,
@@ -84,10 +85,12 @@ fun Match(navController: NavHostController, appMainViewModel: AppMainViewModel) 
                 GameHeader(gameName, gameArt)
                 PlayersMarks(matchViewModel)
                 ButtonSaveMatch(isEnabled) {
-                    matchViewModel.saveMatch()
-                    appMainViewModel.discardMatch()
-                    isEnabled = false
-                    openDialog = true
+                    courutineScope.launch {
+                        matchViewModel.saveMatch()
+                        appMainViewModel.discardMatch()
+                        isEnabled = false
+                        openDialog = true
+                    }
                 }
                 Spacer(modifier = Modifier.size(20.dp))
                 ButtonDiscardMatch(isEnabled) {

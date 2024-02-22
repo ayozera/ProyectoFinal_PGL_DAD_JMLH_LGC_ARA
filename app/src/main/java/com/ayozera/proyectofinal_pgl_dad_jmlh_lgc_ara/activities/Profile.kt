@@ -25,6 +25,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -39,6 +40,8 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.ayozera.proyectofinal_pgl_dad_jmlh_lgc_ara.R
 import com.ayozera.proyectofinal_pgl_dad_jmlh_lgc_ara.models.DataUp
@@ -50,16 +53,14 @@ import com.ayozera.proyectofinal_pgl_dad_jmlh_lgc_ara.viewModel.ProfileViewModel
 @Composable
 fun Profile(navController: NavHostController, appMainViewModel: AppMainViewModel) {
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
-    val profileViewModel = ProfileViewModel()
-    val context = LocalContext.current
-    profileViewModel.setContext(context)
-    /*    val userName = profileViewModel.userName.value
-        val userAvatar = profileViewModel.userAvatar.value
-        val matches = profileViewModel.matches.value
-        val favouriteGame = profileViewModel.favouriteGame.value*/
-
+    val user = appMainViewModel.playerDB.collectAsState()
+    val profileViewModel : ProfileViewModel = viewModel()
+    LaunchedEffect(key1 = Unit) {
+        profileViewModel.load(user.value!!.id)
+    }
+    val matches = profileViewModel.matches.collectAsStateWithLifecycle()
     var isEditClicked by remember { mutableStateOf(false) }
-    var matches = DataUp.loadMatches(LocalContext.current)
+
 
     ModalNavigationDrawer(
         drawerState = drawerState,
@@ -76,7 +77,7 @@ fun Profile(navController: NavHostController, appMainViewModel: AppMainViewModel
             ) {
                 ProfileHeader(appMainViewModel)
                 ProfileBody()
-                MatchList(matches)
+                MatchList(matches.value)
             }
         }
     )
