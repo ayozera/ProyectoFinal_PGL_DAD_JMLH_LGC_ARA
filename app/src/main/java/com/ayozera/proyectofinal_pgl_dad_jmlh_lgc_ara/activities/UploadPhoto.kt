@@ -28,6 +28,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -76,7 +77,7 @@ fun UploadPhoto(navController: NavHostController, appMainViewModel: AppMainViewM
 }
 
 
-@Preview
+@Preview(showSystemUi = true, showBackground = true)
 @Composable
 fun PruebaSubirImagen() {
 
@@ -112,7 +113,11 @@ fun PruebaSubirImagen() {
         }
     }
 
-    Column {
+    Column(horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.SpaceBetween,
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(top = 100.dp)) {
         Image(
             bitmap = bitmap.value.asImageBitmap(),
             contentDescription = "Imagen",
@@ -123,60 +128,67 @@ fun PruebaSubirImagen() {
                 .background(MaterialTheme.colorScheme.tertiary)
                 .border(2.dp, MaterialTheme.colorScheme.primary, shape = CircleShape)
         )
+
     }
 
-    Box(
-        modifier = Modifier.padding(top = 280.dp, start = 260.dp)
-    ){
-        Image(
-            painter = painterResource(id = R.drawable.round_add_box_24),
-            contentDescription = null,
-            modifier = Modifier.clip(CircleShape)
-                .background(MaterialTheme.colorScheme.tertiaryContainer)
-                .size(50.dp)
-                .padding(10.dp)
-                .clickable { showDialog = true }
-        )
-    }
-
-    Column(
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.SpaceBetween,
+Column (
+    modifier = Modifier
+        .padding(top= 100.dp)
+        .offset(x = 240.dp, y = 140.dp),
+) {
+    Image(
+        painter = painterResource(id = R.drawable.round_add_box_24),
+        contentDescription = null,
         modifier = Modifier
-            .fillMaxWidth()
-            .padding(top = 100.dp),
-    ) {
-        Button(
-            onClick = {
-                isUpLoading = true
-                bitmap.value.let { bitmap ->
-                    FirebaseApp.initializeApp(context)
-                    uploadImageToFirebase(bitmap, context as ComponentActivity) { success ->
-                        isUpLoading = success
-                        if (success) {
-                            Toast.makeText(context, "Imagen subida", Toast.LENGTH_SHORT).show()
-                        } else {
-                            Toast.makeText(context, "Error al subir la imagen", Toast.LENGTH_SHORT)
-                                .show()
-                        }
-                    }
-                    isUpLoading = false
-                }
-            },
-            colors = ButtonDefaults.buttonColors(
-                Color.Blue
-            )
+            .clip(CircleShape)
+            .background(MaterialTheme.colorScheme.tertiaryContainer)
+            .size(70.dp)
+            .padding(10.dp)
+            .clickable { showDialog = true }
+
+    )
+}
+
+     //Agregar las funcionalidades de este boton a "REGISTRARSE" o "Guardar cambios"
+        /*Column(
+            horizontalAlignment = Alignment.End,
+            verticalArrangement = Arrangement.Bottom,
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 100.dp),
         ) {
-            Text(text = "Subir imagen")
-        }
-    }
+            Button(
+                onClick = {
+                    isUpLoading = true
+                    bitmap.value.let { bitmap ->
+                        FirebaseApp.initializeApp(context)
+                        uploadImageToFirebase(bitmap, context as ComponentActivity) { success ->
+                            isUpLoading = success
+                            if (success) {
+                                Toast.makeText(context, "Imagen subida", Toast.LENGTH_SHORT).show()
+                            } else {
+                                Toast.makeText(context, "Error al subir la imagen", Toast.LENGTH_SHORT)
+                                    .show()
+                            }
+                        }
+                        isUpLoading = false
+                    }
+                },
+                colors = ButtonDefaults.buttonColors(
+                    Color.Blue
+                )
+            ) {
+                Text(text = "Subir imagen")
+            }
+        }*/
 
     Column(
         verticalArrangement = Arrangement.Bottom,
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier
-            .fillMaxSize()
-            .padding(bottom = 10.dp),
+            //.fillMaxSize()
+            .fillMaxWidth()
+            //.padding(bottom = 10.dp),
     ) {
         if (showDialog) {
             Row(
@@ -237,7 +249,6 @@ fun PruebaSubirImagen() {
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.SpaceBetween,
         modifier = Modifier
-            .fillMaxWidth()
             .height(450.dp)
     ) {
         if (isUpLoading) {

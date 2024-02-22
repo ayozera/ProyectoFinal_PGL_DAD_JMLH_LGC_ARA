@@ -43,6 +43,7 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.ayozera.proyectofinal_pgl_dad_jmlh_lgc_ara.models.Player
@@ -52,6 +53,7 @@ import com.ayozera.proyectofinal_pgl_dad_jmlh_lgc_ara.repositories.PlayerDB
 import com.ayozera.proyectofinal_pgl_dad_jmlh_lgc_ara.viewModel.AppMainViewModel
 import com.ayozera.proyectofinal_pgl_dad_jmlh_lgc_ara.viewModel.SelectMatchViewModel
 import kotlinx.coroutines.launch
+import java.sql.SQLOutput
 import java.time.LocalDate
 
 
@@ -61,8 +63,14 @@ fun SelectMatch(navController: NavHostController, appMainViewModel: AppMainViewM
 
     val selectMatchViewModel: SelectMatchViewModel = viewModel()
     val context = LocalContext.current
-    val games by selectMatchViewModel.games.collectAsState()
-    val players by selectMatchViewModel.playersDB.collectAsState()
+    val games by selectMatchViewModel.games.collectAsStateWithLifecycle()
+    val players by selectMatchViewModel.playersDB.collectAsStateWithLifecycle()
+    games.forEach { game ->
+        println(game.name)
+    }
+    players.forEach { player ->
+        println(player.name)
+    }
     var openDialogError by remember { mutableStateOf(false) }
     val playersName = arrayListOf<String>()
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
