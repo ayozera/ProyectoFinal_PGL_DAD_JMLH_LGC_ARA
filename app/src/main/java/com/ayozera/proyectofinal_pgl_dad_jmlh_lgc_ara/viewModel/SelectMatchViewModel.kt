@@ -62,7 +62,9 @@ class SelectMatchViewModel : ViewModel() {
         }
         isInitialized = true
         _playersDB = MutableStateFlow(getPlayers())
+        println("Players: ${_playersDB.value.size}")
         _games = MutableStateFlow(getGames())
+        println("Games: ${_games.value.size}")
     }
 
     private suspend fun getPlayers() : ArrayList<PlayerDB> {

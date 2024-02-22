@@ -1,20 +1,27 @@
 package com.ayozera.proyectofinal_pgl_dad_jmlh_lgc_ara.activities
 
+import android.graphics.drawable.GradientDrawable
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -28,22 +35,30 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
+import androidx.wear.compose.material.ExperimentalWearMaterialApi
+import androidx.wear.compose.material.FractionalThreshold
+import androidx.wear.compose.material.rememberSwipeableState
+import androidx.wear.compose.material.swipeable
 import com.ayozera.proyectofinal_pgl_dad_jmlh_lgc_ara.R
 import com.ayozera.proyectofinal_pgl_dad_jmlh_lgc_ara.models.Comment
 import com.ayozera.proyectofinal_pgl_dad_jmlh_lgc_ara.viewModel.AppMainViewModel
 import com.ayozera.proyectofinal_pgl_dad_jmlh_lgc_ara.viewModel.GameDescriptionViewModel
+import kotlinx.coroutines.launch
 
 
 @Composable
@@ -203,7 +218,7 @@ fun WriteReview(viewModel: GameDescriptionViewModel) {
     }
 
 }
-
+@OptIn(ExperimentalWearMaterialApi::class)
 @Composable
 fun ReviewBox(
     comments: Comment,
@@ -211,22 +226,39 @@ fun ReviewBox(
     gameViewModel: GameDescriptionViewModel,
     i: Int
 ) {
-    Column(
+    val coroutineScope = rememberCoroutineScope()
+    val swipeableState = rememberSwipeableState(initialValue = false)
+    val anchors = mapOf(
+        0f to false,
+        -300f to true
+    )
+    var showDialog by remember { mutableStateOf(false) }
+
+    Row(
         modifier = Modifier
             .fillMaxWidth()
-            .border(
-                2.dp,
-                MaterialTheme.colorScheme.onPrimaryContainer,
-                MaterialTheme.shapes.large
+            .swipeable(
+                state = swipeableState,
+                anchors = anchors,
+                thresholds = { _, _ -> FractionalThreshold(0.5f) },
+                orientation = Orientation.Horizontal,
+                enabled = isDeleteable,
+                reverseDirection = true
             )
-            .clip(MaterialTheme.shapes.large)
-            .background(MaterialTheme.colorScheme.primaryContainer)
-            .padding(16.dp, 10.dp)
+            .offset(x = with(LocalDensity.current) { swipeableState.offset.value.dp })
     ) {
-        Row(
-            horizontalArrangement = Arrangement.SpaceAround,
-            modifier = Modifier.fillMaxWidth(),
-            verticalAlignment = Alignment.CenterVertically
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .border(
+                    2.dp,
+                    MaterialTheme.colorScheme.onPrimaryContainer,
+                    MaterialTheme.shapes.large
+                )
+                .clip(MaterialTheme.shapes.large)
+                .background(MaterialTheme.colorScheme.primaryContainer)
+                .padding(16.dp, 10.dp),
+            verticalArrangement = Arrangement.spacedBy(4.dp) // Espacio vertical entre elementos
         ) {
             Text(
                 text = comments.player,
@@ -234,43 +266,55 @@ fun ReviewBox(
                 color = MaterialTheme.colorScheme.onBackground,
                 fontWeight = FontWeight.Bold
             )
-            if (isDeleteable) {
-                TextButton(
-                    onClick = {
-                        gameViewModel.deleteComment(i)
-                    },
-                    modifier = Modifier
-                        .padding(8.dp)
-                        .border(
-                            2.dp,
-                            MaterialTheme.colorScheme.primary,
-                            MaterialTheme.shapes.extraLarge
-                        )
-                        .clip(MaterialTheme.shapes.extraLarge)
-                        .background(MaterialTheme.colorScheme.primaryContainer),
-
-                    ) {
-                    Text(
-                        text = "Borrar",
-                        fontSize = 22.sp,
-                        color = MaterialTheme.colorScheme.onPrimaryContainer
-                    )
-                }
-            }
+            Text(
+                text = comments.comment,
+                fontSize = 14.sp,
+                color = MaterialTheme.colorScheme.onBackground
+            )
+            Text(
+                text = comments.date,
+                fontSize = 14.sp,
+                color = MaterialTheme.colorScheme.onBackground
+            )
         }
-        Text(
-            text = comments.comment,
-            fontSize = 14.sp,
-            color = MaterialTheme.colorScheme.onBackground
-        )
-        Text(
-            text = comments.date,
-            fontSize = 14.sp,
-            color = MaterialTheme.colorScheme.onBackground
-        )
+        if (swipeableState.currentValue) {
+            showDialog = true // Muestra el cuadro de diálogo cuando se desliza el comentario
+        }
     }
     Spacer(modifier = Modifier.size(10.dp))
+
+    if (showDialog) {
+        AlertDialog(
+            onDismissRequest = { showDialog = false },
+            title = { Text("Confirmación") },
+            text = { Text("¿Estás seguro de que quieres borrar este comentario?") },
+            confirmButton = {
+                TextButton(onClick = {
+                    gameViewModel.deleteComment(i)
+                    coroutineScope.launch {
+                        swipeableState.animateTo(false)
+                        showDialog = false
+                    }
+
+                }) {
+                    Text("Sí")
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = {
+                     // Aquí actualizamos showDialog antes de cerrar el diálogo
+                    coroutineScope.launch {
+                        swipeableState.animateTo(false)
+                        showDialog = false
+                    }
+                }) {
+                    Text("No")
+                }
+            }
+        )
+    }
 }
+
 
 
 @Composable
