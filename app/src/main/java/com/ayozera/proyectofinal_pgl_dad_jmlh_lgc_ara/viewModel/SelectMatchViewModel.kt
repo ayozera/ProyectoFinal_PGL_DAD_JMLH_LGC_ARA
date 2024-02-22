@@ -17,6 +17,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import java.time.LocalDate
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
@@ -55,15 +56,20 @@ class SelectMatchViewModel : ViewModel() {
         }
     }
 
+
     private suspend fun loadViewModel() {
         if (isInitialized) {
             return
         }
         isInitialized = true
-        _playersDB = MutableStateFlow(getPlayers())
-        println("jugadores: ${_playersDB.value.size}")
-        _games = MutableStateFlow(getGames())
-        println("juegos: ${_games.value.size}")
+        _games.value = getGames()
+        _games.value.forEach {
+            println("juego: ${it.name}")
+        }
+        _playersDB.value = getPlayers()
+        _playersDB.value.forEach {
+            println("jugador: ${it.name}")
+        }
     }
 
     private suspend fun getPlayers() : ArrayList<PlayerDB> {

@@ -9,6 +9,7 @@ import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.tasks.await
 
 
 class MatchViewModel : ViewModel() {
@@ -89,7 +90,7 @@ class MatchViewModel : ViewModel() {
     }
 
     // Save the match in the database
-    fun saveMatch() {
+/*    fun saveMatch() {
         val connection = FirebaseFirestore.getInstance()
         val gameId = connection.collection("Game").whereEqualTo("name", _gameName!!.value).get().result!!.documents[0].id
         val match = hashMapOf(
@@ -106,6 +107,30 @@ class MatchViewModel : ViewModel() {
                 "points" to _score.value[i]
             )
             connection.collection("Score").add(score)
+        }
+    }*/
+
+
+
+// ...
+
+    suspend fun saveMatch() {
+        val connection = FirebaseFirestore.getInstance()
+        val gameId = connection.collection("Game").whereEqualTo("name", _gameName!!.value).get().await().documents[0].id
+        val match = hashMapOf(
+            "game" to gameId,
+            "date" to "${_day!!.value}-${_month!!.value}-${_year!!.value}"
+        )
+        val matchId = connection.collection("Match").add(match).await().id
+        connection.collection("Match").document(matchId).set(match)
+
+        for (i in 0 until _players!!.value.size) {
+            val score = hashMapOf(
+                "player" to playersId[i],
+                "match" to matchId,
+                "points" to _score.value[i]
+            )
+            connection.collection("Score").add(score).await()
         }
     }
 
