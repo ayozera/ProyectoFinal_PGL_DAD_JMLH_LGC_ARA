@@ -14,8 +14,6 @@ import kotlinx.coroutines.tasks.await
 
 class MatchViewModel : ViewModel() {
 
-    private var _selectionMatch: MutableStateFlow<SelectionMatch>? = null
-
     var _gameName: MutableStateFlow<String>? = null
     val gameName: StateFlow<String>
         get() = _gameName?.asStateFlow() ?: throw IllegalStateException("Context not initialized")
@@ -88,31 +86,6 @@ class MatchViewModel : ViewModel() {
             _score.value = ArrayList(newScoreList)
         }
     }
-
-    // Save the match in the database
-/*    fun saveMatch() {
-        val connection = FirebaseFirestore.getInstance()
-        val gameId = connection.collection("Game").whereEqualTo("name", _gameName!!.value).get().result!!.documents[0].id
-        val match = hashMapOf(
-            "game" to gameId,
-            "date" to "${_day!!.value}-${_month!!.value}-${_year!!.value}"
-        )
-        val matchId = connection.collection("Match").add(match).result!!.id
-        connection.collection("Match").document(matchId).set(match)
-
-        for (i in 0 until _players!!.value.size) {
-            val score = hashMapOf(
-                "player" to playersId[i],
-                "match" to matchId,
-                "points" to _score.value[i]
-            )
-            connection.collection("Score").add(score)
-        }
-    }*/
-
-
-
-// ...
 
     suspend fun saveMatch() {
         val connection = FirebaseFirestore.getInstance()
