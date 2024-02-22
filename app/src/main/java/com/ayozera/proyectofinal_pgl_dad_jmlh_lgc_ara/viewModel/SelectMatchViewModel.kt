@@ -47,7 +47,6 @@ class SelectMatchViewModel : ViewModel() {
     val year = _year.asStateFlow()
 
     private var isInitialized = false
-    private var isInitializedGame = false
 
     init {
         val courutineScope = CoroutineScope(Dispatchers.IO)
@@ -56,13 +55,15 @@ class SelectMatchViewModel : ViewModel() {
         }
     }
 
-    suspend fun loadViewModel() {
+    private suspend fun loadViewModel() {
         if (isInitialized) {
             return
         }
         isInitialized = true
         _playersDB = MutableStateFlow(getPlayers())
+        println("jugadores: ${_playersDB.value.size}")
         _games = MutableStateFlow(getGames())
+        println("juegos: ${_games.value.size}")
     }
 
     private suspend fun getPlayers() : ArrayList<PlayerDB> {
