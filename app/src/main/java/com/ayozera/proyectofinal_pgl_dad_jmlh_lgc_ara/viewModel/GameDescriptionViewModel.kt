@@ -46,7 +46,7 @@ class GameDescriptionViewModel : ViewModel() {
     private var isRunning = false
 
 
-    fun loadViewModel(gameName: String, player: PlayerDB?) {
+    fun loadViewModel(gameName: String, player: PlayerDB) {
         //obtenemos el juego a partir de su nombre
         if (isRunning) {
             return
@@ -66,6 +66,7 @@ class GameDescriptionViewModel : ViewModel() {
             }
 
         _player = MutableStateFlow(player)
+        _player.value!!.id = player.id
     }
 
     fun listenComment(gameId: String) {
@@ -157,8 +158,11 @@ class GameDescriptionViewModel : ViewModel() {
 
     fun isDeletable(index: Int): Boolean {
         //comprobamos si el comentario ha sido escrito por el usuario actual antes de poder borrarlo
-        val idComment = _listCommentDB.value.get(index).id
-        return idComment.equals(_player.value!!.id)
+        val idPlayer = _listCommentDB.value[index].player
+        println("idComment: $idPlayer")
+        println("player: ${_player.value!!.id}")
+        println("index $index")
+        return idPlayer.equals(_player.value!!.id)
     }
 
     fun deleteComment(index: Int) {
@@ -172,12 +176,13 @@ class GameDescriptionViewModel : ViewModel() {
         }
         //generamos el id del comentario a partir del generador automático de Firebase
         val id = connection.collection("Comment").document().id
-        println("game: ${_game.value!!.id}")
-        println("player: ${_player.value!!.id}")
-        println("text: $text")
-        println("date: ${_date.value}")
-        val commentDB = CommentDB(id, _game.value!!.id, _player.value!!.id, text, _date.value)
-        connection.collection("Comment").add(commentDB)
+        val comment = hashMapOf(
+            "game" to _game.value!!.id,
+            "player" to _player.value!!.id,
+            "text" to text,
+            "date" to _date.value
+        )
+        connection.collection("Comment").document(id).set(comment)
     }
 
     @RequiresApi(Build.VERSION_CODES.O)

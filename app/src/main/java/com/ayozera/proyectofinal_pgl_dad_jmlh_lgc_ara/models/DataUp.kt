@@ -22,106 +22,20 @@ class DataUp {
             )
         }
 
-        private fun gameFirstLoader(context: Context) {
-            val assetManager = context.assets
-            val inputStream = assetManager.open("games.txt")
-            val reader = BufferedReader(InputStreamReader(inputStream))
-            val writer: FileOutputStream =
-                context.openFileOutput("games.txt", Context.MODE_APPEND)
-            reader.forEachLine { line ->
-                writer.write("$line\n".toByteArray())
-            }
-            reader.close()
-            writer.close()
-        }
-
-        fun gameLoader(context: Context): ArrayList<String> {
-            val gamesList = ArrayList<String>()
-            val file = File(context.filesDir, "games.txt")
-            try {
-                if (!file.exists()) {
-                    gameFirstLoader(context)
-                }
-                val fileInput = FileInputStream(file)
-                val reader = BufferedReader(InputStreamReader(fileInput))
-
-                reader.forEachLine { line ->
-                    if (line.isNotBlank()) {
-                        gamesList.add(line)
-                    }
-                }
-            } catch (e: IOException) {
-                e.printStackTrace()
-            }
-            return gamesList
-        }
-
-        private fun playerFirstLoader(context: Context) {
-            val assetManager = context.assets
-            val inputStream = assetManager.open("players.txt")
-            val reader = BufferedReader(InputStreamReader(inputStream))
-            val writer: FileOutputStream =
-                context.openFileOutput("players.txt", Context.MODE_PRIVATE)
-            reader.forEachLine { line ->
-                writer.write("$line\n".toByteArray())
-            }
-            reader.close()
-            writer.close()
-        }
-
-        fun playerLoader(context: Context): ArrayList<Player> {
-            val playerList = ArrayList<Player>()
-            val file = File(context.filesDir, "players.txt")
-            try {
-                if (!file.exists()) {
-                    playerFirstLoader(context)
-                }
-                val fileInput = FileInputStream(file)
-                val reader = BufferedReader(InputStreamReader(fileInput))
-                var counter = -1
-                var player = ""
-                var avatar = ""
-                var color = Color.Red
-
-                reader.forEachLine { line ->
-                    if (line.isNotBlank()) {
-                        counter++
-                        when (counter) {
-                            0 -> player = line
-                            1 -> color = Color(android.graphics.Color.parseColor(line))
-                            2 -> {
-                                avatar = line
-                                counter = -1
-                                playerList.add(Player(player, color, avatar))
-                            }
-                        }
-                    }
-                }
-            } catch (e: IOException) {
-                e.printStackTrace()
-            }
-            return playerList
-        }
-        fun getComments(current: Context): ArrayList<Comment> {
-            val lista = arrayListOf(
-                Comment("Ana", "Me encanta este juego", "2021-12-12"),
-                Comment("Luis", "Es muy entretenido", "2021-12-12"),
-                Comment("Juan", "No me gusta", "2021-12-12"),
-                Comment("Maria", "Es muy dificil", "2021-12-12"),
-                Comment("Pedro", "Es muy facil", "2021-12-12")
-            )
-            return lista
-        }
-
         @OptIn(ExperimentalStdlibApi::class)
         fun saveSelection(selection : SelectionMatch, context: Context) {
             val writer: FileOutputStream =
                 context.openFileOutput("selections.txt", Context.MODE_PRIVATE)
-            writer.write("${selection.game}\n".toByteArray())
+            writer.write("${selection.gameID}\n".toByteArray())
+            writer.write("${selection.gameName}\n".toByteArray())
+            writer.write("${selection.gameArt}\n".toByteArray())
             writer.write("${selection.day}\n".toByteArray())
             writer.write("${selection.month}\n".toByteArray())
             writer.write("${selection.year}\n".toByteArray())
             writer.write("${selection.players.size}\n".toByteArray())
+            selection.playersId.forEach {
+                writer.write("$it\n".toByteArray())
+            }
             selection.players.forEach {
                 writer.write("${it.name}\n".toByteArray())
                 writer.write("#${it.color.value.toHexString().substring(0,8)}\n".toByteArray())
@@ -134,28 +48,25 @@ class DataUp {
             val file = File(context.filesDir, "selections.txt")
             val fileInput = FileInputStream(file)
             val reader = BufferedReader(InputStreamReader(fileInput))
-            val game = reader.readLine()
+            val gameId = reader.readLine()
+            val gameName = reader.readLine()
+            val gameArt = reader.readLine()
             val day = reader.readLine().toInt()
             val month = reader.readLine().toInt()
             val year = reader.readLine().toInt()
-            val players = ArrayList<Player>()
             val numPlayers = reader.readLine().toInt()
+            val playersId = ArrayList<String>()
+            for (i in 0 until numPlayers) {
+                playersId.add(reader.readLine())
+            }
+            val players = ArrayList<Player>()
             for (i in 0 until numPlayers) {
                 val name = reader.readLine()
                 val color = Color(android.graphics.Color.parseColor(reader.readLine()))
                 val avatar = reader.readLine()
                 players.add(Player(name, color, avatar))
             }
-            return SelectionMatch(game, players, day, month, year)
-        }
-        fun loadCredentials(context: Context): Pair<String, String> {
-            val file = File(context.filesDir, "credentials.txt")
-            val fileInput = FileInputStream(file)
-            val reader = BufferedReader(InputStreamReader(fileInput))
-            val user = reader.readLine()
-            val password = reader.readLine()
-
-            return Pair(user, password)
+            return SelectionMatch(gameId, gameName, gameArt, playersId, players, day, month, year)
         }
 
         @OptIn(ExperimentalStdlibApi::class)
@@ -241,17 +152,6 @@ class DataUp {
                 }
             }
             return gamesList
-        }
-
-        fun getDescription(current: Context, gameName: String): String {
-            val assetManager = current.assets
-            val inputStream = assetManager.open("gamesInformation/$gameName.txt")
-            val reader = BufferedReader(InputStreamReader(inputStream))
-            val description = StringBuilder()
-            reader.forEachLine { line ->
-                description.append("$line\n")
-            }
-            return description.toString()
         }
 
         fun loadMatchesFirstTime(context: Context) {

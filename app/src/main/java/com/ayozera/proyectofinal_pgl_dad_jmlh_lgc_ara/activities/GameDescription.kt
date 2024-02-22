@@ -55,7 +55,7 @@ fun GameDescription(
     val gameViewModel = remember { GameDescriptionViewModel() }
     //Cargamos el juego y sus comentarios en el viemodel en un hilo que sólo se ejecuta una vez
     val player by appMainViewModel.playerDB!!.collectAsState()
-    gameViewModel.loadViewModel(gameName!!, player)
+    gameViewModel.loadViewModel(gameName!!, player!!)
     val game by gameViewModel.game.collectAsState()
     val comments by gameViewModel.listComment.collectAsState()
     val gameArt = LocalContext.current.resources.getIdentifier(
@@ -63,7 +63,6 @@ fun GameDescription(
         "drawable",
         LocalContext.current.packageName
     )
-    println("Nombre del juego: $gameName")
     val description by gameViewModel.description.collectAsState()
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
 
@@ -87,7 +86,7 @@ fun GameDescription(
                     GameHeader(gameName, gameArt)
                     Description(description)
                     WriteReview(gameViewModel)
-                    ReviewList(comments)
+                    ReviewList(comments, gameViewModel)
                 }
             }
         )
@@ -206,7 +205,12 @@ fun WriteReview(viewModel: GameDescriptionViewModel) {
 }
 
 @Composable
-fun ReviewBox(comments: Comment) {
+fun ReviewBox(
+    comments: Comment,
+    isDeleteable: Boolean,
+    gameViewModel: GameDescriptionViewModel,
+    i: Int
+) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -219,12 +223,41 @@ fun ReviewBox(comments: Comment) {
             .background(MaterialTheme.colorScheme.primaryContainer)
             .padding(16.dp, 10.dp)
     ) {
-        Text(
-            text = comments.player,
-            fontSize = 22.sp,
-            color = MaterialTheme.colorScheme.onBackground,
-            fontWeight = FontWeight.Bold
-        )
+        Row(
+            horizontalArrangement = Arrangement.SpaceAround,
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(
+                text = comments.player,
+                fontSize = 22.sp,
+                color = MaterialTheme.colorScheme.onBackground,
+                fontWeight = FontWeight.Bold
+            )
+            if (isDeleteable) {
+                TextButton(
+                    onClick = {
+                        gameViewModel.deleteComment(i)
+                    },
+                    modifier = Modifier
+                        .padding(8.dp)
+                        .border(
+                            2.dp,
+                            MaterialTheme.colorScheme.primary,
+                            MaterialTheme.shapes.extraLarge
+                        )
+                        .clip(MaterialTheme.shapes.extraLarge)
+                        .background(MaterialTheme.colorScheme.primaryContainer),
+
+                    ) {
+                    Text(
+                        text = "Borrar",
+                        fontSize = 22.sp,
+                        color = MaterialTheme.colorScheme.onPrimaryContainer
+                    )
+                }
+            }
+        }
         Text(
             text = comments.comment,
             fontSize = 14.sp,
@@ -241,14 +274,17 @@ fun ReviewBox(comments: Comment) {
 
 
 @Composable
-fun ReviewList(comments: List<Comment>) {
+fun ReviewList(comments: List<Comment>, gameViewModel: GameDescriptionViewModel) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
             .padding(16.dp)
     ) {
+        var i = 0
         comments.forEach { comment ->
-            ReviewBox(comment)
+            var isDeleteable = gameViewModel.isDeletable(i)
+            ReviewBox(comment, isDeleteable, gameViewModel, i)
+            i++
         }
     }
 }

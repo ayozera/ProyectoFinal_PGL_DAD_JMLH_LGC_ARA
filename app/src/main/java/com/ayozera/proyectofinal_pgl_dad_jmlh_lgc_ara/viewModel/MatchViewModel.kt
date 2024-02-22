@@ -1,12 +1,11 @@
 package com.ayozera.proyectofinal_pgl_dad_jmlh_lgc_ara.viewModel
 
 import android.content.Context
-import android.os.Build
 import androidx.lifecycle.ViewModel
 import com.ayozera.proyectofinal_pgl_dad_jmlh_lgc_ara.models.DataUp
-import com.ayozera.proyectofinal_pgl_dad_jmlh_lgc_ara.models.Match
 import com.ayozera.proyectofinal_pgl_dad_jmlh_lgc_ara.models.Player
 import com.ayozera.proyectofinal_pgl_dad_jmlh_lgc_ara.models.SelectionMatch
+import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -14,11 +13,7 @@ import kotlinx.coroutines.flow.asStateFlow
 
 class MatchViewModel : ViewModel() {
 
-    private var _context: Context? = null
     private var _selectionMatch: MutableStateFlow<SelectionMatch>? = null
-    val selectionMatch: StateFlow<SelectionMatch>
-        get() = _selectionMatch?.asStateFlow()
-            ?: throw IllegalStateException("Context not initialized")
 
     var _gameName: MutableStateFlow<String>? = null
     val gameName: StateFlow<String>
@@ -47,23 +42,28 @@ class MatchViewModel : ViewModel() {
     val _score: MutableStateFlow<ArrayList<Int>> = MutableStateFlow(ArrayList())
     val score = _score.asStateFlow()
 
+    private var playersId = ArrayList<String>()
+    private var gameID = ""
+
     var isInitialized: Boolean = false
 
 
-    fun setContext(context: Context) {
+    fun loadViewModel(context: Context) {
         if (isInitialized) return
         isInitialized = true
-        this._context = context
-        this._selectionMatch = MutableStateFlow(DataUp.loadSelection(context))
-        this._gameName = MutableStateFlow(_selectionMatch!!.value.game)
-        this._gameArt = MutableStateFlow(_selectionMatch!!.value.game)
-        this._players = MutableStateFlow(_selectionMatch!!.value.players)
-        this._day = MutableStateFlow(_selectionMatch!!.value.day)
-        this._month = MutableStateFlow(_selectionMatch!!.value.month)
-        this._year = MutableStateFlow(_selectionMatch!!.value.year)
+        val selectionMatch = DataUp.loadSelection(context)
+        this.gameID = selectionMatch!!.gameID
+        this._gameName = MutableStateFlow(selectionMatch.gameName)
+        this._gameArt = MutableStateFlow(selectionMatch.gameArt)
+        this._players = MutableStateFlow(selectionMatch.players)
+        playersId = selectionMatch.playersId
+        this._day = MutableStateFlow(selectionMatch.day)
+        this._month = MutableStateFlow(selectionMatch.month)
+        this._year = MutableStateFlow(selectionMatch.year)
         for (i in 0 until _players!!.value.size) {
             _score.value.add(0)
         }
+
     }
 
     fun getGameName(): String {
@@ -88,17 +88,25 @@ class MatchViewModel : ViewModel() {
         }
     }
 
+    // Save the match in the database
     fun saveMatch() {
-        DataUp.saveMatch(
-            Match(_gameName!!.value,
-                _gameArt!!.value,
-                _players!!.value,
-                _day!!.value,
-                _month!!.value,
-                _year!!.value,
-                _score.value
-            ), _context!!
+        val connection = FirebaseFirestore.getInstance()
+        val gameId = connection.collection("Game").whereEqualTo("name", _gameName!!.value).get().result!!.documents[0].id
+        val match = hashMapOf(
+            "game" to gameId,
+            "date" to "${_day!!.value}-${_month!!.value}-${_year!!.value}"
         )
+        val matchId = connection.collection("Match").add(match).result!!.id
+        connection.collection("Match").document(matchId).set(match)
+
+        for (i in 0 until _players!!.value.size) {
+            val score = hashMapOf(
+                "player" to playersId[i],
+                "match" to matchId,
+                "points" to _score.value[i]
+            )
+            connection.collection("Score").add(score)
+        }
     }
 
     fun substractFiveScore(index: Int) {

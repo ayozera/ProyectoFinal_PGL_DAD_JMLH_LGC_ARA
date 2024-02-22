@@ -26,53 +26,22 @@ class AppMainViewModel : ViewModel() {
     val isLogged = _isLogged.asStateFlow()
 
     private var _playerDB = MutableStateFlow<PlayerDB?>(null)
-    val playerDB = _playerDB?.asStateFlow()
+    val playerDB = _playerDB.asStateFlow()
 
     private var _player = MutableStateFlow<Player?>(null)
-    val player = _player?.asStateFlow()
+    val player = _player.asStateFlow()
 
     private var _isMatching = MutableStateFlow(false)
     val isMatching = _isMatching.asStateFlow()
 
 
-//    fun logIn(uid: String) {
-//        _isLogged.value = true
-//        //obtenemos el jugador a partir del id del usuario, realizando una consulta a firebase
-//        connection.collection("Player").document(uid).get()
-//            .addOnSuccessListener { document ->
-//                val player = document.toObject(PlayerDB::class.java)
-//                _playerDB = MutableStateFlow(player)
-//                println("Player: ${player?.name}")
-//                println("Player: ${player?.color}")
-//                _player = MutableStateFlow(
-//                    Player(
-//                        player?.name.toString(),
-//                        Color(android.graphics.Color.parseColor(player?.color.toString())),
-//                        player?.avatar.toString()
-//                    )
-//                )
-//            }
-//            .addOnFailureListener { exception ->
-//                println("Error getting documents: $exception")
-//            }
-//        while (_player.value == null) {
-//            TimeUnit.SECONDS.sleep(1)
-//        }
-//    }
-
-    suspend fun getPlayer(uid: String): Player? {
+    suspend fun getPlayer(uid: String): PlayerDB? {
         return suspendCoroutine { continuation ->
             connection.collection("Player").document(uid).get()
                 .addOnSuccessListener { document ->
                     val playerDB = document.toObject(PlayerDB::class.java)
-                    val player = playerDB?.let {
-                        Player(
-                            it.name ?: "",
-                            Color(android.graphics.Color.parseColor(it.color ?: "")),
-                            it.avatar ?: ""
-                        )
-                    }
-                    continuation.resume(player)
+                    playerDB?.id = document.id
+                    continuation.resume(playerDB)
                 }
                 .addOnFailureListener { exception ->
                     continuation.resumeWithException(exception)
@@ -83,16 +52,17 @@ class AppMainViewModel : ViewModel() {
     suspend fun logIn(uid: String) {
         _isLogged.value = true
         try {
-            val player = getPlayer(uid)
-            if (player != null) {
-                val playerDB = PlayerDB(
-                    name = player.name,
-                    color = player.color.toString(), // aquí podrías convertir el color a un formato que PlayerDB espera
-                    avatar = player.avatar
-                )
+            val playerDB = getPlayer(uid)
+
+            if (playerDB != null) {
+                val player = playerDB.let {
+                    Player(
+                        it.name,
+                        Color(android.graphics.Color.parseColor(it.color)),
+                        it.avatar
+                    )
+                }
                 _playerDB.value = playerDB
-                println("Player: ${player.name}")
-                println("Player: ${player.color}")
                 _player.value = player
             } else {
                 println("Player is null")
