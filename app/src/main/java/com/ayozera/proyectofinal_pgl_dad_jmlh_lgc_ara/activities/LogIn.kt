@@ -37,7 +37,6 @@ import com.ayozera.proyectofinal_pgl_dad_jmlh_lgc_ara.R
 import com.ayozera.proyectofinal_pgl_dad_jmlh_lgc_ara.navigation.Routs
 import com.ayozera.proyectofinal_pgl_dad_jmlh_lgc_ara.viewModel.AppMainViewModel
 import com.ayozera.proyectofinal_pgl_dad_jmlh_lgc_ara.viewModel.LogInViewModel
-import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -98,10 +97,11 @@ fun LogInBody(
     appMainViewModel: AppMainViewModel,
     logInViewModel: LogInViewModel
 ) {
-    var textUser by remember { mutableStateOf("") }
+    var textEmail by remember { mutableStateOf("") }
     var textPass by remember { mutableStateOf("") }
-    var userIsCorrect by remember { mutableStateOf(true) }
+    var emailIsCorrect by remember { mutableStateOf(true) }
     var passIsCorrect by remember { mutableStateOf(true) }
+    val emailRegex = Regex("[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,4}")
 
 
     //val credentials = DataUp.loadCredentials(LocalContext.current)
@@ -123,26 +123,26 @@ fun LogInBody(
         Text(
             text = "Escribe tu nombre de usuario",
             fontSize = 20.sp,
-            color = setTextFieldColor(isCorrect = userIsCorrect)
+            color = setTextFieldColor(isCorrect = emailIsCorrect)
         )
         TextField(
-            value = textUser,
+            value = textEmail,
             placeholder = {
                 Text(
-                    "Usuario",
+                    "Email",
                     fontSize = 24.sp
                 )
             },
             onValueChange = {
-                textUser = it
-                userIsCorrect = textUser.isNotBlank()
+                textEmail = it
+                emailIsCorrect = emailRegex.matches(textEmail)
             },
             shape = RoundedCornerShape(10.dp),
             modifier = Modifier
                 .clip(RoundedCornerShape(10.dp))
                 .border(
                     2.dp,
-                    setTextFieldColor(isCorrect = userIsCorrect),
+                    setTextFieldColor(isCorrect = emailIsCorrect),
                     RoundedCornerShape(10.dp)
                 )
         )
@@ -179,21 +179,27 @@ fun LogInBody(
         val viewModelScope = CoroutineScope(Dispatchers.Main)
         TextButton(
             onClick = {
-                logInViewModel.signIn(
-                    textUser,
-                    textPass,
-                    onSuccess = { uid ->
-                        viewModelScope.launch {
-                            println("UID: $uid")
-                            appMainViewModel.logIn(uid)
-                            Toast.makeText(context, "Inicio de sesión exitoso", Toast.LENGTH_SHORT).show()
-                            navController.navigate(Routs.Profile.rout)
+                if (textPass.length > 8 && textEmail.isNotBlank()) {
+                    logInViewModel.signIn(
+                        textEmail.trim(),
+                        textPass,
+                        onSuccess = { uid ->
+                            viewModelScope.launch {
+                                println("UID: $uid")
+                                appMainViewModel.logIn(uid)
+                                Toast.makeText(
+                                    context,
+                                    "Inicio de sesión exitoso",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                                navController.navigate(Routs.Profile.rout)
+                            }
+                        },
+                        onFailure = { error ->
+                            Toast.makeText(context, error, Toast.LENGTH_SHORT).show()
                         }
-                    },
-                    onFailure = { error ->
-                        Toast.makeText(context, error, Toast.LENGTH_SHORT).show()
-                    }
-                )
+                    )
+                }
             },
 
 //            onClick = {
