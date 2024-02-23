@@ -21,7 +21,7 @@ import com.ayozera.proyectofinal_pgl_dad_jmlh_lgc_ara.activities.Profile
 import com.ayozera.proyectofinal_pgl_dad_jmlh_lgc_ara.activities.SearchBar
 import com.ayozera.proyectofinal_pgl_dad_jmlh_lgc_ara.activities.SelectMatch
 import com.ayozera.proyectofinal_pgl_dad_jmlh_lgc_ara.activities.SignUp
-import com.ayozera.proyectofinal_pgl_dad_jmlh_lgc_ara.models.Welcome
+import com.ayozera.proyectofinal_pgl_dad_jmlh_lgc_ara.activities.Welcome
 import com.ayozera.proyectofinal_pgl_dad_jmlh_lgc_ara.viewModel.AppMainViewModel
 import com.ayozera.proyectofinal_pgl_dad_jmlh_lgc_ara.viewModel.JukeBoxViewModel
 import com.ayozera.proyectofinal_pgl_dad_jmlh_lgc_ara.viewModel.LogInViewModel
@@ -53,7 +53,7 @@ fun NavigationGraph() {
             LogIn(navController = navController, appMainViewModel)
         }
         composable(Routs.SignUp.rout) {
-            SignUp(navController = navController, appMainViewModel)
+            SignUp(navController = navController)
         }
         composable(Routs.Profile.rout) {
             MyScaffold(navController = navController, appMainViewModel) {
@@ -68,7 +68,7 @@ fun NavigationGraph() {
         }
         composable(Routs.SearchBar.rout) {
             MyScaffold(navController = navController, appMainViewModel) {
-                SearchBar(navController = navController, appMainViewModel)
+                SearchBar(navController = navController)
             }
         }
         composable(Routs.Match.rout) {

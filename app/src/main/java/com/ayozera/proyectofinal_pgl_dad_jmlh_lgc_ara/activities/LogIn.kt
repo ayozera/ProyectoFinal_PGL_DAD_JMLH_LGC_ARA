@@ -64,11 +64,11 @@ fun LogIn(
 
 
 @Composable
-fun LogInHeader(weight: Modifier) {
+fun LogInHeader(modifier: Modifier) {
     Row(
         horizontalArrangement = Arrangement.Center,
         verticalAlignment = Alignment.CenterVertically,
-        modifier = weight
+        modifier = modifier
             .background(color = MaterialTheme.colorScheme.primary)
             .fillMaxWidth()
     ) {
@@ -93,7 +93,7 @@ fun LogInHeader(weight: Modifier) {
 
 fun LogInBody(
     navController: NavHostController,
-    weight: Modifier,
+    modifier: Modifier,
     appMainViewModel: AppMainViewModel,
     logInViewModel: LogInViewModel
 ) {
@@ -108,7 +108,7 @@ fun LogInBody(
 
 
     Column(
-        modifier = weight
+        modifier = modifier
             .fillMaxWidth(),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
@@ -242,9 +242,9 @@ fun LogInBody(
 
 
 @Composable
-fun ChangeToSignUp(navController: NavHostController, weight: Modifier) {
+fun ChangeToSignUp(navController: NavHostController, modifier: Modifier) {
     Column(
-        modifier = weight
+        modifier = modifier
             .fillMaxWidth()
             .padding(10.dp),
         verticalArrangement = Arrangement.Bottom,

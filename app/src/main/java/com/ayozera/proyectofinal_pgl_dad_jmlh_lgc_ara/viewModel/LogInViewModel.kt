@@ -24,8 +24,6 @@ import kotlinx.coroutines.launch
 class LogInViewModel() : ViewModel() {
 
     private val auth: FirebaseAuth = Firebase.auth
-    private val _loading = MutableStateFlow(false)
-
     private val firestore: FirebaseFirestore = FirebaseFirestore.getInstance()
 
     fun signIn(

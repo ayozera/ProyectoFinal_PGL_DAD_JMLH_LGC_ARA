@@ -55,7 +55,6 @@ fun Match(navController: NavHostController, appMainViewModel: AppMainViewModel) 
 
     val matchViewModel: MatchViewModel = viewModel()
     val context = LocalContext.current
-    val scope = rememberCoroutineScope()
     matchViewModel.loadViewModel(context)
     val gameName = matchViewModel.getGameName()
     val gameArt = LocalContext.current.resources.getIdentifier(

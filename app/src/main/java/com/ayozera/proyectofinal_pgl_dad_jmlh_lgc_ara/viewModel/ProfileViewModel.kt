@@ -26,15 +26,6 @@ class ProfileViewModel : ViewModel() {
 
     private var connection = FirebaseFirestore.getInstance()
 
-    private var _userName = MutableStateFlow("")
-    val userName = _userName
-
-    private var _userAvatar = MutableStateFlow("")
-    val userAvatar = _userAvatar
-
-    private var _favouriteGame = MutableStateFlow("")
-    val favouriteGame = _favouriteGame
-
     private var _matches = MutableStateFlow(ArrayList<Match>())
     val matches = _matches
 

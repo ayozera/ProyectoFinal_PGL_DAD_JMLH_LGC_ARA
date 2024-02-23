@@ -14,31 +14,19 @@ import kotlinx.coroutines.tasks.await
 
 class MatchViewModel : ViewModel() {
 
-    var _gameName: MutableStateFlow<String>? = null
-    val gameName: StateFlow<String>
-        get() = _gameName?.asStateFlow() ?: throw IllegalStateException("Context not initialized")
+    private var _gameName: MutableStateFlow<String>? = null
 
-    var _gameArt: MutableStateFlow<String>? = null
-    val gameArt: StateFlow<String>
-        get() = _gameArt?.asStateFlow() ?: throw IllegalStateException("Context not initialized")
+    private var _gameArt: MutableStateFlow<String>? = null
 
-    var _players: MutableStateFlow<ArrayList<Player>>? = null
+    private var _players: MutableStateFlow<ArrayList<Player>>? = null
     val players: StateFlow<ArrayList<Player>>
         get() = _players?.asStateFlow() ?: throw IllegalStateException("Context not initialized")
 
-    var _day: MutableStateFlow<Int>? = null
-    val day: StateFlow<Int>
-        get() = _day?.asStateFlow() ?: throw IllegalStateException("Context not initialized")
+    private var _day: MutableStateFlow<Int>? = null
+    private var _month: MutableStateFlow<Int>? = null
+    private var _year: MutableStateFlow<Int>? = null
 
-    var _month: MutableStateFlow<Int>? = null
-    val month: StateFlow<Int>
-        get() = _month?.asStateFlow() ?: throw IllegalStateException("Context not initialized")
-
-    var _year: MutableStateFlow<Int>? = null
-    val year: StateFlow<Int>
-        get() = _year?.asStateFlow() ?: throw IllegalStateException("Context not initialized")
-
-    val _score: MutableStateFlow<ArrayList<Int>> = MutableStateFlow(ArrayList())
+    private val _score: MutableStateFlow<ArrayList<Int>> = MutableStateFlow(ArrayList())
     val score = _score.asStateFlow()
 
     private var playersId = ArrayList<String>()

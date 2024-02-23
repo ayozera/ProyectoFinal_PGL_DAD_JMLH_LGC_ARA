@@ -41,7 +41,7 @@ import com.google.firebase.firestore.FirebaseFirestore
 
 
 @Composable
-fun SearchBar(navController: NavHostController, appMainViewModel: AppMainViewModel) {
+fun SearchBar(navController: NavHostController) {
 
     Column(
         modifier = Modifier
@@ -71,6 +71,7 @@ fun Searcher(onSearchSelected: (String) -> Unit) {
                 val game = document.toObject(GameDB::class.java)
                 games.add(game.name)
             }
+            games.sort()
         }
     }
 

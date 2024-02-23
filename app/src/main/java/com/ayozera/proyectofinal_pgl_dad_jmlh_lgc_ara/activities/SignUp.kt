@@ -1,12 +1,10 @@
 package com.ayozera.proyectofinal_pgl_dad_jmlh_lgc_ara.activities
 
 import android.widget.Toast
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
@@ -26,24 +24,16 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
-import com.ayozera.proyectofinal_pgl_dad_jmlh_lgc_ara.R
-import com.ayozera.proyectofinal_pgl_dad_jmlh_lgc_ara.navigation.Routs
-import com.ayozera.proyectofinal_pgl_dad_jmlh_lgc_ara.viewModel.AppMainViewModel
-import com.ayozera.proyectofinal_pgl_dad_jmlh_lgc_ara.viewModel.LogInViewModel
 import com.ayozera.proyectofinal_pgl_dad_jmlh_lgc_ara.viewModel.SignUpViewModel
 
 @Composable
-fun SignUp(navController: NavHostController, appMainViewModel: AppMainViewModel) {
+fun SignUp(navController: NavHostController) {
     val signUpViewModel = remember { SignUpViewModel() }
-    val logInViewModel: LogInViewModel = viewModel()
 
     Column(
         verticalArrangement = Arrangement.Top,
@@ -53,7 +43,7 @@ fun SignUp(navController: NavHostController, appMainViewModel: AppMainViewModel)
             .background(color = MaterialTheme.colorScheme.background),
     ) {
         LogInHeader(Modifier.fillMaxHeight(0.1f))
-        SingUpBody(signUpViewModel,navController,Modifier.fillMaxHeight(0.8f), logInViewModel)
+        SingUpBody(signUpViewModel,navController,Modifier.fillMaxHeight(0.8f))
         ChangeToLogIn(navController,Modifier.fillMaxHeight(0.8f))
     }
 
@@ -62,8 +52,7 @@ fun SignUp(navController: NavHostController, appMainViewModel: AppMainViewModel)
 fun SingUpBody(
     viewModel: SignUpViewModel,
     navController: NavHostController,
-    weight: Modifier,
-    logInViewModel: LogInViewModel
+    modifier: Modifier
 ) {
     var textUser by remember { mutableStateOf("") }
     var textEmail by remember { mutableStateOf("") }
@@ -72,12 +61,12 @@ fun SingUpBody(
     val emailRegex = Regex("[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,4}")
     var userIsCorrect by remember { mutableStateOf(true) }
     var emailIsCorrect by remember { mutableStateOf(true) }
-    var passIsCorrect by remember { mutableStateOf(true) }
+    val passIsCorrect by remember { mutableStateOf(true) }
     var passRIsCorrect by remember { mutableStateOf(true) }
     // val keys = DataUp.credentialLoader(LocalContext.current)
 
     Column(
-        modifier = weight
+        modifier = modifier
             .background(color = MaterialTheme.colorScheme.background)
             .fillMaxSize(),
         verticalArrangement = Arrangement.Center,
@@ -180,9 +169,9 @@ fun SingUpBody(
         Spacer(modifier = Modifier.padding(10.dp))
         TextButton(
             onClick = {
-                if (textPass.length < 8 || textPass == textPassRepeat ) {
+                if (textPass.length < 8 || textPass != textPassRepeat ) {
                     Toast.makeText(navController.context, "Contraseña menor a 8 caracteres o incorrecta", Toast.LENGTH_LONG).show()
-                }else if (emailRegex.matches(textEmail)) {
+                }else if (!emailRegex.matches(textEmail)) {
                         Toast.makeText(navController.context, "Email con formato incorrecto", Toast.LENGTH_SHORT).show()
                 }else if (textUser.isBlank()) {
                     Toast.makeText(navController.context, "Usuario no válido", Toast.LENGTH_SHORT).show()
@@ -220,8 +209,8 @@ fun SingUpBody(
     }
 }
 @Composable
-fun ChangeToLogIn(navController: NavHostController, weight: Modifier) {
-    Column (modifier = weight
+fun ChangeToLogIn(navController: NavHostController, modifier: Modifier) {
+    Column (modifier = modifier
         .fillMaxWidth()
         .padding(10.dp),
         verticalArrangement = Arrangement.Bottom,

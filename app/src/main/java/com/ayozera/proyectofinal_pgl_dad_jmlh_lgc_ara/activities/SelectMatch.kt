@@ -150,7 +150,7 @@ fun SelectMatch(navController: NavHostController, appMainViewModel: AppMainViewM
 @Composable
 fun GameSelection(games: ArrayList<GameDB>, onGameSelection: (GameDB) -> Unit) {
     var expandedGame by remember { mutableStateOf(false) }
-    var selectedGame = remember { mutableStateOf(GameDB()) }
+    val selectedGame = remember { mutableStateOf(GameDB()) }
 
     Column {
 
@@ -229,7 +229,7 @@ fun PlayerSelection(
 
 @Composable
 fun NumberSelection(onNumberSelection: (String) -> Unit) {
-    var numbers = arrayListOf<String>("1", "2", "3", "4", "5", "6", "7", "8")
+    val numbers = arrayListOf<String>("1", "2", "3", "4", "5", "6", "7", "8")
     var expandedNumber by remember { mutableStateOf(false) }
     var selectedNumber by remember { mutableStateOf("") }
     Column {

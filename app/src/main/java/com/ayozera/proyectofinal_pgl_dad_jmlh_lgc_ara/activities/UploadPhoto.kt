@@ -81,7 +81,7 @@ fun UploadPhoto(navController: NavHostController, appMainViewModel: AppMainViewM
 @Composable
 fun PruebaSubirImagen() {
 
-    var isUpLoading by remember { mutableStateOf(false) }
+    val isUpLoading by remember { mutableStateOf(false) }
     val img: Bitmap = BitmapFactory.decodeResource(
         Resources.getSystem(),
         android.R.drawable.ic_menu_report_image

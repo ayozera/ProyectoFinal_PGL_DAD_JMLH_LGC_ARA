@@ -85,7 +85,7 @@ fun Profile(navController: NavHostController, appMainViewModel: AppMainViewModel
 
 @Composable
 fun ProfileHeader(appMainViewModel: AppMainViewModel) {
-    val user = appMainViewModel.player!!.collectAsState()
+    val user = appMainViewModel.player.collectAsState()
     var showDialog by remember { mutableStateOf(false) }
     if (showDialog) {
         ProfileAlertDialogError { showDialog = false }
@@ -108,7 +108,7 @@ fun ProfileHeader(appMainViewModel: AppMainViewModel) {
             contentDescription = "Avatar",
             modifier = Modifier
                 .size(125.dp)
-                .border(3.dp, user!!.value!!.color, shape = CircleShape)
+                .border(3.dp, user.value!!.color, shape = CircleShape)
                 .clip(CircleShape)
         )
         Column(
@@ -202,7 +202,7 @@ fun MatchList(matchs: List<Match>) {
 
 @Composable
 fun MatchBox(match: Match) {
-    var players = match.players.size
+    val players = match.players.size
     Row (verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier
             .fillMaxWidth()

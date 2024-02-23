@@ -4,5 +4,4 @@ data class Game (
     var name: String = "",
     var description: String = "",
     var image: String = "",
-    //var comments: ArrayList<Comment> = ArrayList()
 )

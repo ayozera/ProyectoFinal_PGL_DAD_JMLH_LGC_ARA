@@ -129,7 +129,7 @@ fun JukeBox(
                                     exoPlayerViewModel.moveSlider(newPositionSeconds)
                                 },
                                 valueRange = 0f..1f,
-                                steps = ((durationMinutes * 60) + durationSeconds) ?: 0,
+                                steps = ((durationMinutes * 60) + durationSeconds),
                                 colors = SliderDefaults.colors(
                                     thumbColor = Color.Green
                                 )
@@ -154,7 +154,7 @@ fun JukeBox(
 
                     var isRepeatOn by remember { mutableStateOf(false) }
                     var isShuffleOn by remember { mutableStateOf(false) }
-                    var isPlaying by remember { mutableStateOf(exoPlayerViewModel.mediaPlayer.value!!.isPlaying ?: false) }
+                    var isPlaying by remember { mutableStateOf(exoPlayerViewModel.mediaPlayer.value!!.isPlaying) }
 
                     Row(
                         modifier = Modifier.fillMaxWidth(),

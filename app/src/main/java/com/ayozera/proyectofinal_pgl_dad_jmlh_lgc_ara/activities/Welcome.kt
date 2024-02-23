@@ -1,4 +1,4 @@
-package com.ayozera.proyectofinal_pgl_dad_jmlh_lgc_ara.models
+package com.ayozera.proyectofinal_pgl_dad_jmlh_lgc_ara.activities
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -25,7 +25,6 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.ayozera.proyectofinal_pgl_dad_jmlh_lgc_ara.R
 import com.ayozera.proyectofinal_pgl_dad_jmlh_lgc_ara.navigation.Routs
-import com.ayozera.proyectofinal_pgl_dad_jmlh_lgc_ara.viewModel.AppMainViewModel
 
 @Composable
 fun Welcome(navController: NavHostController) {
