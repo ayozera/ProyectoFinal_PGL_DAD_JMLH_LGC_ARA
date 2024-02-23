@@ -1,8 +1,11 @@
 package com.ayozera.proyectofinal_pgl_dad_jmlh_lgc_ara.activities
 
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -54,7 +57,7 @@ import com.ayozera.proyectofinal_pgl_dad_jmlh_lgc_ara.viewModel.ProfileViewModel
 fun Profile(navController: NavHostController, appMainViewModel: AppMainViewModel) {
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val user = appMainViewModel.playerDB.collectAsState()
-    val profileViewModel : ProfileViewModel = viewModel()
+    val profileViewModel: ProfileViewModel = viewModel()
     LaunchedEffect(key1 = Unit) {
         profileViewModel.load(user.value!!.id)
     }
@@ -90,69 +93,82 @@ fun ProfileHeader(appMainViewModel: AppMainViewModel) {
     if (showDialog) {
         ProfileAlertDialogError { showDialog = false }
     }
-    Row(
-        horizontalArrangement = Arrangement.SpaceAround,
-        verticalAlignment = Alignment.CenterVertically,
+
+    val selectImageLauncher =
+        rememberLauncherForActivityResult(contract = ActivityResultContracts.GetContent()) { uri ->
+            if (uri != null) {
+            }
+        }
+
+Row(
+horizontalArrangement = Arrangement.SpaceAround,
+verticalAlignment = Alignment.CenterVertically,
+modifier = Modifier
+.background(color = MaterialTheme.colorScheme.primary)
+.fillMaxWidth()
+.padding(10.dp)
+) {
+    val imageResourceId = LocalContext.current.resources.getIdentifier(
+        user.value!!.avatar,
+        "drawable",
+        LocalContext.current.packageName
+    )
+    Image(
+        painter = painterResource(id = imageResourceId),
+        contentDescription = "Avatar",
         modifier = Modifier
-            .background(color = MaterialTheme.colorScheme.primary)
+            .size(125.dp)
+            .border(3.dp, user.value!!.color, shape = CircleShape)
+            .clip(CircleShape)
+
+            .clickable {
+                selectImageLauncher.launch("image/*")
+
+            }
+
+    )
+    Column(
+        verticalArrangement = Arrangement.SpaceBetween,
+        horizontalAlignment = Alignment.Start,
+        modifier = Modifier
             .fillMaxWidth()
             .padding(10.dp)
     ) {
-        val imageResourceId = LocalContext.current.resources.getIdentifier(
-            user.value!!.avatar,
-            "drawable",
-            LocalContext.current.packageName
-        )
-        Image(
-            painter = painterResource(id = imageResourceId),
-            contentDescription = "Avatar",
-            modifier = Modifier
-                .size(125.dp)
-                .border(3.dp, user.value!!.color, shape = CircleShape)
-                .clip(CircleShape)
-        )
-        Column(
-            verticalArrangement = Arrangement.SpaceBetween,
-            horizontalAlignment = Alignment.Start,
+        Row(
+            horizontalArrangement = Arrangement.Start,
+            verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(10.dp)
+                .padding(0.dp)
         ) {
-            Row(
-                horizontalArrangement = Arrangement.Start,
-                verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(0.dp)
-            ) {
-                Text(
-                    text = user.value!!.name,
-                    style = MaterialTheme.typography.headlineMedium,
-                    color = MaterialTheme.colorScheme.onPrimary
-                )
-                TextButton(
-                    onClick = { showDialog = true },
-                    modifier = Modifier
-                        .background(color = MaterialTheme.colorScheme.primary),
-
-                    ) {
-                    Icon(
-                        painter = painterResource(id = R.drawable.edit),
-                        contentDescription = "Expandir Descripción",
-                        modifier = Modifier.size(24.dp),
-                        tint = MaterialTheme.colorScheme.onPrimary
-                    )
-                }
-            }
             Text(
-                text = "Cluedo",
+                text = user.value!!.name,
                 style = MaterialTheme.typography.headlineMedium,
-                color = MaterialTheme.colorScheme.onPrimary,
-                modifier = Modifier
-                    .alpha(0.8f)
+                color = MaterialTheme.colorScheme.onPrimary
             )
+            TextButton(
+                onClick = { showDialog = true },
+                modifier = Modifier
+                    .background(color = MaterialTheme.colorScheme.primary),
+
+                ) {
+                Icon(
+                    painter = painterResource(id = R.drawable.edit),
+                    contentDescription = "Expandir Descripción",
+                    modifier = Modifier.size(24.dp),
+                    tint = MaterialTheme.colorScheme.onPrimary
+                )
+            }
         }
+        Text(
+            text = "Cluedo",
+            style = MaterialTheme.typography.headlineMedium,
+            color = MaterialTheme.colorScheme.onPrimary,
+            modifier = Modifier
+                .alpha(0.8f)
+        )
     }
+}
 }
 
 @Composable
@@ -187,6 +203,7 @@ fun ProfileAlertDialogError(onDismissRequest: () -> Unit) {
         }
     )
 }
+
 @Composable
 fun MatchList(matchs: List<Match>) {
     LazyColumn(
@@ -203,7 +220,8 @@ fun MatchList(matchs: List<Match>) {
 @Composable
 fun MatchBox(match: Match) {
     val players = match.players.size
-    Row (verticalAlignment = Alignment.CenterVertically,
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier
             .fillMaxWidth()
             .border(
@@ -214,7 +232,7 @@ fun MatchBox(match: Match) {
             .clip(MaterialTheme.shapes.large)
             .background(MaterialTheme.colorScheme.primaryContainer)
             .padding(16.dp, 10.dp)
-    ){
+    ) {
         val imageResourceId = LocalContext.current.resources.getIdentifier(
             match.gameArt,
             "drawable",
@@ -235,10 +253,12 @@ fun MatchBox(match: Match) {
                 .fillMaxWidth()
                 .padding(10.dp)
         ) {
-            Row (horizontalArrangement = Arrangement.SpaceBetween,
+            Row(
+                horizontalArrangement = Arrangement.SpaceBetween,
                 modifier = Modifier
                     .fillMaxHeight()
-                    .fillMaxWidth()){
+                    .fillMaxWidth()
+            ) {
                 Text(
                     text = match.game,
                     fontSize = 22.sp,
@@ -254,7 +274,7 @@ fun MatchBox(match: Match) {
             }
             Spacer(modifier = Modifier.size(4.dp))
 
-            for (i in players-1 downTo 0) {
+            for (i in players - 1 downTo 0) {
                 Text(
                     text = match.players[i].name + ": " + match.score[i].toString() + " puntos",
                     fontSize = 14.sp,

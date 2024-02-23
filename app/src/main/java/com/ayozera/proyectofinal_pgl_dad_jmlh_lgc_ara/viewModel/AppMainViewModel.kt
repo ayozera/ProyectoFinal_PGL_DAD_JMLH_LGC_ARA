@@ -72,7 +72,6 @@ class AppMainViewModel : ViewModel() {
         }
     }
 
-
     fun logOut() {
         _isLogged.value = false
     }
