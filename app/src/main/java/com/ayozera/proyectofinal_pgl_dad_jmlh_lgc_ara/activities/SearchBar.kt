@@ -1,6 +1,5 @@
 package com.ayozera.proyectofinal_pgl_dad_jmlh_lgc_ara.activities
 
-
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Column
@@ -31,25 +30,29 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.material3.SearchBar
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.ui.platform.LocalContext
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.res.painterResource
 import androidx.navigation.NavHostController
 import com.ayozera.proyectofinal_pgl_dad_jmlh_lgc_ara.R
-import com.ayozera.proyectofinal_pgl_dad_jmlh_lgc_ara.models.DataUp
 import com.ayozera.proyectofinal_pgl_dad_jmlh_lgc_ara.navigation.Routs
+import com.ayozera.proyectofinal_pgl_dad_jmlh_lgc_ara.repositories.GameDB
 import com.ayozera.proyectofinal_pgl_dad_jmlh_lgc_ara.viewModel.AppMainViewModel
+import com.google.firebase.firestore.FirebaseFirestore
 
 
 @Composable
 fun SearchBar(navController: NavHostController, appMainViewModel: AppMainViewModel) {
 
     Column(
-        modifier = Modifier.fillMaxWidth()
+        modifier = Modifier
+            .fillMaxWidth()
             .fillMaxHeight()
             .padding(20.dp)
     ) {
         Searcher(onSearchSelected = {
-            navController.navigate("${Routs.Game.rout}/$it")
+            if (it != "") {
+                navController.navigate("${Routs.Game.rout}/$it")
+            }
         })
     }
 }
@@ -57,17 +60,29 @@ fun SearchBar(navController: NavHostController, appMainViewModel: AppMainViewMod
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun Searcher(onSearchSelected: (String) -> Unit) {
-    val context = LocalContext.current
-    val games = DataUp.loadGames(context)
+    val connection = FirebaseFirestore.getInstance()
+    val games = remember {
+        mutableListOf("")
+    }
+    LaunchedEffect(key1 = Unit) {
+        connection.collection("Game").get().addOnSuccessListener { documents ->
+            games.clear()
+            for (document in documents) {
+                val game = document.toObject(GameDB::class.java)
+                games.add(game.name)
+            }
+        }
+    }
+
     var query by remember { mutableStateOf("") }
-    var isActive by remember { mutableStateOf(true) }
-    var filteredSongs: List<String> by remember { mutableStateOf(games) }
+    val isActive by remember { mutableStateOf(true) }
+    var filteredGames: List<String> by remember { mutableStateOf(games) }
 
     SearchBar(
         query = query,
         onQueryChange = { newQuery ->
             query = newQuery
-            filteredSongs = games.filter { it.contains(newQuery, ignoreCase = true) }
+            filteredGames = games.filter { it.contains(newQuery, ignoreCase = true) }
         },
         onSearch = { onSearchSelected(query) },
         active = isActive,
@@ -81,7 +96,7 @@ fun Searcher(onSearchSelected: (String) -> Unit) {
         trailingIcon = {
             IconButton(onClick = {
                 query = ""
-                filteredSongs = games
+                filteredGames = games
                 onSearchSelected("")
             }) {
                 Icon(
@@ -95,7 +110,7 @@ fun Searcher(onSearchSelected: (String) -> Unit) {
         LazyColumn(
             modifier = Modifier.fillMaxWidth()
         ) {
-            items(filteredSongs) { cancion ->
+            items(filteredGames) { cancion ->
                 TextButton(
                     onClick = {
                         query = cancion
