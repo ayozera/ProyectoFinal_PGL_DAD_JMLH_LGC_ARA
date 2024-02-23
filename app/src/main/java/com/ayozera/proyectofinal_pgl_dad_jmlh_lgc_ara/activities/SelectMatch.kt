@@ -1,6 +1,7 @@
 package com.ayozera.proyectofinal_pgl_dad_jmlh_lgc_ara.activities
 
 import android.os.Build
+import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
@@ -150,6 +151,7 @@ fun SelectMatch(navController: NavHostController, appMainViewModel: AppMainViewM
 fun GameSelection(games: ArrayList<GameDB>, onGameSelection: (GameDB) -> Unit) {
     var expandedGame by remember { mutableStateOf(false) }
     var selectedGame = remember { mutableStateOf(GameDB()) }
+
     Column {
 
         Text(
@@ -164,7 +166,10 @@ fun GameSelection(games: ArrayList<GameDB>, onGameSelection: (GameDB) -> Unit) {
             label = { Text("¿Cuál es el juego?") },
             readOnly = true,
             trailingIcon = {
-                IconButton(onClick = { expandedGame = true }) {
+                IconButton(onClick = {
+                    expandedGame = true
+                })
+                {
                     Icon(
                         Icons.Default.ArrowDropDown, contentDescription = "abrir lista de juegos"
                     )
